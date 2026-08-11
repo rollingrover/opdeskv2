@@ -31,6 +31,8 @@ export function StatusBadge({ status }) {
     sent:       { color:'blue',  label:'Sent' },
     paid:       { color:'green', label:'Paid' },
     overdue:    { color:'red',   label:'Overdue' },
+    accepted:   { color:'green', label:'Accepted' },
+    declined:   { color:'red',   label:'Declined' },
   }
   const { color, label } = map[status] || { color:'gray', label: status }
   return <Badge color={color} dot>{label}</Badge>

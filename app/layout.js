@@ -27,12 +27,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <link rel="icon" type="image/png" href="/compass-icon.png" />
+        {/* app/favicon.ico is already picked up automatically by Next.js's file
+            convention — the old <link> here pointed at a /compass-icon.png
+            that doesn't exist in /public, which was causing a 404. */}
         <meta name="theme-color" content="#0F2540" />
       </head>
       <body>{children}</body>

@@ -1,47 +1,35 @@
 'use client'
 import Link from 'next/link'
-import { OpDeskLogo } from '@/components/layout/OpDeskLogo'
+import { BrandIcon } from '@/components/ui/BrandIcon'
+import { MarketingNav } from '@/components/marketing/MarketingNav'
+import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 
 const OPERATOR_TYPES = [
-  { icon:'🦁', label:'Safari / Game Lodges' },
-  { icon:'🚌', label:'Shuttles & Transfers' },
-  { icon:'🎣', label:'Fishing Charters' },
-  { icon:'⛵', label:'Yacht Charters' },
-  { icon:'🥾', label:'Trail Guides' },
-  { icon:'🏨', label:'Hotels & Guesthouses' },
-  { icon:'🌍', label:'East Africa Tours' },
-  { icon:'🏝️', label:'Island Transfers' },
+  { icon:'safari', label:'Safari / Game Lodges' },
+  { icon:'shuttle', label:'Shuttles & Transfers' },
+  { icon:'fishing', label:'Fishing Charters' },
+  { icon:'yacht', label:'Yacht Charters' },
+  { icon:'trailGuide', label:'Trail Guides' },
+  { icon:'gameLodge', label:'Hotels & Guesthouses' },
+  { icon:'eastAfrica', label:'East Africa Tours' },
+  { icon:'islandTransfer', label:'Island Transfers' },
 ]
 
 const FEATURES = [
-  { icon:'📋', title:'Bookings & Calendar',    desc:'Full booking management with drag-and-drop calendar scheduling for all operator types.' },
-  { icon:'👥', title:'Staff & HR',             desc:'Certifications, cost-to-company tracking, shifts, leave management, and performance notes.' },
-  { icon:'🏨', title:'Lodging & Rooms',        desc:'Room inventory, availability calendar, guest check-in/out, and housekeeping task board.' },
-  { icon:'🚗', title:'Fleet Management',       desc:'Track vehicles and vessels with licence expiry, roadworthy, and insurance reminders.' },
-  { icon:'📄', title:'Pro Forma Invoices',     desc:'Professional invoices in 15+ currencies with VAT calculations and PDF export.' },
-  { icon:'📊', title:'Reports & Analytics',    desc:'Occupancy rates, revenue, staff costs, and booking trends at a glance.' },
-  { icon:'🔐', title:'Firearm Register',       desc:'Compliant firearm tracking for safari and fishing operators with licence expiry alerts.' },
-  { icon:'🗺️', title:'Trails Module',          desc:'Manage trail routes, difficulty, capacity, and guide assignments.' },
+  { icon:'bookingCalendar', title:'Bookings & Calendar',    desc:'Full booking management with drag-and-drop calendar scheduling for all operator types.' },
+  { icon:'teamRoles', title:'Staff & HR',             desc:'Certifications, cost-to-company tracking, shifts, leave management, and performance notes.' },
+  { icon:'gameLodge', title:'Lodging & Rooms',        desc:'Room inventory, availability calendar, guest check-in/out, and housekeeping task board.' },
+  { icon:'fleet', title:'Fleet Management',       desc:'Track vehicles and vessels with licence expiry, roadworthy, and insurance reminders.' },
+  { icon:'proformaInvoice', title:'Pro Forma Invoices',     desc:'Professional invoices in 15+ currencies with VAT calculations and PDF export.' },
+  { icon:'dashboardReports', title:'Reports & Analytics',    desc:'Occupancy rates, revenue, staff costs, and booking trends at a glance.' },
+  { icon:'firearmRegister', title:'Firearm Register',       desc:'Compliant firearm tracking for safari and fishing operators with licence expiry alerts.' },
+  { icon:'trailsModule', title:'Trails Module',          desc:'Manage trail routes, difficulty, capacity, and guide assignments.' },
 ]
 
 export default function HomePage() {
   return (
     <div style={{ fontFamily:'Inter, sans-serif' }}>
-      {/* NAV */}
-      <nav style={{ background:'var(--navy)', padding:'0 2rem', height:'4rem', display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100 }}>
-        <OpDeskLogo size={36} white />
-        <div style={{ display:'flex', gap:'1.5rem', alignItems:'center' }}>
-          {[['/','/features','Features'],['/','/pricing','Pricing'],['/','/about','About']].map(([base,href,label]) => (
-            <Link key={href} href={href} style={{ color:'rgba(255,255,255,0.7)', textDecoration:'none', fontSize:'0.875rem', fontWeight:500, transition:'color 0.15s' }}
-              onMouseOver={e => e.currentTarget.style.color='white'}
-              onMouseOut={e => e.currentTarget.style.color='rgba(255,255,255,0.7)'}>
-              {label}
-            </Link>
-          ))}
-          <Link href="/auth/login" style={{ color:'rgba(255,255,255,0.7)', textDecoration:'none', fontSize:'0.875rem', fontWeight:500 }}>Sign In</Link>
-          <Link href="/auth/signup" className="btn btn-primary btn-sm">Start Free →</Link>
-        </div>
-      </nav>
+      <MarketingNav />
 
       {/* HERO */}
       <section style={{ background:'linear-gradient(135deg, var(--navy) 0%, #1a3a5c 55%, #1B8A8F 100%)', padding:'5rem 2rem 6rem', textAlign:'center', color:'white' }}>
@@ -55,7 +43,7 @@ export default function HomePage() {
           Safari lodges, guesthouses, charters, shuttles and trail operators — all in one platform. Bookings, staff, lodging, fleet, certs, and invoices.
         </p>
         <div style={{ display:'flex', gap:'1rem', justifyContent:'center', flexWrap:'wrap' }}>
-          <Link href="/auth/signup" className="btn btn-primary btn-xl">Start for Free →</Link>
+          <Link href="/auth/signup" className="btn btn-primary btn-xl">Start for Free <BrandIcon name="arrowRight" size={14} style={{ display:'inline-block' }} /></Link>
           <Link href="/features" className="btn btn-outline btn-xl" style={{ color:'white', borderColor:'rgba(255,255,255,0.4)' }}>See Features</Link>
         </div>
         <p style={{ marginTop:'1.5rem', fontSize:'0.8125rem', color:'rgba(255,255,255,0.4)' }}>No credit card required · Cancel anytime · Runs in your browser</p>
@@ -70,7 +58,7 @@ export default function HomePage() {
             <div key={t.label} style={{ background:'white', borderRadius:'1rem', padding:'1.5rem 1rem', border:'1px solid var(--gray-200)', transition:'box-shadow 0.2s, border-color 0.2s', cursor:'default' }}
               onMouseOver={e => { e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.09)'; e.currentTarget.style.borderColor='var(--gold)' }}
               onMouseOut={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.borderColor='var(--gray-200)' }}>
-              <div style={{ fontSize:'2rem', marginBottom:'0.625rem' }}>{t.icon}</div>
+              <div style={{ marginBottom:'0.625rem', display:'flex', justifyContent:'center' }}><BrandIcon name={t.icon} size={40} /></div>
               <p style={{ margin:0, fontSize:'0.875rem', fontWeight:600, color:'var(--navy)', lineHeight:1.3 }}>{t.label}</p>
             </div>
           ))}
@@ -89,7 +77,7 @@ export default function HomePage() {
               style={{ transition:'transform 0.2s, box-shadow 0.2s' }}
               onMouseOver={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 8px 30px rgba(0,0,0,0.1)' }}
               onMouseOut={e => { e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='0 1px 6px rgba(0,0,0,0.07)' }}>
-              <div style={{ fontSize:'2rem', marginBottom:'0.75rem' }}>{f.icon}</div>
+              <div style={{ marginBottom:'0.75rem' }}><BrandIcon name={f.icon} size={36} /></div>
               <h3 style={{ margin:'0 0 0.5rem', fontSize:'1rem', color:'var(--navy)' }}>{f.title}</h3>
               <p style={{ margin:0, fontSize:'0.875rem', color:'var(--gray-500)', lineHeight:1.6 }}>{f.desc}</p>
             </div>
@@ -101,27 +89,10 @@ export default function HomePage() {
       <section style={{ background:'var(--navy)', padding:'4rem 2rem', textAlign:'center', color:'white' }}>
         <h2 style={{ fontFamily:'Montserrat, sans-serif', fontSize:'2rem', color:'white', marginBottom:'0.75rem' }}>Ready to take control of your operations?</h2>
         <p style={{ color:'rgba(255,255,255,0.6)', marginBottom:'2rem', fontSize:'1rem' }}>Join operators across Africa who run their business with OpDesk.</p>
-        <Link href="/auth/signup" className="btn btn-primary btn-xl">Start for Free →</Link>
+        <Link href="/auth/signup" className="btn btn-primary btn-xl">Start for Free <BrandIcon name="arrowRight" size={14} style={{ display:'inline-block' }} /></Link>
       </section>
 
-      {/* FOOTER */}
-      <footer style={{ background:'#0a1929', color:'rgba(255,255,255,0.4)', padding:'2rem', textAlign:'center', fontSize:'0.8125rem' }}>
-        <div style={{ marginBottom:'1rem' }}>
-          <OpDeskLogo size={28} white />
-        </div>
-        <div style={{ display:'flex', gap:'1.5rem', justifyContent:'center', marginBottom:'1rem', flexWrap:'wrap' }}>
-          {['/features','Features'],['/pricing','Pricing'],['/about','About'],['/auth/login','Sign In'],['/auth/signup','Sign Up'].reduce((acc,_,i,arr) => {
-            if (i % 2 === 0) acc.push(arr.slice(i, i+2)); return acc
-          }, []).map(([href,label]) => (
-            <Link key={href} href={href} style={{ color:'rgba(255,255,255,0.4)', textDecoration:'none' }}
-              onMouseOver={e => e.currentTarget.style.color='rgba(255,255,255,0.7)'}
-              onMouseOut={e => e.currentTarget.style.color='rgba(255,255,255,0.4)'}>
-              {label}
-            </Link>
-          ))}
-        </div>
-        <p style={{ margin:0 }}>© {new Date().getFullYear()} OpDesk. Built for Africa's operators.</p>
-      </footer>
+      <MarketingFooter />
     </div>
   )
 }

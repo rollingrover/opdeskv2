@@ -8,7 +8,8 @@ import {
   LayoutDashboard, CalendarDays, BookOpen, Users, Hotel,
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
   Shield, MapPin, Crosshair, LogOut, ChevronRight, Bed,
-  ClipboardList, UserCheck, DollarSign, Clock, Plane
+  ClipboardList, UserCheck, DollarSign, Clock, Plane,
+  TrendingUp, Star, Package, Briefcase
 } from 'lucide-react'
 
 const ALL_NAV = [
@@ -54,14 +55,16 @@ const ALL_NAV = [
       { href:'/trails',           icon: MapPin,       label:'Trails',           module:'trails' },
       { href:'/firearm-register', icon: Crosshair,   label:'Firearm Register', module:'firearm' },
       { href:'/invoices',         icon: FileText,    label:'Invoices',         module:'invoices' },
+      { href:'/quotations',       icon: FileText,    label:'Quotations',       module:'quotations' },
       { href:'/reports',          icon: BarChart3,   label:'Reports',          module:'reports' },
     ]
   },
   {
     section: 'Account',
     items: [
-      { href:'/settings',  icon: Settings,    label:'Settings',  module:'always' },
-      { href:'/support',   icon: HelpCircle,  label:'Support',   module:'always' },
+      { href:'/settings',        icon: Settings,    label:'Settings',  module:'always' },
+      { href:'/settings/addons', icon: Package,     label:'Add-ons',   module:'always' },
+      { href:'/support',         icon: HelpCircle,  label:'Support',   module:'always' },
     ]
   },
 ]
@@ -120,9 +123,16 @@ export function Sidebar({ mobileOpen, onClose }) {
             <div>
               <div className="sidebar-section-label">Superadmin</div>
               {[
+                { href:'/admin/revenue',   icon: TrendingUp, label:'Revenue' },
                 { href:'/admin/companies', icon: Shield, label:'Companies' },
-                { href:'/admin/support',   icon: HelpCircle, label:'Support Tickets' },
-                { href:'/admin/payments',  icon: DollarSign, label:'Payments' },
+                { href:'/admin/operators', icon: Star, label:'Operator Profiles' },
+                { href:'/admin/pricing',   icon: DollarSign, label:'Add-on Pricing' },
+                { href:'/admin/packages',  icon: FileText, label:'Marketing Packages' },
+                { href:'/admin/affiliates', icon: Star, label:'Affiliates' },
+                { href:'/admin/discounts', icon: FileText, label:'Discount Codes' },
+                { href:'/admin/support',   icon: HelpCircle, label:'Support Queue' },
+                { href:'/admin/system',    icon: Settings, label:'System' },
+                { href:'/admin/rollingrover', icon: Briefcase, label:'RollingRover' },
               ].map(item => {
                 const Icon = item.icon
                 const active = pathname.startsWith(item.href)

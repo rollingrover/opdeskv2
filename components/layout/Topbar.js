@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Menu, Bell, Search, ChevronDown, User } from 'lucide-react'
+import { Menu, Bell, Search, ChevronDown, User, Shield } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 
@@ -24,6 +24,15 @@ export function Topbar({ onMenuClick }) {
       </div>
 
       <div style={{ display:'flex', alignItems:'center', gap:'0.5rem' }}>
+        {profile?.is_superadmin && (
+          <Link href="/admin" style={{
+            display:'flex', alignItems:'center', gap:'0.375rem', background:'#dc2626', color:'white',
+            fontSize:'0.75rem', fontWeight:700, padding:'0.375rem 0.75rem', borderRadius:'0.5rem',
+            textDecoration:'none', letterSpacing:'0.02em',
+          }}>
+            <Shield size={13} /> Superadmin
+          </Link>
+        )}
         <button className="btn btn-ghost btn-sm" style={{ padding:'0.375rem', position:'relative' }}>
           <Bell size={18} />
         </button>
@@ -65,6 +74,7 @@ export function Topbar({ onMenuClick }) {
                   { href:'/settings', label:'Settings' },
                   { href:'/settings/billing', label:'Billing' },
                   { href:'/support', label:'Support' },
+                  ...(profile?.is_superadmin ? [{ href:'/admin', label:'Superadmin Panel' }] : []),
                 ].map(item => (
                   <Link key={item.href} href={item.href} onClick={() => setDropOpen(false)}
                     style={{ display:'block', padding:'0.625rem 1rem', fontSize:'0.875rem', color:'var(--gray-700)', textDecoration:'none' }}

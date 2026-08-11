@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
 import { OpDeskLogo } from '@/components/layout/OpDeskLogo'
+import { BrandIcon } from '@/components/ui/BrandIcon'
 
 function LoginForm() {
   const [email, setEmail]       = useState('')
@@ -76,8 +77,8 @@ function LoginForm() {
         <div style={{ textAlign:'center', marginTop:'1.5rem', paddingTop:'1.5rem', borderTop:'1px solid var(--gray-100)' }}>
           <p style={{ fontSize:'0.875rem', color:'var(--gray-500)', margin:0 }}>
             Don't have an account?{' '}
-            <Link href="/auth/signup" style={{ color:'var(--orange)', fontWeight:600, textDecoration:'none' }}>
-              Start free →
+            <Link href="/auth/signup" style={{ color:'var(--orange)', fontWeight:600, textDecoration:'none', display:'inline-flex', alignItems:'center', gap:'0.25rem' }}>
+              Start free <BrandIcon name="arrowRight" size={12} />
             </Link>
           </p>
         </div>

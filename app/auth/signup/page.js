@@ -1,10 +1,11 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, AlertCircle, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { AuthProvider, useAuth } from '@/context/AuthContext'
 import { OpDeskLogo } from '@/components/layout/OpDeskLogo'
+import { BrandIcon } from '@/components/ui/BrandIcon'
 import { OPERATOR_TYPES, CURRENCIES } from '@/lib/constants'
 
 function SignupForm() {
@@ -18,6 +19,8 @@ function SignupForm() {
   })
   const { signUp } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const selectedPackage = searchParams.get('package')
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
@@ -27,7 +30,10 @@ function SignupForm() {
     setLoading(true); setError('')
     const { error } = await signUp(form.email, form.password, form.fullName, form.companyName, form.operatorType)
     if (error) { setError(error.message); setLoading(false) }
-    else router.replace('/dashboard')
+    // Someone who picked a plan on /pricing lands straight in checkout for
+    // it, instead of the dashboard, so choosing a plan actually leads
+    // somewhere rather than being forgotten the moment signup starts.
+    else router.replace(selectedPackage ? `/settings/billing?package=${selectedPackage}` : '/dashboard')
   }
 
   const steps = ['Your Details', 'Business Setup', 'Preferences']
@@ -161,7 +167,7 @@ function SignupForm() {
                   <ChevronLeft size={16} /> Back
                 </button>
                 <button type="submit" className="btn btn-primary btn-lg" style={{ flex:2 }} disabled={loading}>
-                  {loading ? 'Creating account…' : 'Start for Free →'}
+                  {loading ? 'Creating account…' : <>Start for Free <BrandIcon name="arrowRight" size={14} /></>}
                 </button>
               </div>
             </div>
@@ -180,5 +186,11 @@ function SignupForm() {
 }
 
 export default function SignupPage() {
-  return <AuthProvider><SignupForm /></AuthProvider>
+  return (
+    <AuthProvider>
+      <Suspense fallback={null}>
+        <SignupForm />
+      </Suspense>
+    </AuthProvider>
+  )
 }

@@ -1,11 +1,11 @@
 'use client'
-'use client'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
 import { StatusBadge } from '@/components/ui/Badge'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { BrandIcon } from '@/components/ui/BrandIcon'
 import {
   BookOpen, Users, DollarSign, TrendingUp, Calendar,
   AlertTriangle, CheckCircle, Clock, ArrowRight, Hotel
@@ -49,15 +49,21 @@ function CertAlert({ cert }) {
 }
 
 export default function DashboardPage() {
-  const { company } = useAuth()
+  const { company, profileError, needsCompany } = useAuth()
   const supabase = createClient()
-  const [stats, setStats]     = useState(null)
+  const [stats, setStats]     = useState({ totalBookings:0, confirmedToday:0, totalStaff:0, occupiedRooms:0, totalRooms:0 })
   const [bookings, setBookings] = useState([])
   const [certAlerts, setCertAlerts] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!company) return
+    if (!company) { setLoading(false); return }
+    // Company can arrive a render or two after mount (AuthContext loads it
+    // asynchronously) — without this, `loading` stays stuck at the `false`
+    // it was set to on the very first render (when company was still null),
+    // so the component below renders its main body before `stats` has ever
+    // been populated for this company.
+    setLoading(true)
     async function load() {
       const today = new Date().toISOString().split('T')[0]
       const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]
@@ -89,7 +95,23 @@ export default function DashboardPage() {
     load()
   }, [company, supabase])
 
-  if (loading || !company) return <PageLoader />
+  if (loading) return <PageLoader />
+
+  if (profileError) {
+    return (
+      <EmptyState icon={<BrandIcon name="errorIcon" size={48} />} title="We couldn't load your profile"
+        description="Your account exists, but no profile record was found for it. Please contact support or try signing out and back in."
+        action={<Link href="/auth/login" className="btn btn-primary btn-sm">Back to login</Link>} />
+    )
+  }
+
+  if (needsCompany || !company) {
+    return (
+      <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title="Finish setting up your company"
+        description="Your account isn't linked to a company yet, so there's no data to show."
+        action={<Link href="/settings" className="btn btn-primary btn-sm">Go to Settings</Link>} />
+    )
+  }
 
   const greeting = () => {
     const h = new Date().getHours()
@@ -102,7 +124,9 @@ export default function DashboardPage() {
     <div>
       {/* Header */}
       <div style={{ marginBottom:'1.75rem' }}>
-        <h1 style={{ margin:0, fontSize:'1.5rem' }}>{greeting()}, {company.name} 👋</h1>
+        <h1 style={{ margin:0, fontSize:'1.5rem', display:'flex', alignItems:'center', gap:'0.5rem' }}>
+          {greeting()}, {company.name} <BrandIcon name="greeting" size={28} />
+        </h1>
         <p style={{ margin:'0.25rem 0 0', color:'var(--gray-400)', fontSize:'0.875rem' }}>
           Here's what's happening today — {new Date().toLocaleDateString('en-ZA', { weekday:'long', day:'numeric', month:'long' })}
         </p>
@@ -128,7 +152,7 @@ export default function DashboardPage() {
             </Link>
           </div>
           {bookings.length === 0 ? (
-            <EmptyState icon="📋" title="No bookings yet" description="Your bookings will appear here once created."
+            <EmptyState icon={<BrandIcon name="noBookings" size={48} />} title="No bookings yet" description="Your bookings will appear here once created."
               action={<Link href="/bookings" className="btn btn-primary btn-sm">New Booking</Link>} />
           ) : (
             <div className="table-wrap">
@@ -182,10 +206,10 @@ export default function DashboardPage() {
       {/* Quick actions */}
       <div style={{ marginTop:'1.25rem', display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:'0.75rem' }}>
         {[
-          { href:'/bookings', label:'New Booking', icon:'📋', color:'var(--teal)' },
-          { href:'/staff',    label:'Add Staff',   icon:'👤', color:'var(--navy)' },
-          { href:'/invoices', label:'New Invoice', icon:'📄', color:'var(--gold)' },
-          { href:'/settings', label:'Settings',    icon:'⚙️', color:'var(--gray-500)' },
+          { href:'/bookings', label:'New Booking', icon:'noBookings', color:'var(--teal)' },
+          { href:'/staff',    label:'Add Staff',   icon:'addStaff', color:'var(--navy)' },
+          { href:'/invoices', label:'New Invoice', icon:'newInvoice', color:'var(--gold)' },
+          { href:'/settings', label:'Settings',    icon:'settingsIcon', color:'var(--gray-500)' },
         ].map(a => (
           <Link key={a.href} href={a.href} style={{
             background:'white', border:'1px solid var(--gray-200)', borderRadius:'0.75rem',
@@ -194,7 +218,7 @@ export default function DashboardPage() {
           }}
           onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)' }}
           onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--gray-200)'; e.currentTarget.style.boxShadow = 'none' }}>
-            <span style={{ fontSize:'1.5rem' }}>{a.icon}</span>
+            <BrandIcon name={a.icon} size={28} />
             <span style={{ fontSize:'0.875rem', fontWeight:600, color:'var(--navy)' }}>{a.label}</span>
           </Link>
         ))}
