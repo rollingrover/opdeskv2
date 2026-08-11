@@ -26,7 +26,7 @@ export async function POST(request) {
 
     const paymentUrl = buildPaymentUrl({
       amount: req.quote_amount,
-      itemName: `RollingRover Web Services — ${req.business_name || req.name}`,
+      itemName: `RollingRover Productions — ${req.business_name || req.name}`,
       itemDescription: req.quote_notes || req.details || 'Web design services',
       mPaymentId,
       nameFirst: nameFirst || req.name,

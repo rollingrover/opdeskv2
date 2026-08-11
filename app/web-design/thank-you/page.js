@@ -3,7 +3,7 @@ import { MarketingNav } from '@/components/marketing/MarketingNav'
 import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { Check } from 'lucide-react'
 
-export const metadata = { title: 'Payment Received — RollingRover Web Services' }
+export const metadata = { title: 'Payment Received — RollingRover Productions' }
 
 export default function ThankYouPage() {
   return (

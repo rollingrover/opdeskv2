@@ -17,12 +17,19 @@ export function MarketingFooter() {
           </Link>
         ))}
       </div>
-      <div style={{ borderTop:'1px solid rgba(255,255,255,0.08)', paddingTop:'1rem', marginBottom:'1rem' }}>
+      <div style={{ borderTop:'1px solid rgba(255,255,255,0.08)', paddingTop:'1rem', marginBottom:'0.75rem' }}>
         <Link href="/web-design" style={{ color:'var(--gold)', textDecoration:'none', fontSize:'0.8125rem', fontWeight:600 }}>
-          Need a website too? RollingRover Web Services can help →
+          Need a website too? RollingRover Productions can help →
         </Link>
       </div>
-      <p style={{ margin:0 }}>© {new Date().getFullYear()} OpDesk. Built for Africa's operators.</p>
+      <p style={{ margin:'0 0 0.375rem' }}>© {new Date().getFullYear()} OpDesk. Built for Africa's operators.</p>
+      <p style={{ margin:0, fontSize:'0.75rem' }}>
+        Web design by{' '}
+        <a href="https://rollingrover.co.za" target="_blank" rel="noopener noreferrer"
+          style={{ color:'rgba(255,255,255,0.5)', textDecoration:'underline' }}>
+          RollingRover Productions
+        </a>
+      </p>
     </footer>
   )
 }

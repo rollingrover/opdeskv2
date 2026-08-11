@@ -114,14 +114,14 @@ function SARevenueOverview() {
         </div>
       </div>
 
-      {/* RollingRover Web Services — kept as a separate summary, not merged
+      {/* RollingRover Productions — kept as a separate summary, not merged
           into MRR/ARR above, since recurring SaaS subscriptions and
           project-based web design income are genuinely different kinds of
           revenue and combining them into one number would make both less
           useful, not more. */}
       <div style={{ ...cardStyle, marginBottom: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-          <h3 style={{ color: 'white', fontWeight: 700, fontSize: 15, margin: 0 }}>RollingRover Web Services</h3>
+          <h3 style={{ color: 'white', fontWeight: 700, fontSize: 15, margin: 0 }}>RollingRover Productions</h3>
           <a href="/admin/rollingrover" style={{ color: '#D4A853', fontSize: 12, textDecoration: 'none' }}>Manage →</a>
         </div>
         <p style={{ color: '#6b7280', fontSize: 12, marginBottom: 16 }}>

@@ -29,7 +29,7 @@ export async function POST(request) {
     const supabase = createServiceClient()
     const mPaymentId = postData.m_payment_id || ''
 
-    // --- RollingRover Web Services payment (one-off or recurring) ---
+    // --- RollingRover Productions payment (one-off or recurring) ---
     if (mPaymentId.startsWith('RR-')) {
       if (postData.payment_status !== 'COMPLETE') return new NextResponse('OK', { status: 200 })
       const { error } = await supabase.from('rollingrover_requests')
