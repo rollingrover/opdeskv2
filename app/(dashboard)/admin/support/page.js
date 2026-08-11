@@ -209,3 +209,5 @@ function SASupportQueue() {
 export default function Page() {
   return <SASupportQueue />
 }
+
+export const dynamic = 'force-dynamic'

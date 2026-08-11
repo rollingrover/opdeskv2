@@ -518,3 +518,5 @@ export default function Page() {
   const params = useParams()
   return <SACompanyDetail companyId={params.id} />
 }
+
+export const dynamic = 'force-dynamic'

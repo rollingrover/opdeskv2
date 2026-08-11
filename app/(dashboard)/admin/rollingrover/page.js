@@ -247,3 +247,5 @@ function SARollingRover() {
 export default function Page() {
   return <SARollingRover />
 }
+
+export const dynamic = 'force-dynamic'

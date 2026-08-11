@@ -78,3 +78,5 @@ function ForgotForm() {
 export default function ForgotPasswordPage() {
   return <AuthProvider><ForgotForm /></AuthProvider>
 }
+
+export const dynamic = 'force-dynamic'

@@ -80,3 +80,5 @@ function ResetForm() {
 export default function ResetPasswordPage() {
   return <AuthProvider><ResetForm /></AuthProvider>
 }
+
+export const dynamic = 'force-dynamic'

@@ -1,41 +1,16 @@
-'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
-import { AuthProvider, useAuth } from '@/context/AuthContext'
-import { Sidebar } from '@/components/layout/Sidebar'
-import { Topbar } from '@/components/layout/Topbar'
-import { PageLoader } from '@/components/ui/Spinner'
+import DashboardLayoutClient from './DashboardLayoutClient'
 
+// This MUST live in a Server Component file to actually take effect — Next.js
+// does not reliably honor route segment config (dynamic, revalidate, etc.)
+// exported from a 'use client' file. Every page under this layout inherited
+// a `force-dynamic` export that looked correct but was silently a no-op,
+// which is why Vercel's build tried to statically prerender pages that need
+// a live user session and crashed the moment Supabase env vars weren't
+// present at build time. Setting it here, in a real Server Component,
+// cascades to every nested route automatically — no need to repeat it in
+// each individual page.js.
 export const dynamic = 'force-dynamic'
 
-function DashboardShell({ children }) {
-  const { user, loading } = useAuth()
-  const router = useRouter()
-  const [mobileOpen, setMobileOpen] = useState(false)
-
-  useEffect(() => {
-    if (!loading && !user) router.replace('/auth/login')
-  }, [user, loading, router])
-
-  if (loading) return <PageLoader />
-  if (!user) return null
-
-  return (
-    <div>
-      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
-      <div className="app-shell">
-        <Topbar onMenuClick={() => setMobileOpen(v => !v)} />
-        <main className="page-content">{children}</main>
-      </div>
-    </div>
-  )
-}
-
 export default function DashboardLayout({ children }) {
-  return (
-    <AuthProvider>
-      <DashboardShell>{children}</DashboardShell>
-    </AuthProvider>
-  )
+  return <DashboardLayoutClient>{children}</DashboardLayoutClient>
 }

@@ -148,3 +148,5 @@ function SACompaniesList() {
 export default function Page() {
   return <SACompaniesList />
 }
+
+export const dynamic = 'force-dynamic'

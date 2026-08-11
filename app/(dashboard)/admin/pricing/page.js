@@ -466,3 +466,5 @@ function SAPricingEditor() {
 export default function Page() {
   return <SAPricingEditor />;
 }
+
+export const dynamic = 'force-dynamic'

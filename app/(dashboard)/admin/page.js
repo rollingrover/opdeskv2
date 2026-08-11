@@ -63,3 +63,5 @@ function AdminIndex() {
 export default function Page() {
   return <AdminIndex />
 }
+
+export const dynamic = 'force-dynamic'

@@ -276,3 +276,5 @@ function SAMarketingPackages() {
 export default function Page() {
   return <SAMarketingPackages />
 }
+
+export const dynamic = 'force-dynamic'

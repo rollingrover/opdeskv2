@@ -90,3 +90,5 @@ function LoginForm() {
 export default function LoginPage() {
   return <AuthProvider><LoginForm /></AuthProvider>
 }
+
+export const dynamic = 'force-dynamic'

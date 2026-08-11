@@ -299,3 +299,5 @@ function SASystemConfig() {
 export default function Page() {
   return <SASystemConfig />;
 }
+
+export const dynamic = 'force-dynamic'

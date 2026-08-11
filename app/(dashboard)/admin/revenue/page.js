@@ -256,3 +256,5 @@ function SARevenueOverview() {
 export default function Page() {
   return <SARevenueOverview />;
 }
+
+export const dynamic = 'force-dynamic'
