@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { AlertTriangle } from 'lucide-react'
 
 const RESOURCE_LABELS = {
-  vehicles: 'vehicle & room capacity', rooms: 'vehicle & room capacity', guides: 'staff', bookings_per_month: 'bookings this month',
+  vehicles: 'vehicle & room capacity', rooms: 'vehicle & room capacity', guides: 'staff', bookings_per_month: 'bookings this month', seats: 'team seats',
 }
 
 export function LimitBanner({ resourceKey, limitInfo }) {

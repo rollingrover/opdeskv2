@@ -41,7 +41,6 @@
       "reports": "Rapports",
       "settings": "Paramètres",
       "team": "Équipe",
-      "locations": "Établissements",
       "addons": "Modules Complémentaires",
       "publicProfile": "Profil Public",
       "support": "Assistance"
@@ -1097,27 +1096,5 @@
     "inviteSent": "Invitation envoyée à {email}",
     "memberRemoved": "L'accès de cette personne a été retiré",
     "confirmRemove": "Retirer {name} de votre équipe ? Son accès sera perdu immédiatement."
-  },
-  "Locations": {
-    "title": "Établissements",
-    "subtitle": "Gérez chaque établissement de votre compte et basculez entre eux.",
-    "addLocation": "Ajouter un Établissement",
-    "needsEnterprise": "Gérer plusieurs établissements sous une seule connexion est une fonctionnalité du forfait Enterprise. Chaque établissement conserve son propre abonnement, avec 20 % de réduction une fois lié.",
-    "colName": "Établissement",
-    "colType": "Type",
-    "current": "actuel",
-    "switchTo": "Basculer vers",
-    "switching": "Changement…",
-    "cancel": "Annuler",
-    "adding": "Ajout…",
-    "locationAdded": "Établissement ajouté",
-    "locationName": "Nom de l'Établissement",
-    "locationNamePlaceholder": "ex. Camp Nord Ethlathini",
-    "operatorType": "Type d'Activité",
-    "currency": "Devise",
-    "planForThisLocation": "Forfait pour cet Établissement",
-    "discountNote": "Réduction Enterprise appliquée — {price}/mois pour cet établissement.",
-    "billingEmail": "E-mail de Facturation",
-    "phone": "Téléphone"
   }
 }

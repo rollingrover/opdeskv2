@@ -13,7 +13,7 @@ import { BrandIcon } from '@/components/ui/BrandIcon'
 import { hasModuleAccess } from '@/lib/moduleAccess'
 import { Plus, Phone, Mail, MapPin } from 'lucide-react'
 
-const emptyForm = { name: '', contact_person: '', phone: '', email: '', delivery_address: '', notes: '' }
+const emptyForm = { name: '', contact_person: '', phone: '', email: '', delivery_address: '', vat_number: '', notes: '' }
 
 export default function DeliveryClientsPage() {
   const t = useTranslations('DeliveryClients')
@@ -114,6 +114,7 @@ export default function DeliveryClientsPage() {
           </div>
           <Input label={t('email')} type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
           <Input label={t('deliveryAddress')} value={form.delivery_address} onChange={e => setForm({ ...form, delivery_address: e.target.value })} />
+          <Input label={t('clientVatNumber')} value={form.vat_number} onChange={e => setForm({ ...form, vat_number: e.target.value })} />
           <Textarea label={t('notes')} placeholder={t('notesPlaceholder')} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
         </form>
       </Modal>

@@ -16,13 +16,14 @@ function getComparisonRows() {
   return [
     { key: 'capacity', label: 'Vehicle + Room Capacity', type: 'limit' },
     { key: 'guides', label: 'Staff', type: 'limit' },
+    { key: 'seats', label: 'Team Seats', type: 'limit' },
     { key: 'bookings_per_month', label: 'Bookings / month', type: 'limit' },
     ...GATED_MODULES.map(m => ({ key: m, label: MODULE_LABELS[m], type: 'module' })),
   ]
 }
 
 const ADDON_LABELS = {
-  vehicles: 'Extra Capacity Slot (vehicle or room)', guides: 'Extra Staff Slot', rooms: 'Extra Capacity Slot (vehicle or room)',
+  vehicles: 'Extra Capacity Slot (vehicle or room)', guides: 'Extra Staff Slot', rooms: 'Extra Capacity Slot (vehicle or room)', seats: 'Extra Team Seat',
   schedules_module: 'Schedules & Shifts Module',
   certifications: 'Certifications Module',
   cost_to_company: 'Cost to Company Module', leave: 'Leave Module',
@@ -38,6 +39,7 @@ function buildHighlights(pkg) {
   const limits = pkg.limits || {}
   if (limits.capacity !== undefined) lines.push(limits.capacity === null ? 'Unlimited vehicles & rooms' : `${limits.capacity} vehicle/room capacity`)
   if (limits.guides !== undefined) lines.push(limits.guides === null ? 'Unlimited staff' : `${limits.guides} staff`)
+  if (limits.seats !== undefined) lines.push(limits.seats === null ? 'Unlimited team seats' : `${limits.seats} team seat${limits.seats === 1 ? '' : 's'}`)
   if (limits.bookings_per_month !== undefined) lines.push(limits.bookings_per_month === null ? 'Unlimited bookings' : `${limits.bookings_per_month} bookings/mo`)
   const modules = pkg.modules || {}
   const included = Object.entries(modules).filter(([, v]) => v === true).map(([k]) => MODULE_LABELS[k] || k)

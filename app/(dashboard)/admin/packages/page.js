@@ -12,7 +12,7 @@ const emptyForm = {
   // however fits their business (all vehicles, all rooms, or a mix), rather
   // than getting a fixed number of each. 'guides' is staff count, tracked
   // separately since staff headcount has no relationship to fleet/room size.
-  limits: { capacity: 1, guides: 1, bookings_per_month: 20 },
+  limits: { capacity: 1, guides: 1, seats: 1, bookings_per_month: 20 },
   modules: { certifications: false, shifts: false, costs: false, leave: false },
 }
 
@@ -63,7 +63,7 @@ function SAMarketingPackages() {
       name: p.name, slug: p.slug, tagline: p.tagline || '', description: p.description || '',
       monthly_price: p.monthly_price, annual_price: p.annual_price, currency: p.currency || 'ZAR',
       badge: p.badge || '', sort_order: p.sort_order, recommended_for: p.recommended_for || [],
-      limits: { capacity: 1, guides: 1, bookings_per_month: null, ...(p.limits || {}) },
+      limits: { capacity: 1, guides: 1, seats: 1, bookings_per_month: null, ...(p.limits || {}) },
       modules: { certifications: false, shifts: false, costs: false, leave: false, ...(p.modules || {}) },
     })
     setEditing(p)
@@ -231,6 +231,7 @@ function SAMarketingPackages() {
                 {[
                   { key: 'capacity', label: 'Capacity Pool (vehicles + rooms)' },
                   { key: 'guides', label: 'Staff' },
+                  { key: 'seats', label: 'Team Seats (logins)' },
                   { key: 'bookings_per_month', label: 'Bookings per month' },
                 ].map(({ key, label }) => (
                   <div key={key}>

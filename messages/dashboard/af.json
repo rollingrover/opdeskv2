@@ -41,7 +41,6 @@
       "reports": "Verslae",
       "settings": "Instellings",
       "team": "Span",
-      "locations": "Liggings",
       "addons": "Byvoegings",
       "publicProfile": "Openbare Profiel",
       "support": "Ondersteuning"
@@ -1097,27 +1096,5 @@
     "inviteSent": "Uitnodiging gestuur na {email}",
     "memberRemoved": "Daardie persoon se toegang is verwyder",
     "confirmRemove": "Verwyder {name} van jou span? Hulle sal onmiddellik toegang verloor."
-  },
-  "Locations": {
-    "title": "Liggings",
-    "subtitle": "Bestuur elke ligging onder jou rekening en wissel tussen hulle.",
-    "addLocation": "Voeg Ligging By",
-    "needsEnterprise": "Om verskeie liggings onder een aanmelding te bestuur is 'n Enterprise-plan kenmerk. Elke ligging het steeds sy eie subskripsie, 20% afslag sodra dit gekoppel is.",
-    "colName": "Ligging",
-    "colType": "Tipe",
-    "current": "huidig",
-    "switchTo": "Wissel na",
-    "switching": "Wissel tans…",
-    "cancel": "Kanselleer",
-    "adding": "Voeg tans by…",
-    "locationAdded": "Ligging bygevoeg",
-    "locationName": "Ligging Naam",
-    "locationNamePlaceholder": "bv. Ethlathini Noord Kamp",
-    "operatorType": "Besigheidstipe",
-    "currency": "Geldeenheid",
-    "planForThisLocation": "Plan vir Hierdie Ligging",
-    "discountNote": "Enterprise afslag toegepas — {price}/mnd vir hierdie ligging.",
-    "billingEmail": "Faktuur E-pos",
-    "phone": "Foon"
   }
 }

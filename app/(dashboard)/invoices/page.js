@@ -12,7 +12,7 @@ import { Input, Select } from '@/components/ui/FormField'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { Plus, FileText, FileDown, Send, CreditCard } from 'lucide-react'
 
-const emptyForm = { guest_name: '', guest_email: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '' }
+const emptyForm = { guest_name: '', guest_email: '', guest_address: '', guest_vat_number: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '' }
 const emptyPayment = { amount: '', payment_date: new Date().toISOString().slice(0, 10), method: 'eft', reference: '' }
 
 export default function InvoicesPage() {
@@ -162,6 +162,8 @@ export default function InvoicesPage() {
         <form onSubmit={handleSave}>
           <Input label={t('guestName')} required value={form.guest_name} onChange={e => setForm({ ...form, guest_name: e.target.value })} />
           <Input label={t('guestEmail')} type="email" value={form.guest_email} onChange={e => setForm({ ...form, guest_email: e.target.value })} />
+          <Input label={t('guestAddress')} value={form.guest_address} onChange={e => setForm({ ...form, guest_address: e.target.value })} />
+          <Input label={t('guestVatNumber')} value={form.guest_vat_number} onChange={e => setForm({ ...form, guest_vat_number: e.target.value })} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
             <Select label={t('type')} value={form.invoice_type} onChange={e => setForm({ ...form, invoice_type: e.target.value })}>
               <option value="proforma">{t('typeProforma')}</option>

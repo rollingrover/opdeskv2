@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
@@ -86,7 +86,6 @@ const ALL_NAV = [
     items: [
       { href:'/settings',        icon: Settings,    key:'settings',  module:'always' },
       { href:'/settings/team',   icon: Users,       key:'team',      module:'always' },
-      { href:'/settings/locations', icon: MapPin,  key:'locations', module:'always', special: 'enterpriseLocations' },
       { href:'/settings/addons', icon: Package,     key:'addons',   module:'always' },
       { href:'/settings/public-profile', icon: Globe, key:'publicProfile', module:'always' },
       { href:'/support',         icon: HelpCircle,  key:'support',   module:'always' },
@@ -97,35 +96,9 @@ const ALL_NAV = [
 export function Sidebar({ mobileOpen, onClose }) {
   const t = useTranslations('Sidebar')
   const pathname = usePathname()
-  const router = useRouter()
-  const { company, profile, signOut, reload } = useAuth()
+  const { company, profile, signOut } = useAuth()
   const operatorType = company?.operator_type || 'safari'
   const allowed = OPERATOR_MODULES[operatorType] || []
-
-  // Sibling locations under the same Enterprise org (see link_new_location/
-  // switch_active_company) — only fetched, and only rendered below, when
-  // this company actually belongs to one. Every other company in the app
-  // has organization_id null and this stays an empty, invisible no-op.
-  const [locations, setLocations] = useState([])
-  const [switching, setSwitching] = useState(false)
-  useEffect(() => {
-    if (!company?.organization_id) { setLocations([]); return }
-    let cancelled = false
-    createClient()
-      .from('companies').select('id, name, operator_type').eq('organization_id', company.organization_id).order('name')
-      .then(({ data }) => { if (!cancelled) setLocations(data || []) })
-    return () => { cancelled = true }
-  }, [company?.organization_id])
-
-  async function switchLocation(id) {
-    if (id === company.id || switching) return
-    setSwitching(true)
-    const { error } = await createClient().rpc('switch_active_company', { p_company_id: id })
-    setSwitching(false)
-    if (error) { alert(error.message); return }
-    await reload()
-    router.push('/dashboard')
-  }
 
   // Needed to evaluate hasModuleAccess() below — without this the sidebar
   // has no way to know about tier upgrades or purchased add-ons at all,
@@ -150,9 +123,6 @@ export function Sidebar({ mobileOpen, onClose }) {
   // this is the piece the sidebar was previously skipping entirely), or
   // otherwise if the company's operator type includes that base module.
   function isVisible(item) {
-    if (item.module === 'always' && item.special === 'enterpriseLocations') {
-      return company?.package?.slug === 'enterprise' || !!company?.organization_id
-    }
     if (item.module === 'always') return true
     if (item.gate) return hasModuleAccess(item.gate, { profile, company, companyAddons })
     return allowed.includes(item.module)
@@ -174,22 +144,6 @@ export function Sidebar({ mobileOpen, onClose }) {
             <p style={{ color:'rgba(255,255,255,0.45)', fontSize:'0.75rem', marginTop:'0.375rem', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
               {company.name}
             </p>
-          )}
-          {locations.length > 1 && (
-            <div style={{ display:'flex', gap:'0.375rem', marginTop:'0.625rem', flexWrap:'wrap' }}>
-              {locations.map(loc => (
-                <button key={loc.id} onClick={() => switchLocation(loc.id)} disabled={switching}
-                  title={loc.name}
-                  style={{
-                    width: 28, height: 28, borderRadius: '50%', border: 'none', cursor: switching ? 'default' : 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.6875rem', fontWeight: 700,
-                    background: loc.id === company.id ? 'var(--gold, #D4A853)' : 'rgba(255,255,255,0.12)',
-                    color: loc.id === company.id ? '#1a1a1a' : 'rgba(255,255,255,0.75)',
-                  }}>
-                  {loc.name.slice(0, 2).toUpperCase()}
-                </button>
-              ))}
-            </div>
           )}
         </div>
 

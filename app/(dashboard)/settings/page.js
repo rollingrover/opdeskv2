@@ -18,7 +18,7 @@ export default function SettingsPage() {
   const [form, setForm] = useState({
     name: '', operator_type: 'safari', currency: 'ZAR', language: 'en',
     country: 'ZA', timezone: 'Africa/Johannesburg', billing_email: '', phone: '',
-    bookkeeper_email: '',
+    bookkeeper_email: '', address: '', vat_number: '', registration_number: '', website: '',
   })
   const [saving, setSaving] = useState(false)
   const [uploadingLogo, setUploadingLogo] = useState(false)
@@ -57,6 +57,8 @@ export default function SettingsPage() {
       language: form.language, country: form.country, timezone: form.timezone,
       billing_email: form.billing_email, phone: form.phone,
       bookkeeper_email: form.bookkeeper_email || null,
+      address: form.address || null, vat_number: form.vat_number || null,
+      registration_number: form.registration_number || null, website: form.website || null,
     }).eq('id', company.id)
     setSaving(false)
     if (error) { toast.error(error.message); return }
@@ -121,6 +123,20 @@ export default function SettingsPage() {
             <Input label={t('billingEmail')} type="email" value={form.billing_email || ''} onChange={e => setForm({ ...form, billing_email: e.target.value })} />
             <Input label={t('phone')} value={form.phone || ''} onChange={e => setForm({ ...form, phone: e.target.value })} />
           </div>
+          {!needsCompany && company && (
+            <div style={{ marginTop: '0.5rem', paddingTop: '1rem', borderTop: '1px solid var(--gray-100)' }}>
+              <label className="label">{t('registrationBilling')}</label>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
+                {t('registrationBillingDesc')}
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
+                <Input label={t('vatNumber')} value={form.vat_number || ''} onChange={e => setForm({ ...form, vat_number: e.target.value })} />
+                <Input label={t('registrationNumber')} value={form.registration_number || ''} onChange={e => setForm({ ...form, registration_number: e.target.value })} />
+                <Input label={t('website')} placeholder="https://" value={form.website || ''} onChange={e => setForm({ ...form, website: e.target.value })} />
+              </div>
+              <Input label={t('address')} value={form.address || ''} onChange={e => setForm({ ...form, address: e.target.value })} />
+            </div>
+          )}
           {!needsCompany && company && (
             <div style={{ marginTop: '0.5rem', paddingTop: '1rem', borderTop: '1px solid var(--gray-100)' }}>
               <label className="label">{t('companyLogo')}</label>

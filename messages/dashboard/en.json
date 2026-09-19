@@ -41,7 +41,6 @@
       "reports": "Reports",
       "settings": "Settings",
       "team": "Team",
-      "locations": "Locations",
       "addons": "Add-ons",
       "publicProfile": "Public Profile",
       "support": "Support"
@@ -1097,27 +1096,5 @@
     "inviteSent": "Invite sent to {email}",
     "memberRemoved": "That person's access has been removed",
     "confirmRemove": "Remove {name} from your team? They'll lose access immediately."
-  },
-  "Locations": {
-    "title": "Locations",
-    "subtitle": "Manage every location under your account and switch between them.",
-    "addLocation": "Add Location",
-    "needsEnterprise": "Managing multiple locations under one login is an Enterprise plan feature. Each location still has its own subscription, discounted 20% once linked.",
-    "colName": "Location",
-    "colType": "Type",
-    "current": "current",
-    "switchTo": "Switch to",
-    "switching": "Switching…",
-    "cancel": "Cancel",
-    "adding": "Adding…",
-    "locationAdded": "Location added",
-    "locationName": "Location Name",
-    "locationNamePlaceholder": "e.g. Ethlathini North Camp",
-    "operatorType": "Business Type",
-    "currency": "Currency",
-    "planForThisLocation": "Plan for This Location",
-    "discountNote": "Enterprise discount applied — {price}/mo for this location.",
-    "billingEmail": "Billing Email",
-    "phone": "Phone"
   }
 }

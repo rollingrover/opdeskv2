@@ -41,7 +41,6 @@
       "reports": "Berichte",
       "settings": "Einstellungen",
       "team": "Team",
-      "locations": "Standorte",
       "addons": "Add-ons",
       "publicProfile": "Öffentliches Profil",
       "support": "Support"
@@ -1097,27 +1096,5 @@
     "inviteSent": "Einladung an {email} gesendet",
     "memberRemoved": "Der Zugriff dieser Person wurde entfernt",
     "confirmRemove": "{name} aus Ihrem Team entfernen? Der Zugriff geht sofort verloren."
-  },
-  "Locations": {
-    "title": "Standorte",
-    "subtitle": "Verwalten Sie jeden Standort unter Ihrem Konto und wechseln Sie zwischen ihnen.",
-    "addLocation": "Standort hinzufügen",
-    "needsEnterprise": "Die Verwaltung mehrerer Standorte unter einem Login ist eine Enterprise-Funktion. Jeder Standort hat weiterhin ein eigenes Abo, nach Verknüpfung mit 20 % Rabatt.",
-    "colName": "Standort",
-    "colType": "Typ",
-    "current": "aktuell",
-    "switchTo": "Wechseln zu",
-    "switching": "Wird gewechselt…",
-    "cancel": "Abbrechen",
-    "adding": "Wird hinzugefügt…",
-    "locationAdded": "Standort hinzugefügt",
-    "locationName": "Standortname",
-    "locationNamePlaceholder": "z. B. Ethlathini Nordlager",
-    "operatorType": "Geschäftsart",
-    "currency": "Währung",
-    "planForThisLocation": "Tarif für diesen Standort",
-    "discountNote": "Enterprise-Rabatt angewendet — {price}/Monat für diesen Standort.",
-    "billingEmail": "Rechnungs-E-Mail",
-    "phone": "Telefon"
   }
 }

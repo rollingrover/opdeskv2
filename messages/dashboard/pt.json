@@ -41,7 +41,6 @@
       "reports": "Relatórios",
       "settings": "Definições",
       "team": "Equipa",
-      "locations": "Localizações",
       "addons": "Extras",
       "publicProfile": "Perfil Público",
       "support": "Suporte"
@@ -1097,27 +1096,5 @@
     "inviteSent": "Convite enviado para {email}",
     "memberRemoved": "O acesso dessa pessoa foi removido",
     "confirmRemove": "Remover {name} da sua equipa? O acesso será perdido imediatamente."
-  },
-  "Locations": {
-    "title": "Localizações",
-    "subtitle": "Faça a gestão de cada localização na sua conta e alterne entre elas.",
-    "addLocation": "Adicionar Localização",
-    "needsEnterprise": "Gerir várias localizações com um único login é uma funcionalidade do plano Enterprise. Cada localização mantém a sua própria subscrição, com 20% de desconto após ligada.",
-    "colName": "Localização",
-    "colType": "Tipo",
-    "current": "atual",
-    "switchTo": "Mudar para",
-    "switching": "A mudar…",
-    "cancel": "Cancelar",
-    "adding": "A adicionar…",
-    "locationAdded": "Localização adicionada",
-    "locationName": "Nome da Localização",
-    "locationNamePlaceholder": "ex. Ethlathini Acampamento Norte",
-    "operatorType": "Tipo de Negócio",
-    "currency": "Moeda",
-    "planForThisLocation": "Plano para Esta Localização",
-    "discountNote": "Desconto Enterprise aplicado — {price}/mês para esta localização.",
-    "billingEmail": "Email de Faturação",
-    "phone": "Telefone"
   }
 }
