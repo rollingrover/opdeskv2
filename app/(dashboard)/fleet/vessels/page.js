@@ -10,19 +10,29 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { Modal } from '@/components/ui/Modal'
 import { Input, Select } from '@/components/ui/FormField'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
+import { LimitBanner } from '@/components/ui/LimitBanner'
+import { checkLimit } from '@/lib/limits'
 import { Plus, Ship } from 'lucide-react'
 import Link from 'next/link'
 
-const emptyForm = { name: '', make: '', model: '', year: '', registration: '', capacity: '', length_meters: '', home_port: '', status: 'available' }
+const emptyForm = { name: '', type: 'boat', make: '', model: '', year: '', registration: '', capacity: '', length_meters: '', home_port: '', status: 'available' }
+
+const VESSEL_TYPE_LABEL_KEYS = {
+  boat: 'vesselTypeBoat', yacht: 'vesselTypeYacht', cruise_vessel: 'vesselTypeCruiseVessel',
+  fishing_boat: 'vesselTypeFishingBoat', ferry: 'vesselTypeFerry', aircraft: 'vesselTypeAircraft', other: 'vesselTypeOther',
+}
 
 export default function VesselsPage() {
   const t = useTranslations('Fleet')
   const tCommon = useTranslations('Common')
   const tStatus = useTranslations('StatusBadge')
-  const { company, needsCompany } = useAuth()
+  const { company, profile, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
   const [rows, setRows] = useState([])
+  const [addons, setAddons] = useState([])
+  const [vehicleCount, setVehicleCount] = useState(0)
+  const [roomCount, setRoomCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
@@ -31,12 +41,26 @@ export default function VesselsPage() {
   async function load() {
     if (!company) { setLoading(false); return }
     setLoading(true)
-    const { data, error } = await supabase.from('vessels').select('*').eq('company_id', company.id).order('name')
-    if (error) toast.error(error.message)
-    setRows(data || [])
+    // Vessels now count toward the same shared capacity pool as vehicles
+    // and rooms (see lib/limits.js) — they never used to be limited at
+    // all, which meant a yacht or fishing charter company on any tier
+    // could add unlimited vessels regardless of plan.
+    const [v, a, veh, r] = await Promise.all([
+      supabase.from('vessels').select('*').eq('company_id', company.id).order('name'),
+      supabase.from('company_addons').select('addon_key, quantity, active').eq('company_id', company.id).eq('active', true),
+      supabase.from('vehicles').select('id', { count: 'exact', head: true }).eq('company_id', company.id),
+      supabase.from('rooms').select('id', { count: 'exact', head: true }).eq('company_id', company.id),
+    ])
+    if (v.error) toast.error(v.error.message)
+    setRows(v.data || [])
+    setAddons(a.data || [])
+    setVehicleCount(veh.count || 0)
+    setRoomCount(r.count || 0)
     setLoading(false)
   }
   useEffect(() => { load() }, [company])
+
+  const vesselsLimit = checkLimit('vessels', rows.length, { profile, company, companyAddons: addons, poolUsage: rows.length + vehicleCount + roomCount })
 
   async function handleSave(e) {
     e.preventDefault()
@@ -68,6 +92,8 @@ export default function VesselsPage() {
         <button className="btn btn-primary" onClick={() => setModalOpen(true)}><Plus size={16} /> {t('addVessel')}</button>
       </div>
 
+      <LimitBanner resourceKey="vessels" limitInfo={vesselsLimit} />
+
       <div className="card card-shadow">
         {rows.length === 0 ? (
           <EmptyState icon={<BrandIcon name="noVessels" size={48} />} title={t('noVesselsTitle')} description={t('noVesselsDesc')}
@@ -75,11 +101,12 @@ export default function VesselsPage() {
         ) : (
           <div className="table-wrap">
             <table className="table">
-              <thead><tr><th>{t('colVessel')}</th><th>{t('colMakeModel')}</th><th>{t('colRegistration')}</th><th>{t('colCapacity')}</th><th>{t('colHomePort')}</th><th>{t('colStatus')}</th></tr></thead>
+              <thead><tr><th>{t('colVessel')}</th><th>{t('colType')}</th><th>{t('colMakeModel')}</th><th>{t('colRegistration')}</th><th>{t('colCapacity')}</th><th>{t('colHomePort')}</th><th>{t('colStatus')}</th></tr></thead>
               <tbody>
                 {rows.map(v => (
                   <tr key={v.id}>
                     <td style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, color: 'var(--navy)' }}><Ship size={15} />{v.name}</td>
+                    <td>{v.type ? t(VESSEL_TYPE_LABEL_KEYS[v.type] || 'vesselTypeOther') : '—'}</td>
                     <td>{[v.make, v.model, v.year].filter(Boolean).join(' ') || '—'}</td>
                     <td style={{ fontFamily: 'monospace' }}>{v.registration || '—'}</td>
                     <td>{v.capacity ?? '—'}</td>
@@ -101,6 +128,15 @@ export default function VesselsPage() {
         <form onSubmit={handleSave}>
           <Input label={t('vesselName')} required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
+            <Select label={t('vesselType')} value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+              <option value="boat">{t('vesselTypeBoat')}</option>
+              <option value="yacht">{t('vesselTypeYacht')}</option>
+              <option value="cruise_vessel">{t('vesselTypeCruiseVessel')}</option>
+              <option value="fishing_boat">{t('vesselTypeFishingBoat')}</option>
+              <option value="ferry">{t('vesselTypeFerry')}</option>
+              <option value="aircraft">{t('vesselTypeAircraft')}</option>
+              <option value="other">{t('vesselTypeOther')}</option>
+            </Select>
             <Input label={t('make')} value={form.make} onChange={e => setForm({ ...form, make: e.target.value })} />
             <Input label={t('model')} value={form.model} onChange={e => setForm({ ...form, model: e.target.value })} />
             <Input label={t('year')} type="number" value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} />

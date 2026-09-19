@@ -15,6 +15,7 @@ const OPERATOR_TYPE_ICONS = [
   { icon: 'eastAfrica', key: 'eastAfrica', slug: 'east-africa-tour-software' },
   { icon: 'islandTransfer', key: 'islandTransfer', slug: 'island-transfer-software' },
   { icon: 'delivery', key: 'logistics', slug: 'logistics-delivery-software' },
+  { icon: 'yacht', key: 'riverCruise', slug: 'river-boat-cruise-software' },
 ]
 
 const FEATURE_ICONS = [

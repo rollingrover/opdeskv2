@@ -22,6 +22,7 @@ const VERTICAL_TAGS = [
   { key: 'trail', label: 'Trail Guide' }, { key: 'lodge', label: 'Hotel / Guesthouse / Lodging' },
   { key: 'eastafrica', label: 'East Africa Tours' }, { key: 'transfer', label: 'Island Transfers' },
   { key: 'delivery', label: 'Logistics & Support Services' },
+  { key: 'river_cruise', label: 'Boat Cruises / River, Estuary & Dam' },
 ]
 
 function slugify(name) {
@@ -223,13 +224,13 @@ function SAMarketingPackages() {
             <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 16 }}>
               <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Resource Limits</h3>
               <p style={{ color: '#6b7280', fontSize: 11, marginBottom: 12 }}>
-                Leave blank for unlimited. <strong>Capacity Pool</strong> is shared between vehicles and rooms —
+                Leave blank for unlimited. <strong>Capacity Pool</strong> is shared between vehicles, vessels and rooms —
                 an operator with only vehicles or only rooms uses the whole number on one resource; a combined
                 operator splits it however they like. Staff is tracked separately.
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
                 {[
-                  { key: 'capacity', label: 'Capacity Pool (vehicles + rooms)' },
+                  { key: 'capacity', label: 'Capacity Pool (vehicles, vessels + rooms)' },
                   { key: 'guides', label: 'Staff' },
                   { key: 'seats', label: 'Team Seats (logins)' },
                   { key: 'bookings_per_month', label: 'Bookings per month' },

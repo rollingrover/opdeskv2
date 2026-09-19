@@ -15,7 +15,7 @@ import { checkLimit } from '@/lib/limits'
 import { Plus, Truck } from 'lucide-react'
 import Link from 'next/link'
 
-const emptyForm = { name: '', make: '', model: '', year: '', registration: '', capacity: '', status: 'available' }
+const emptyForm = { name: '', type: 'car', make: '', model: '', year: '', registration: '', capacity: '', status: 'available' }
 
 export default function VehiclesPage() {
   const t = useTranslations('Fleet')
@@ -27,6 +27,7 @@ export default function VehiclesPage() {
   const [rows, setRows] = useState([])
   const [addons, setAddons] = useState([])
   const [roomCount, setRoomCount] = useState(0)
+  const [vesselCount, setVesselCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
@@ -35,18 +36,21 @@ export default function VehiclesPage() {
   async function load() {
     if (!company) { setLoading(false); return }
     setLoading(true)
-    // Rooms count is fetched too — vehicles and rooms now draw from one
-    // shared capacity pool (see lib/limits.js), so "am I at my limit" for
-    // vehicles depends on how many rooms this company already has as well.
-    const [v, a, r] = await Promise.all([
+    // Rooms AND vessels are fetched too — vehicles, rooms and vessels all
+    // now draw from one shared capacity pool (see lib/limits.js), so "am I
+    // at my limit" for vehicles depends on how many of each this company
+    // already has.
+    const [v, a, r, ve] = await Promise.all([
       supabase.from('vehicles').select('*').eq('company_id', company.id).order('name'),
       supabase.from('company_addons').select('addon_key, quantity, active').eq('company_id', company.id).eq('active', true),
       supabase.from('rooms').select('id', { count: 'exact', head: true }).eq('company_id', company.id),
+      supabase.from('vessels').select('id', { count: 'exact', head: true }).eq('company_id', company.id),
     ])
     if (v.error) toast.error(v.error.message)
     setRows(v.data || [])
     setAddons(a.data || [])
     setRoomCount(r.count || 0)
+    setVesselCount(ve.count || 0)
     setLoading(false)
   }
   useEffect(() => { load() }, [company])
@@ -69,7 +73,7 @@ export default function VehiclesPage() {
   if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
-  const vehiclesLimit = checkLimit('vehicles', rows.length, { profile, company, companyAddons: addons, poolUsage: rows.length + roomCount })
+  const vehiclesLimit = checkLimit('vehicles', rows.length, { profile, company, companyAddons: addons, poolUsage: rows.length + roomCount + vesselCount })
 
   return (
     <div>
@@ -115,6 +119,13 @@ export default function VehiclesPage() {
         <form onSubmit={handleSave}>
           <Input label={t('vehicleName')} required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
+            <Select label={t('vehicleType')} value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}>
+              <option value="car">{t('vehicleTypeCar')}</option>
+              <option value="minibus">{t('vehicleTypeMinibus')}</option>
+              <option value="4x4">{t('vehicleType4x4')}</option>
+              <option value="truck">{t('vehicleTypeTruck')}</option>
+              <option value="other">{t('vehicleTypeOther')}</option>
+            </Select>
             <Input label={t('make')} value={form.make} onChange={e => setForm({ ...form, make: e.target.value })} />
             <Input label={t('model')} value={form.model} onChange={e => setForm({ ...form, model: e.target.value })} />
             <Input label={t('year')} type="number" value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} />

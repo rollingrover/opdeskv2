@@ -501,7 +501,22 @@
     "vehicleAdded": "Voertuig bygevoeg",
     "vesselAdded": "Vaartuig bygevoeg",
     "cancel": "Kanselleer",
-    "saving": "Stoor tans…"
+    "saving": "Stoor tans…",
+    "vehicleType": "Tipe",
+    "vehicleTypeCar": "Motor",
+    "vehicleTypeMinibus": "Minibus",
+    "vehicleType4x4": "4x4 / Wildsafari-voertuig",
+    "vehicleTypeTruck": "Vragmotor",
+    "vehicleTypeOther": "Ander",
+    "colType": "Tipe",
+    "vesselType": "Tipe",
+    "vesselTypeBoat": "Boot",
+    "vesselTypeYacht": "Jag",
+    "vesselTypeCruiseVessel": "Vaartvaartuig",
+    "vesselTypeFishingBoat": "Visbootjie",
+    "vesselTypeFerry": "Veerboot",
+    "vesselTypeAircraft": "Vliegtuig",
+    "vesselTypeOther": "Ander"
   },
   "DeliveryClients": {
     "title": "Kliënte",

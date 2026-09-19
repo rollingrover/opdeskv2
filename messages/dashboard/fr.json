@@ -501,7 +501,22 @@
     "vehicleAdded": "Véhicule ajouté",
     "vesselAdded": "Navire ajouté",
     "cancel": "Annuler",
-    "saving": "Enregistrement…"
+    "saving": "Enregistrement…",
+    "vehicleType": "Type",
+    "vehicleTypeCar": "Voiture",
+    "vehicleTypeMinibus": "Minibus",
+    "vehicleType4x4": "4x4 / Véhicule Safari",
+    "vehicleTypeTruck": "Camion",
+    "vehicleTypeOther": "Autre",
+    "colType": "Type",
+    "vesselType": "Type",
+    "vesselTypeBoat": "Bateau",
+    "vesselTypeYacht": "Yacht",
+    "vesselTypeCruiseVessel": "Bateau de Croisière",
+    "vesselTypeFishingBoat": "Bateau de Pêche",
+    "vesselTypeFerry": "Ferry",
+    "vesselTypeAircraft": "Avion",
+    "vesselTypeOther": "Autre"
   },
   "DeliveryClients": {
     "title": "Clients",
