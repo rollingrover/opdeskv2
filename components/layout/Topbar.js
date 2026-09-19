@@ -1,14 +1,26 @@
 'use client'
 import { useState } from 'react'
-import { Menu, Bell, Search, ChevronDown, User, Shield } from 'lucide-react'
+import { Menu, Bell, Search, ChevronDown, User, Shield, LogOut } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 
 export function Topbar({ onMenuClick }) {
   const t = useTranslations('Topbar')
-  const { profile, company } = useAuth()
+  const { profile, company, signOut } = useAuth()
+  const router = useRouter()
   const [dropOpen, setDropOpen] = useState(false)
+
+  async function handleSignOut() {
+    setDropOpen(false)
+    await signOut()
+    // Explicit navigation rather than leaving the user on a now-stale
+    // protected page — going straight to the landing page rather than
+    // /auth/login, since there's nothing left to sign back into from here
+    // that the middleware would otherwise redirect them to.
+    router.push('/')
+  }
 
   return (
     <header className="topbar">
@@ -85,6 +97,16 @@ export function Topbar({ onMenuClick }) {
                     {item.label}
                   </Link>
                 ))}
+                <button onClick={handleSignOut}
+                  style={{
+                    display:'flex', alignItems:'center', gap:'0.5rem', width:'100%', padding:'0.625rem 1rem',
+                    fontSize:'0.875rem', color:'var(--danger, #dc2626)', background:'none', border:'none',
+                    borderTop:'1px solid var(--gray-100)', cursor:'pointer', textAlign:'left',
+                  }}
+                  onMouseOver={e => e.currentTarget.style.background='var(--gray-50)'}
+                  onMouseOut={e => e.currentTarget.style.background='transparent'}>
+                  <LogOut size={14} /> {t('signOut')}
+                </button>
               </div>
             </>
           )}

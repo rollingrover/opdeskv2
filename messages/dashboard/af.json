@@ -54,7 +54,8 @@
     "settings": "Instellings",
     "billing": "Fakturering",
     "support": "Ondersteuning",
-    "userFallback": "Gebruiker"
+    "userFallback": "Gebruiker",
+    "signOut": "Teken Uit"
   },
   "DashboardHome": {
     "greetingMorning": "Goeiemôre",

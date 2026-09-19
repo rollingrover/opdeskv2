@@ -54,7 +54,8 @@
     "settings": "Einstellungen",
     "billing": "Abrechnung",
     "support": "Support",
-    "userFallback": "Benutzer"
+    "userFallback": "Benutzer",
+    "signOut": "Abmelden"
   },
   "DashboardHome": {
     "greetingMorning": "Guten Morgen",

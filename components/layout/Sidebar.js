@@ -249,7 +249,7 @@ export function Sidebar({ mobileOpen, onClose }) {
 
         {/* Footer */}
         <div style={{ padding:'0.75rem', borderTop:'1px solid rgba(255,255,255,0.08)' }}>
-          <button onClick={signOut} className="nav-item" style={{ width:'100%', border:'none', background:'none', cursor:'pointer' }}>
+          <button onClick={async () => { await signOut(); router.push('/') }} className="nav-item" style={{ width:'100%', border:'none', background:'none', cursor:'pointer' }}>
             <LogOut size={16} />
             <span>{t('signOut')}</span>
           </button>
