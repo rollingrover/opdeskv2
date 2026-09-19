@@ -129,6 +129,7 @@
     "bookingPlural": "besprekings",
     "newBooking": "Nuwe Bespreking",
     "createBooking": "Skep Bespreking",
+    "editBooking": "Wysig Bespreking",
     "saveChanges": "Stoor Veranderinge",
     "saving": "Stoor tans…",
     "cancel": "Kanselleer",
@@ -168,7 +169,9 @@
     "none": "— Geen —",
     "bookingCreated": "Bespreking geskep",
     "bookingUpdated": "Bespreking opgedateer",
-    "needsCompanyDesc": "Besprekings het 'n maatskappy nodig om aan te behoort."
+    "needsCompanyDesc": "Besprekings het 'n maatskappy nodig om aan te behoort.",
+    "clickToEdit": "Klik om te wysig",
+    "lockedInvoiced": "Reeds gefaktureer — kan nie gewysig word nie"
   },
   "Calendar": {
     "title": "Kalender",

@@ -13,7 +13,7 @@ import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { LimitBanner } from '@/components/ui/LimitBanner'
 import { checkLimit } from '@/lib/limits'
 import { BOOKING_STATUSES } from '@/lib/constants'
-import { Plus } from 'lucide-react'
+import { Plus, Lock } from 'lucide-react'
 
 const emptyForm = {
   guest_name: '', guest_email: '', guest_phone: '', guest_count: 1,
@@ -30,24 +30,31 @@ export default function BookingsPage() {
   const supabase = createClient()
   const toast = useToast()
   const [bookings, setBookings] = useState([])
+  const [invoicedBookingIds, setInvoicedBookingIds] = useState(new Set())
   const [staff, setStaff] = useState([])
   const [vehicles, setVehicles] = useState([])
   const [vessels, setVessels] = useState([])
   const [rooms, setRooms] = useState([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
+  const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
 
   async function load() {
     if (!company) { setLoading(false); return }
     setLoading(true)
-    const [b, s, v, ve, r] = await Promise.all([
+    // invoices.booking_id tells us which bookings have already been
+    // invoiced out — those become read-only (see isEditable below), since
+    // editing a booking after its invoice exists would leave the invoice
+    // describing something that no longer matches.
+    const [b, s, v, ve, r, inv] = await Promise.all([
       supabase.from('bookings').select('*').eq('company_id', company.id).order('start_date', { ascending: false }).limit(200),
       supabase.from('staff').select('id, full_name, staff_type').eq('company_id', company.id).eq('status', 'active'),
       supabase.from('vehicles').select('id, name, status').eq('company_id', company.id),
       supabase.from('vessels').select('id, name, status').eq('company_id', company.id),
       supabase.from('rooms').select('id, name, status').eq('company_id', company.id),
+      supabase.from('invoices').select('booking_id').eq('company_id', company.id).not('booking_id', 'is', null),
     ])
     if (b.error) toast.error(b.error.message)
     setBookings(b.data || [])
@@ -55,6 +62,7 @@ export default function BookingsPage() {
     setVehicles(v.data || [])
     setVessels(ve.data || [])
     setRooms(r.data || [])
+    setInvoicedBookingIds(new Set((inv.data || []).map(i => i.booking_id)))
     setLoading(false)
   }
 
@@ -63,15 +71,36 @@ export default function BookingsPage() {
   const guides = staff.filter(s => s.staff_type === 'guide')
   const drivers = staff.filter(s => s.staff_type === 'driver')
 
+  function isEditable(booking) {
+    return !invoicedBookingIds.has(booking.id)
+  }
+
+  function openForCreate() {
+    setEditingId(null)
+    setForm(emptyForm)
+    setModalOpen(true)
+  }
+
+  function openForEdit(booking) {
+    if (!isEditable(booking)) return
+    setEditingId(booking.id)
+    setForm({
+      guest_name: booking.guest_name || '', guest_email: booking.guest_email || '', guest_phone: booking.guest_phone || '',
+      guest_count: booking.guest_count || 1, start_date: booking.start_date || '', end_date: booking.end_date || '',
+      booking_type: booking.booking_type || 'tour', status: booking.status || 'pending',
+      amount_total: booking.amount_total || 0, amount_paid: booking.amount_paid || 0, notes: booking.notes || '',
+      guide_id: booking.guide_id || '', driver_id: booking.driver_id || '', vehicle_id: booking.vehicle_id || '',
+      vessel_id: booking.vessel_id || '', room_id: booking.room_id || '',
+    })
+    setModalOpen(true)
+  }
+
   async function handleSave(e) {
     e.preventDefault()
     if (!company) return
     setSaving(true)
-    const ref = 'BK-' + Date.now().toString(36).toUpperCase()
-    const { error } = await supabase.from('bookings').insert([{
+    const payload = {
       ...form,
-      company_id: company.id,
-      booking_ref: ref,
       guest_count: Number(form.guest_count) || 1,
       amount_total: Number(form.amount_total) || 0,
       amount_paid: Number(form.amount_paid) || 0,
@@ -81,11 +110,15 @@ export default function BookingsPage() {
       vehicle_id: form.vehicle_id || null,
       vessel_id: form.vessel_id || null,
       room_id: form.room_id || null,
-    }])
+    }
+    const { error } = editingId
+      ? await supabase.from('bookings').update(payload).eq('id', editingId)
+      : await supabase.from('bookings').insert([{ ...payload, company_id: company.id, booking_ref: 'BK-' + Date.now().toString(36).toUpperCase() }])
     setSaving(false)
     if (error) { toast.error(error.message); return }
-    toast.success(t('bookingCreated'))
+    toast.success(editingId ? t('bookingUpdated') : t('bookingCreated'))
     setModalOpen(false)
+    setEditingId(null)
     setForm(emptyForm)
     load()
   }
@@ -111,7 +144,7 @@ export default function BookingsPage() {
           <h1 className="page-title">{t('title')}</h1>
           <p className="page-subtitle">{bookings.length} {bookings.length === 1 ? t('bookingSingular') : t('bookingPlural')}</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
+        <button className="btn btn-primary" onClick={openForCreate}>
           <Plus size={16} /> {t('newBooking')}
         </button>
       </div>
@@ -120,7 +153,7 @@ export default function BookingsPage() {
         {bookings.length === 0 ? (
           <EmptyState icon={<BrandIcon name="noBookings" size={48} />} title={t('noBookingsTitle')}
             description={t('noBookingsDesc')}
-            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>{t('newBooking')}</button>} />
+            action={<button className="btn btn-primary btn-sm" onClick={openForCreate}>{t('newBooking')}</button>} />
         ) : (
           <div className="table-wrap">
             <table className="table">
@@ -130,8 +163,12 @@ export default function BookingsPage() {
                 </tr>
               </thead>
               <tbody>
-                {bookings.map(b => (
-                  <tr key={b.id}>
+                {bookings.map(b => {
+                  const editable = isEditable(b)
+                  return (
+                  <tr key={b.id} onClick={() => openForEdit(b)}
+                    title={editable ? t('clickToEdit') : t('lockedInvoiced')}
+                    style={{ cursor: editable ? 'pointer' : 'not-allowed' }}>
                     <td style={{ fontFamily: 'monospace', fontSize: '0.8rem', fontWeight: 600, color: 'var(--navy)' }}>{b.booking_ref}</td>
                     <td>
                       <p style={{ margin: 0, fontWeight: 600, fontSize: '0.875rem', color: 'var(--navy)' }}>{b.guest_name || '—'}</p>
@@ -153,19 +190,23 @@ export default function BookingsPage() {
                       ].filter(Boolean).join(' · ') || '—'}
                     </td>
                     <td>{company.currency} {Number(b.amount_total || 0).toLocaleString()}</td>
-                    <td><StatusBadge status={b.status} /></td>
+                    <td style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', justifyContent: 'flex-end' }}>
+                      <StatusBadge status={b.status} />
+                      {!editable && <Lock size={12} color="var(--gray-400)" />}
+                    </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
             </table>
           </div>
         )}
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('newBooking')} size="lg"
+      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setEditingId(null) }} title={editingId ? t('editBooking') : t('newBooking')} size="lg"
         footer={<>
-          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{t('cancel')}</button>
-          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? t('saving') : t('createBooking')}</button>
+          <button className="btn btn-outline" onClick={() => { setModalOpen(false); setEditingId(null) }}>{t('cancel')}</button>
+          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? t('saving') : editingId ? t('saveChanges') : t('createBooking')}</button>
         </>}>
         <form onSubmit={handleSave}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>

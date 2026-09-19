@@ -129,6 +129,7 @@
     "bookingPlural": "réservations",
     "newBooking": "Nouvelle Réservation",
     "createBooking": "Créer la Réservation",
+    "editBooking": "Modifier la réservation",
     "saveChanges": "Enregistrer",
     "saving": "Enregistrement…",
     "cancel": "Annuler",
@@ -168,7 +169,9 @@
     "none": "— Aucun —",
     "bookingCreated": "Réservation créée",
     "bookingUpdated": "Réservation mise à jour",
-    "needsCompanyDesc": "Les réservations doivent être associées à une entreprise."
+    "needsCompanyDesc": "Les réservations doivent être associées à une entreprise.",
+    "clickToEdit": "Cliquer pour modifier",
+    "lockedInvoiced": "Déjà facturée — modification verrouillée"
   },
   "Calendar": {
     "title": "Calendrier",

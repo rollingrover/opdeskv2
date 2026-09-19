@@ -127,6 +127,7 @@
     "title": "Bookings",
     "newBooking": "New Booking",
     "createBooking": "Create Booking",
+    "editBooking": "Edit Booking",
     "saveChanges": "Save Changes",
     "saving": "Saving…",
     "cancel": "Cancel",
@@ -168,7 +169,9 @@
     "bookingPlural": "bookings",
     "bookingCreated": "Booking created",
     "bookingUpdated": "Booking updated",
-    "needsCompanyDesc": "Bookings need a company to belong to."
+    "needsCompanyDesc": "Bookings need a company to belong to.",
+    "clickToEdit": "Click to edit",
+    "lockedInvoiced": "Already invoiced — locked from editing"
   },
   "Calendar": {
     "title": "Calendar",

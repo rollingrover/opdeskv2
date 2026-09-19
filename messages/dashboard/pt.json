@@ -129,6 +129,7 @@
     "bookingPlural": "reservas",
     "newBooking": "Nova Reserva",
     "createBooking": "Criar Reserva",
+    "editBooking": "Editar Reserva",
     "saveChanges": "Guardar Alterações",
     "saving": "A guardar…",
     "cancel": "Cancelar",
@@ -168,7 +169,9 @@
     "none": "— Nenhum —",
     "bookingCreated": "Reserva criada",
     "bookingUpdated": "Reserva atualizada",
-    "needsCompanyDesc": "As reservas precisam de estar associadas a uma empresa."
+    "needsCompanyDesc": "As reservas precisam de estar associadas a uma empresa.",
+    "clickToEdit": "Clique para editar",
+    "lockedInvoiced": "Já faturada — edição bloqueada"
   },
   "Calendar": {
     "title": "Calendário",
