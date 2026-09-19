@@ -917,6 +917,8 @@
     "sending": "A enviar…",
     "saveSuffix": "/mês",
     "priceSuffix": "/mês",
+    "staffPackPriceHint": "{price}/lugar, vendido em pacotes (pacotes maiores custam menos por lugar)",
+    "staffPackOption": "{size} lugares — {price}/mês",
     "requestSent": "Pedido enviado — a nossa equipa irá processá-lo em breve",
     "labels": {
       "vehicles": "Vaga de Veículo Extra",

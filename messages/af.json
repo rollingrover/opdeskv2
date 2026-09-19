@@ -199,7 +199,8 @@
       "staffHr": "Personeel & MH",
       "guestProperty": "Gaste & Eiendom",
       "finance": "Finansies & Verslae",
-      "platform": "Platform"
+      "platform": "Platform",
+      "verticals": "Oplossings"
     },
     "items": {
       "bookings-calendar": {

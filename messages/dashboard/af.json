@@ -917,6 +917,8 @@
     "sending": "Stuur tans…",
     "saveSuffix": "/md",
     "priceSuffix": "/md",
+    "staffPackPriceHint": "{price}/setel, verkoop in pakkette (groter pakkette kos minder per setel)",
+    "staffPackOption": "{size} setels — {price}/mnd",
     "requestSent": "Versoek gestuur — ons span sal dit binnekort aksioneer",
     "labels": {
       "vehicles": "Ekstra Voertuigplek",

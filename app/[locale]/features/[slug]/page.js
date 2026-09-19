@@ -8,8 +8,8 @@ import { FEATURES_META, FEATURE_SLUGS } from '@/lib/featuresContent'
 import { getFeatureContent } from '@/lib/featuresContentTranslations'
 import { Check, ArrowLeft } from 'lucide-react'
 
-// Pre-render all 18 feature pages at build time — real static HTML for
-// search engines to crawl, not client-side-rendered content.
+// Pre-render all feature and solution pages at build time — real static
+// HTML for search engines to crawl, not client-side-rendered content.
 export function generateStaticParams() {
   return FEATURE_SLUGS.map(slug => ({ slug }))
 }

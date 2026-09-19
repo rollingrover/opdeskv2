@@ -199,7 +199,8 @@
       "staffHr": "Personal & HR",
       "guestProperty": "Gäste & Immobilien",
       "finance": "Finanzen & Berichte",
-      "platform": "Plattform"
+      "platform": "Plattform",
+      "verticals": "Lösungen"
     },
     "items": {
       "bookings-calendar": {

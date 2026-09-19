@@ -917,6 +917,8 @@
     "sending": "Envoi en cours…",
     "saveSuffix": "/mois",
     "priceSuffix": "/mois",
+    "staffPackPriceHint": "{price}/poste, vendu par lots (les lots plus grands coûtent moins cher par poste)",
+    "staffPackOption": "{size} postes — {price}/mois",
     "requestSent": "Demande envoyée — notre équipe la traitera sous peu",
     "labels": {
       "vehicles": "Emplacement Véhicule Supplémentaire",

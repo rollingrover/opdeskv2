@@ -8,6 +8,7 @@ import { PageLoader } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { notify } from '@/lib/notify'
+import { STAFF_PACK_PRICING } from '@/lib/constants'
 import { Check, Clock, Plus } from 'lucide-react'
 
 export default function AddonsMarketplacePage() {
@@ -21,6 +22,7 @@ export default function AddonsMarketplacePage() {
   const [pending, setPending] = useState([])
   const [loading, setLoading] = useState(true)
   const [requesting, setRequesting] = useState(null)
+  const [packSize, setPackSize] = useState(5)
 
   async function load() {
     if (!company) { setLoading(false); return }
@@ -38,23 +40,24 @@ export default function AddonsMarketplacePage() {
 
   useEffect(() => { load() }, [company])
 
-  async function requestAddon(addonKey) {
+  async function requestAddon(addonKey, quantity = 1, totalPrice = null) {
     setRequesting(addonKey)
     const { error } = await supabase.from('addon_requests').insert([{
-      company_id: company.id, requested_by: profile.id, addon_key: addonKey, quantity: 1,
+      company_id: company.id, requested_by: profile.id, addon_key: addonKey, quantity,
     }])
     if (error) { setRequesting(null); toast.error(error.message); return }
     // Also raised as a support ticket — addon_requests lives on its own
     // approval queue (see admin/companies/[id]), but a support ticket is
     // what actually shows up in the Support Queue admins check day to day,
     // so this makes sure a new request doesn't go unnoticed there.
+    const packNote = quantity > 1 ? ` — a ${quantity}-seat pack${totalPrice ? ` at ${company.currency}${totalPrice}/mo total` : ''}` : ''
     await supabase.from('support_tickets').insert([{
       company_id: company.id, submitted_by: profile.id, category: 'addon_request', priority: 'normal',
-      subject: `Add-on request: ${addonLabel(addonKey)}`,
-      description: `${profile.email || profile.full_name || 'A user'} requested the "${addonLabel(addonKey)}" add-on for ${company.name}. Approve or decline from Companies → ${company.name} → Add-on Requests.`,
+      subject: `Add-on request: ${addonLabel(addonKey)}${quantity > 1 ? ` (${quantity})` : ''}`,
+      description: `${profile.email || profile.full_name || 'A user'} requested the "${addonLabel(addonKey)}" add-on for ${company.name}${packNote}. Approve or decline from Companies → ${company.name} → Add-on Requests.`,
     }])
     setRequesting(null)
-    notify('addon_request_created', { companyName: company.name, requesterEmail: profile.email, addonKey, quantity: 1 })
+    notify('addon_request_created', { companyName: company.name, requesterEmail: profile.email, addonKey, quantity })
     toast.success(t('requestSent'))
     load()
   }
@@ -88,6 +91,7 @@ export default function AddonsMarketplacePage() {
           <tbody>
             {catalog.map(a => {
               const isBundle = a.addon_key === 'hr_bundle'
+              const isStaffPack = a.addon_key === 'guides'
               const bundleSavings = isBundle
                 ? ['certifications', 'schedules_module', 'cost_to_company', 'leave']
                     .reduce((sum, k) => sum + (catalog.find(c => c.addon_key === k)?.monthly_price ? Number(catalog.find(c => c.addon_key === k).monthly_price) : 0), 0) - Number(a.monthly_price)
@@ -102,7 +106,11 @@ export default function AddonsMarketplacePage() {
                     </span>
                   )}
                 </td>
-                <td style={{ color: 'var(--gray-500)' }}>{company.currency} {Number(a.monthly_price).toLocaleString()}{t('priceSuffix')}</td>
+                <td style={{ color: 'var(--gray-500)' }}>
+                  {isStaffPack
+                    ? t('staffPackPriceHint', { price: `${company.currency}${Number(a.monthly_price)}` })
+                    : <>{company.currency} {Number(a.monthly_price).toLocaleString()}{t('priceSuffix')}</>}
+                </td>
                 <td style={{ textAlign: 'right' }}>
                   {isActive(a.addon_key) ? (
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: 'var(--teal)', fontWeight: 700, fontSize: '0.8125rem' }}>
@@ -112,6 +120,19 @@ export default function AddonsMarketplacePage() {
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: 'var(--gold)', fontWeight: 700, fontSize: '0.8125rem' }}>
                       <Clock size={14} /> {t('requested')}
                     </span>
+                  ) : isStaffPack ? (
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <select value={packSize} onChange={e => setPackSize(Number(e.target.value))}
+                        style={{ fontSize: '0.8125rem', padding: '0.375rem 0.5rem', borderRadius: '0.375rem', border: '1px solid var(--gray-200)' }}>
+                        {Object.entries(STAFF_PACK_PRICING).map(([size, price]) => (
+                          <option key={size} value={size}>{t('staffPackOption', { size, price: `${company.currency}${price}` })}</option>
+                        ))}
+                      </select>
+                      <button className="btn btn-outline btn-sm" disabled={requesting === a.addon_key}
+                        onClick={() => requestAddon(a.addon_key, packSize, STAFF_PACK_PRICING[packSize])}>
+                        <Plus size={14} /> {requesting === a.addon_key ? t('sending') : t('request')}
+                      </button>
+                    </div>
                   ) : (
                     <button className="btn btn-outline btn-sm" disabled={requesting === a.addon_key} onClick={() => requestAddon(a.addon_key)}>
                       <Plus size={14} /> {requesting === a.addon_key ? t('sending') : t('request')}

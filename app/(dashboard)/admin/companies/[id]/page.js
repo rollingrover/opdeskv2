@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { notify } from '@/lib/notify'
+import { STAFF_PACK_PRICING } from '@/lib/constants'
 
 async function syncPayfastAmount(companyId) {
   // Fire-and-report, never throws — a PayFast sync hiccup shouldn't block
@@ -201,9 +202,17 @@ function SACompanyDetail({ companyId }) {
   async function approveRequest(req) {
     setSaving(true)
     const { data: priceRow } = await supabase.from('addon_pricing').select('monthly_price').eq('addon_key', req.addon_key).maybeSingle()
+    // Staff seats are sold in packs (5/10/20/50) at a bulk-discounted total,
+    // not the flat per-seat catalog rate times quantity — see
+    // lib/constants.js STAFF_PACK_PRICING. Falls back to the catalog's
+    // per-seat rate for anything that isn't a recognized pack size (e.g. a
+    // manual 1-seat top-up from elsewhere).
+    const packTotal = req.addon_key === 'guides' ? STAFF_PACK_PRICING[req.quantity] : null
+    const pricePerUnit = packTotal ? packTotal / req.quantity : (priceRow?.monthly_price || 0)
     const { error: grantErr } = await supabase.rpc('sa_grant_addon', {
       p_company_id: companyId, p_addon_key: req.addon_key, p_quantity: req.quantity || 1,
-      p_price_per_unit: priceRow?.monthly_price || 0, p_billing_cycle: 'monthly', p_note: 'Approved from self-service request',
+      p_price_per_unit: pricePerUnit, p_billing_cycle: 'monthly',
+      p_note: packTotal ? `Approved from self-service request — ${req.quantity}-seat pack at ${co?.currency || 'R'}${packTotal}/mo total` : 'Approved from self-service request',
     })
     if (grantErr) { setSaving(false); toast.error(grantErr.message); return }
     const { error } = await supabase.from('addon_requests').update({ status: 'approved', resolved_at: new Date().toISOString() }).eq('id', req.id)

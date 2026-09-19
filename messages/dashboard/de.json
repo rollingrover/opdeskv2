@@ -917,6 +917,8 @@
     "sending": "Wird gesendet…",
     "saveSuffix": "/Monat",
     "priceSuffix": "/Monat",
+    "staffPackPriceHint": "{price}/Platz, in Paketen verkauft (größere Pakete kosten weniger pro Platz)",
+    "staffPackOption": "{size} Plätze — {price}/Monat",
     "requestSent": "Anfrage gesendet — unser Team wird sich in Kürze darum kümmern",
     "labels": {
       "vehicles": "Zusätzlicher Fahrzeugplatz",

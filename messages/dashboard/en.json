@@ -917,6 +917,8 @@
     "sending": "Sending…",
     "saveSuffix": "/mo",
     "priceSuffix": "/mo",
+    "staffPackPriceHint": "{price}/seat, sold in packs (bigger packs cost less per seat)",
+    "staffPackOption": "{size} seats — {price}/mo",
     "requestSent": "Request sent — our team will action this shortly",
     "labels": {
       "vehicles": "Extra Vehicle Slot",
