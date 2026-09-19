@@ -1,6 +1,7 @@
 'use client'
 import { BrandIcon } from '@/components/ui/BrandIcon'
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -12,7 +13,8 @@ import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { BOOKING_STATUSES } from '@/lib/constants'
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const WEEKDAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+const LOCALE_MAP = { en: 'en-ZA', af: 'af-ZA', fr: 'fr-FR', pt: 'pt-PT', de: 'de-DE' }
 
 function toISODate(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -26,6 +28,12 @@ const emptyForm = {
 }
 
 export default function CalendarPage() {
+  const t = useTranslations('Calendar')
+  const tBookings = useTranslations('Bookings')
+  const tStatus = useTranslations('StatusBadge')
+  const tCommon = useTranslations('Common')
+  const locale = useLocale()
+  const dateLocale = LOCALE_MAP[locale] || 'en-ZA'
   const { company, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
@@ -146,12 +154,12 @@ export default function CalendarPage() {
     }
     setSaving(false)
     if (error) { toast.error(error.message); return }
-    toast.success(editing?.id ? 'Booking updated' : 'Booking created')
+    toast.success(editing?.id ? tBookings('bookingUpdated') : tBookings('bookingCreated'))
     setEditing(null)
     load()
   }
 
-  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title="Set up your company first" />
+  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
   const todayISO = toISODate(new Date())
@@ -162,20 +170,20 @@ export default function CalendarPage() {
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">Calendar</h1>
-          <p className="page-subtitle">{cursor.toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' })}</p>
+          <h1 className="page-title">{t('title')}</h1>
+          <p className="page-subtitle">{cursor.toLocaleDateString(dateLocale, { month: 'long', year: 'numeric' })}</p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
           <button className="btn btn-outline btn-sm" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))}><ChevronLeft size={16} /></button>
-          <button className="btn btn-outline btn-sm" onClick={() => { const d = new Date(); d.setDate(1); setCursor(d) }}>Today</button>
+          <button className="btn btn-outline btn-sm" onClick={() => { const d = new Date(); d.setDate(1); setCursor(d) }}>{t('today')}</button>
           <button className="btn btn-outline btn-sm" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}><ChevronRight size={16} /></button>
         </div>
       </div>
 
       <div className="card card-shadow" style={{ padding: 0, overflow: 'hidden' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid var(--gray-100)' }}>
-          {WEEKDAYS.map(w => (
-            <div key={w} style={{ padding: '0.625rem', textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)', textTransform: 'uppercase' }}>{w}</div>
+          {WEEKDAY_KEYS.map(w => (
+            <div key={w} style={{ padding: '0.625rem', textAlign: 'center', fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)', textTransform: 'uppercase' }}>{t(`weekdays.${w}`)}</div>
           ))}
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
@@ -208,11 +216,11 @@ export default function CalendarPage() {
                       background: 'var(--teal-light, #E6F5F5)', color: 'var(--teal)', fontWeight: 600,
                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                     }}>
-                      {b.guest_name || 'Booking'}
+                      {b.guest_name || t('booking')}
                     </div>
                   ))}
                   {dayBookings.length > 3 && (
-                    <div style={{ fontSize: '0.6875rem', color: 'var(--gray-400)', fontWeight: 600 }}>+{dayBookings.length - 3} more</div>
+                    <div style={{ fontSize: '0.6875rem', color: 'var(--gray-400)', fontWeight: 600 }}>{t('moreCount', { count: dayBookings.length - 3 })}</div>
                   )}
                 </div>
               </div>
@@ -222,19 +230,19 @@ export default function CalendarPage() {
       </div>
 
       <Modal open={dayModalOpen} onClose={() => { setDayModalOpen(false); setEditing(null) }}
-        title={selectedDate ? selectedDate.toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : ''}
+        title={selectedDate ? selectedDate.toLocaleDateString(dateLocale, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : ''}
         size="lg"
         footer={editing ? (
           <>
-            <button className="btn btn-outline" onClick={() => setEditing(null)}>Back</button>
-            <button className="btn btn-primary" disabled={saving} onClick={saveBooking}>{saving ? 'Saving…' : editing?.id ? 'Save Changes' : 'Create Booking'}</button>
+            <button className="btn btn-outline" onClick={() => setEditing(null)}>{tBookings('back')}</button>
+            <button className="btn btn-primary" disabled={saving} onClick={saveBooking}>{saving ? tBookings('saving') : editing?.id ? tBookings('saveChanges') : tBookings('createBooking')}</button>
           </>
         ) : (
-          <button className="btn btn-primary" onClick={startAdd}><Plus size={16} /> Add Booking</button>
+          <button className="btn btn-primary" onClick={startAdd}><Plus size={16} /> {t('addBooking')}</button>
         )}>
         {!editing ? (
           selISO && bookingsOnDay(selISO).length === 0 ? (
-            <EmptyState icon={<BrandIcon name="noBookings" size={48} />} title="No bookings on this day" description="Add one to get started." />
+            <EmptyState icon={<BrandIcon name="noBookings" size={48} />} title={t('noBookingsOnDay')} description={t('addOneToStart')} />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {selISO && bookingsOnDay(selISO).map(b => (
@@ -243,9 +251,9 @@ export default function CalendarPage() {
                   cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 }}>
                   <div>
-                    <p style={{ margin: 0, fontWeight: 700, color: 'var(--navy)', fontSize: '0.875rem' }}>{b.guest_name || 'Guest'}</p>
+                    <p style={{ margin: 0, fontWeight: 700, color: 'var(--navy)', fontSize: '0.875rem' }}>{b.guest_name || t('guest')}</p>
                     <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--gray-500)' }}>
-                      {b.booking_ref} · {b.booking_type} · {company.currency} {Number(b.amount_total || 0).toLocaleString()}
+                      {b.booking_ref} · {{tour:tBookings('typeTour'),transfer:tBookings('typeTransfer'),charter:tBookings('typeCharter'),accommodation:tBookings('typeAccommodation')}[b.booking_type] || b.booking_type} · {company.currency} {Number(b.amount_total || 0).toLocaleString()}
                     </p>
                   </div>
                   <StatusBadge status={b.status} />
@@ -256,46 +264,46 @@ export default function CalendarPage() {
         ) : (
           <form onSubmit={saveBooking}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-              <Input label="Guest Name" required value={form.guest_name} onChange={e => setForm({ ...form, guest_name: e.target.value })} />
-              <Input label="Guest Email" type="email" value={form.guest_email} onChange={e => setForm({ ...form, guest_email: e.target.value })} />
-              <Input label="Start Date" type="date" required value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} />
-              <Input label="End Date" type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} />
-              <Select label="Status" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-                {BOOKING_STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+              <Input label={tBookings('guestName')} required value={form.guest_name} onChange={e => setForm({ ...form, guest_name: e.target.value })} />
+              <Input label={tBookings('guestEmail')} type="email" value={form.guest_email} onChange={e => setForm({ ...form, guest_email: e.target.value })} />
+              <Input label={tBookings('startDate')} type="date" required value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} />
+              <Input label={tBookings('endDate')} type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} />
+              <Select label={tBookings('status')} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+                {BOOKING_STATUSES.map(s => <option key={s.value} value={s.value}>{tStatus(s.value)}</option>)}
               </Select>
-              <Select label="Type" value={form.booking_type} onChange={e => setForm({ ...form, booking_type: e.target.value })}>
-                <option value="tour">Tour</option>
-                <option value="transfer">Transfer</option>
-                <option value="charter">Charter</option>
-                <option value="accommodation">Accommodation</option>
+              <Select label={tBookings('type')} value={form.booking_type} onChange={e => setForm({ ...form, booking_type: e.target.value })}>
+                <option value="tour">{tBookings('typeTour')}</option>
+                <option value="transfer">{tBookings('typeTransfer')}</option>
+                <option value="charter">{tBookings('typeCharter')}</option>
+                <option value="accommodation">{tBookings('typeAccommodation')}</option>
               </Select>
-              <Input label="Total Amount" type="number" step="0.01" value={form.amount_total} onChange={e => setForm({ ...form, amount_total: e.target.value })} />
-              <Input label="Amount Paid" type="number" step="0.01" value={form.amount_paid} onChange={e => setForm({ ...form, amount_paid: e.target.value })} />
+              <Input label={tBookings('totalAmount')} type="number" step="0.01" value={form.amount_total} onChange={e => setForm({ ...form, amount_total: e.target.value })} />
+              <Input label={tBookings('amountPaid')} type="number" step="0.01" value={form.amount_paid} onChange={e => setForm({ ...form, amount_paid: e.target.value })} />
             </div>
             <div style={{ marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid var(--gray-100)' }}>
               <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
-                Assign Resources
+                {tBookings('assignResourcesRequired')}
               </p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-                <Select label="Guide" value={form.guide_id} onChange={e => setForm({ ...form, guide_id: e.target.value })}>
-                  <option value="">— None —</option>
+                <Select label={tBookings('guide')} value={form.guide_id} onChange={e => setForm({ ...form, guide_id: e.target.value })}>
+                  <option value="">{tBookings('none')}</option>
                   {guides.map(g => <option key={g.id} value={g.id}>{g.full_name}</option>)}
                 </Select>
-                <Select label="Driver" value={form.driver_id} onChange={e => setForm({ ...form, driver_id: e.target.value })}>
-                  <option value="">— None —</option>
+                <Select label={tBookings('driver')} value={form.driver_id} onChange={e => setForm({ ...form, driver_id: e.target.value })}>
+                  <option value="">{tBookings('none')}</option>
                   {drivers.map(d => <option key={d.id} value={d.id}>{d.full_name}</option>)}
                 </Select>
-                <Select label="Vehicle" value={form.vehicle_id} onChange={e => setForm({ ...form, vehicle_id: e.target.value })}>
-                  <option value="">— None —</option>
+                <Select label={tBookings('vehicle')} value={form.vehicle_id} onChange={e => setForm({ ...form, vehicle_id: e.target.value })}>
+                  <option value="">{tBookings('none')}</option>
                   {vehicles.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
                 </Select>
-                <Select label="Room" value={form.room_id} onChange={e => setForm({ ...form, room_id: e.target.value })}>
-                  <option value="">— None —</option>
+                <Select label={tBookings('room')} value={form.room_id} onChange={e => setForm({ ...form, room_id: e.target.value })}>
+                  <option value="">{tBookings('none')}</option>
                   {rooms.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
                 </Select>
               </div>
             </div>
-            <Textarea label="Notes" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
+            <Textarea label={tBookings('notes')} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
           </form>
         )}
       </Modal>

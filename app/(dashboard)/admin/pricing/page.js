@@ -198,7 +198,7 @@ function SAPricingEditor() {
         storage_10gb: 199, storage_50gb: 499, storage_200gb: 999,
         bandwidth_50gb: 99, bandwidth_200gb: 199, bandwidth_1tb: 499,
         client_list: 199,
-        certifications: 149, cost_to_company: 249, leave: 99, hr_bundle: 499,
+        certifications: 149, cost_to_company: 249, leave: 99, hr_bundle: 499, quotations: 99, ical_sync: 149, delivery_management: 199, checklists: 99,
       };
       
       const addonUpdates = Object.entries(defaultAddons).map(([key, price]) =>
@@ -246,6 +246,10 @@ function SAPricingEditor() {
     cost_to_company: 'Cost to Company Module',
     leave: 'Leave Module',
     hr_bundle: 'HR Bundle (all 4 modules)',
+    quotations: 'Quotations Module',
+    ical_sync: 'Channel Sync (Airbnb/Booking.com)',
+    delivery_management: 'Delivery & Supply Management',
+    checklists: 'Checklists & Inventory Lists',
   };
 
   if (loading) {

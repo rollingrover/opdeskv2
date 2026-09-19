@@ -6,6 +6,21 @@ import { createClient } from '@/lib/supabase/client'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { notify } from '@/lib/notify'
 
+async function syncPayfastAmount(companyId) {
+  // Fire-and-report, never throws — a PayFast sync hiccup shouldn't block
+  // or roll back an add-on grant/revoke that already succeeded in our own
+  // database. Returns the parsed result so callers can warn if it failed.
+  try {
+    const res = await fetch('/api/payfast/update-subscription-amount', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ companyId }),
+    })
+    return await res.json()
+  } catch (err) {
+    return { synced: false, error: err.message }
+  }
+}
+
 const TIER_COLOR = { free: '#6b7280', explorer: '#6b7280', basic: '#3b82f6', standard: '#9333ea', professional: '#D4A853', enterprise: '#dc2626' }
 const STATUS_OPTIONS = ['active', 'trial', 'vip', 'churned', 'suspended', 'payment_failed']
 
@@ -24,6 +39,10 @@ const ADDON_TYPES = [
   { key: 'certifications', label: 'Certifications Module (individual)' },
   { key: 'cost_to_company', label: 'Cost to Company Module (individual)' },
   { key: 'leave', label: 'Leave Module (individual)' },
+  { key: 'quotations', label: 'Quotations Module (individual)' },
+  { key: 'ical_sync', label: 'Channel Sync (Airbnb/Booking.com)' },
+  { key: 'delivery_management', label: 'Delivery & Supply Management' },
+  { key: 'checklists', label: 'Checklists & Inventory Lists' },
 ]
 
 function SACompanyDetail({ companyId }) {
@@ -164,6 +183,8 @@ function SACompanyDetail({ companyId }) {
     if (error) { toast.error(error.message); return }
     toast.success('Add-on granted')
     setAddonForm({ key: 'vehicles', qty: 1, price: '', note: '' })
+    const sync = await syncPayfastAmount(companyId)
+    if (sync.synced === false && sync.error) toast.error(`Granted, but PayFast sync failed: ${sync.error}`)
     load()
   }
 
@@ -172,6 +193,8 @@ function SACompanyDetail({ companyId }) {
     const { error } = await supabase.rpc('sa_revoke_addon', { p_addon_id: id })
     if (error) { toast.error(error.message); return }
     toast.success('Add-on revoked')
+    const sync = await syncPayfastAmount(companyId)
+    if (sync.synced === false && sync.error) toast.error(`Revoked, but PayFast sync failed: ${sync.error}`)
     load()
   }
 
@@ -187,7 +210,8 @@ function SACompanyDetail({ companyId }) {
     setSaving(false)
     if (error) { toast.error(error.message); return }
     notify('addon_request_resolved', { toEmail: req.profiles?.email, addonKey: req.addon_key, status: 'approved' })
-    toast.success(`Granted at standard pricing and approved`)
+    const sync = await syncPayfastAmount(companyId)
+    toast.success(sync.synced === false && sync.error ? `Granted and approved, but PayFast sync failed: ${sync.error}` : 'Granted at standard pricing and approved')
     load()
   }
 

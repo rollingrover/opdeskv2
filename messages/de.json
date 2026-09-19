@@ -1,0 +1,350 @@
+{
+  "Nav": {
+    "features": "Funktionen",
+    "pricing": "Preise",
+    "about": "Über uns",
+    "signIn": "Anmelden",
+    "startFree": "Kostenlos starten"
+  },
+  "Footer": {
+    "needWebsite": "Brauchen Sie auch eine Website? RollingRover Productions hilft gerne",
+    "copyright": "© {year} OpDesk (Pty) Ltd. Entwickelt für Afrikas Betreiber.",
+    "regInfo": "Reg.-Nr. 2026/648649/07 · B-BBEE Stufe 4 Beitragszahler",
+    "webDesignBy": "Webdesign von"
+  },
+  "Home": {
+    "tagline": "Betreiben. Erkunden. Wachsen.",
+    "heroTitle": "Die Kommandozentrale für",
+    "heroTitleHighlight": "Afrikas Betreiber",
+    "heroSubtitle": "Safari-Lodges, Gästehäuser, Charter, Shuttles und Wanderführer — alles auf einer Plattform. Buchungen, Personal, Unterkünfte, Fuhrpark, Zertifizierungen und Rechnungen.",
+    "startForFree": "Kostenlos starten",
+    "seeFeatures": "Funktionen ansehen",
+    "heroFootnote": "Keine Kreditkarte erforderlich · Jederzeit kündbar · Läuft in Ihrem Browser",
+    "operatorsHeading": "Entwickelt für jeden afrikanischen Betreiber",
+    "operatorsSubheading": "Eine Plattform, jede Art von Unternehmen",
+    "featuresHeading": "Alles, was Sie für Ihr Unternehmen brauchen",
+    "featuresSubheading": "Keine Tabellenkalkulationen. Keine WhatsApp-Buchungen. Ein Dashboard.",
+    "ctaHeading": "Bereit, Ihre Abläufe in den Griff zu bekommen?",
+    "ctaSubheading": "Schließen Sie sich Betreibern in ganz Afrika an, die ihr Unternehmen mit OpDesk führen.",
+    "operatorTypes": {
+      "safari": "Safari- / Wildreservate",
+      "shuttle": "Shuttles & Transfers",
+      "fishing": "Angel-Charter",
+      "yacht": "Yacht-Charter",
+      "trail": "Wanderführer",
+      "lodge": "Hotels & Gästehäuser",
+      "eastAfrica": "Ostafrika-Touren",
+      "islandTransfer": "Insel-Transfers",
+      "logistics": "Logistik & Support-Dienste"
+    },
+    "features": {
+      "bookings": {
+        "title": "Buchungen & Kalender",
+        "desc": "Vollständige Buchungsverwaltung mit Drag-and-Drop-Kalenderplanung für alle Betreibertypen."
+      },
+      "staff": {
+        "title": "Personal & HR",
+        "desc": "Zertifizierungen, Lohnkostenverfolgung, Schichten, Urlaubsverwaltung und Leistungsnotizen."
+      },
+      "lodging": {
+        "title": "Unterkunft & Zimmer",
+        "desc": "Zimmerbestand, Verfügbarkeitskalender, Gäste-Check-in/-out und Reinigungsplan."
+      },
+      "fleet": {
+        "title": "Fuhrparkverwaltung",
+        "desc": "Fahrzeuge und Wasserfahrzeuge mit Erinnerungen für Lizenzablauf, Verkehrssicherheit und Versicherung verfolgen."
+      },
+      "invoices": {
+        "title": "Pro-forma-Rechnungen",
+        "desc": "Professionelle Rechnungen in über 15 Währungen mit Mehrwertsteuerberechnung und PDF-Export."
+      },
+      "reports": {
+        "title": "Berichte & Analysen",
+        "desc": "Auslastung, Umsatz, Personalkosten und Buchungstrends auf einen Blick."
+      },
+      "firearm": {
+        "title": "Waffenregister",
+        "desc": "Konforme Waffenverfolgung für Safari- und Angelbetreiber mit Erinnerungen zum Lizenzablauf."
+      },
+      "trails": {
+        "title": "Wanderroutenmodul",
+        "desc": "Verwalten Sie Routen, Schwierigkeitsgrad, Kapazität und Führerzuweisungen."
+      },
+      "logistics": {
+        "title": "Logistik & Kostenrechner",
+        "desc": "Kundenkonten, Preislisten mit vollständigem Verlauf und ein echter Kosten-/Gewinnrechner für Lieferungen, Wartung und Besorgungen."
+      }
+    }
+  },
+  "Auth": {
+    "Login": {
+      "welcomeBack": "Willkommen zurück",
+      "subtitle": "Melden Sie sich bei Ihrem OpDesk-Konto an",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort",
+      "forgotPassword": "Passwort vergessen?",
+      "signIn": "Anmelden",
+      "signingIn": "Anmeldung läuft…",
+      "noAccount": "Noch kein Konto?",
+      "startFree": "Kostenlos starten"
+    },
+    "Signup": {
+      "createAccount": "Konto erstellen",
+      "subtitle": "Kostenlos starten — keine Kreditkarte erforderlich",
+      "step1": "Ihre Angaben",
+      "step2": "Unternehmenseinrichtung",
+      "step3": "Einstellungen",
+      "fullName": "Vollständiger Name *",
+      "email": "E-Mail-Adresse *",
+      "password": "Passwort *",
+      "passwordHint": "Mind. 8 Zeichen",
+      "continue": "Weiter",
+      "back": "Zurück",
+      "businessName": "Firmenname *",
+      "operatorTypeQuestion": "Welche Art von Betreiber sind Sie? *",
+      "createAccountButton": "Konto erstellen",
+      "creatingAccount": "Konto wird erstellt…",
+      "haveAccount": "Bereits ein Konto?",
+      "signIn": "Anmelden",
+      "fillAllFields": "Bitte füllen Sie alle Felder aus (Passwort mind. 8 Zeichen)",
+      "billingCurrency": "Primäre Abrechnungswährung *",
+      "billingCurrencyHint": "Dies ist die Währung, die Sie auf Gästerechnungen verwenden (jederzeit änderbar).",
+      "zarNotice": "OpDesk berechnet Abonnementgebühren stets in südafrikanischen Rand (ZAR).",
+      "enterBusinessName": "Bitte geben Sie Ihren Firmennamen ein",
+      "alreadyHaveAccount": "Bereits ein Konto?"
+    },
+    "ForgotPassword": {
+      "title": "Passwort zurücksetzen",
+      "subtitle": "Geben Sie Ihre E-Mail-Adresse ein, und wir senden Ihnen einen Link zum Zurücksetzen",
+      "checkInbox": "Prüfen Sie Ihren Posteingang",
+      "sentTo": "Wir haben einen Link zum Zurücksetzen des Passworts an {email} gesendet. Prüfen Sie Ihren Spam-Ordner, falls er nicht innerhalb einer Minute ankommt.",
+      "backToLogin": "Zurück zur Anmeldung",
+      "email": "E-Mail-Adresse",
+      "sending": "Wird gesendet…",
+      "sendLink": "Link zum Zurücksetzen senden"
+    },
+    "ResetPassword": {
+      "title": "Neues Passwort festlegen",
+      "subtitle": "Wählen Sie ein starkes Passwort für Ihr Konto",
+      "updated": "Passwort aktualisiert!",
+      "redirecting": "Weiterleitung zum Dashboard…",
+      "newPassword": "Neues Passwort",
+      "passwordHint": "Mind. 8 Zeichen",
+      "confirmPassword": "Passwort bestätigen",
+      "confirmHint": "Wiederholen Sie Ihr Passwort",
+      "updating": "Wird aktualisiert…",
+      "updateButton": "Passwort aktualisieren",
+      "mismatch": "Passwörter stimmen nicht überein",
+      "tooShort": "Das Passwort muss mindestens 8 Zeichen lang sein"
+    }
+  },
+  "Pricing": {
+    "heading": "Einfache, transparente Preise",
+    "subheading": "Kostenlos starten. Erst upgraden, wenn Sie mehr Kapazität benötigen. Entwickelt für Safari-, Shuttle-, Angel-, Yacht-, Wander- und Unterkunftsbetreiber gleichermaßen.",
+    "monthly": "Monatlich",
+    "annual": "Jährlich (ca. 17% sparen)",
+    "operatorsTab": "Touren- & Transportbetreiber",
+    "lodgingTab": "Unterkunft & Gastgewerbe",
+    "loadingPlans": "Tarife werden geladen…",
+    "noPlans": "Die Preise werden aktualisiert — schauen Sie bald wieder vorbei.",
+    "free": "Kostenlos",
+    "perMonth": "/Monat",
+    "billedAnnually": ", jährlich abgerechnet",
+    "startFree": "Kostenlos starten",
+    "choosePlan": "Tarif wählen",
+    "compareHeading": "Tarife im Detail vergleichen",
+    "featureColumn": "Funktion",
+    "unlimited": "Unbegrenzt",
+    "needCapacityHeading": "Benötigen Sie mehr Kapazität?",
+    "needCapacitySub": "Fügen Sie jedem kostenpflichtigen Tarif zusätzliche Plätze und Module hinzu.",
+    "save": "Sparen",
+    "stillDecidingHeading": "Noch unentschlossen?",
+    "stillDecidingSub": "Starten Sie mit dem kostenlosen Tarif — keine Kreditkarte, keine Zeitbegrenzung.",
+    "logisticsTab": "Logistik & Support-Dienste"
+  },
+  "About": {
+    "eyebrow": "Unsere Geschichte",
+    "heroTitle": "Entwickelt von Menschen, die Afrikas Betreiber verstehen",
+    "heroSubtitle": "OpDesk gibt es, weil der Betrieb einer Safari-Lodge, einer Shuttle-Flotte oder eines Angel-Charters nicht bedeuten sollte, fünf verschiedene Tabellenkalkulationen und eine WhatsApp-Gruppe zu jonglieren.",
+    "whyHeading": "Warum wir das gebaut haben",
+    "why1": "Die meisten Betriebssoftware-Lösungen sind für Hotels in Europa oder Reiseveranstalter in den USA konzipiert — sie verstehen keine Waffenregister, Mehrwährungsrechnungen über ein Dutzend afrikanischer Währungen oder den Unterschied zwischen einem Safarifahrzeug und einem Shuttle-Van.",
+    "why2": "OpDesk ist speziell für die Betreiber konzipiert, die Afrikas Tourismusbranche am Laufen halten: Safari-Lodges, Gästehäuser, Shuttle- und Transferunternehmen, Angel- und Yacht-Charter, Wanderführer-Betriebe und die Logistik- und Support-Unternehmen, die sie versorgen. Ein Dashboard für Buchungen, Personal, Fuhrpark, Unterkunft, Zertifizierungen und Rechnungsstellung — in der Währung und Sprache, in der Sie tatsächlich arbeiten.",
+    "why3": "Keine Kreditkarte zum Starten erforderlich. Keine Bindung. Nur ein Werkzeug, das Ihnen nicht im Weg steht, damit Sie Ihr Unternehmen führen können.",
+    "whoHeading": "Für wen wir bauen",
+    "whoSubheading": "Wenn das nach Ihrem Unternehmen klingt, wurde OpDesk für Sie gebaut",
+    "ctaHeading": "Bereit loszulegen?",
+    "ctaSubheading": "Schließen Sie sich Betreibern in ganz Afrika an, die ihr Unternehmen mit OpDesk führen.",
+    "startFree": "Kostenlos starten",
+    "operatorTypes": {
+      "safari": "Safari- & Wildreservate",
+      "shuttle": "Shuttle-Unternehmen",
+      "fishing": "Angel-Charter",
+      "yacht": "Yacht-Charter",
+      "trail": "Wanderführer",
+      "lodge": "Hotels & Gästehäuser",
+      "eastAfrica": "Ostafrika-Touren",
+      "islandTransfer": "Insel-Transfers",
+      "logistics": "Logistik & Support-Dienste"
+    }
+  },
+  "Features": {
+    "hero": {
+      "eyebrow": "Alles an einem Ort",
+      "title": "Jede Funktion, die Ihr Betrieb wirklich braucht",
+      "subtitle": "Keine Tabellenkalkulationen. Keine WhatsApp-Buchungen. Keine verpassten Zertifizierungen. Ein Dashboard für Buchungen, Personal, Fuhrpark, Unterkunft und Finanzen."
+    },
+    "groups": {
+      "operations": "Betrieb",
+      "staffHr": "Personal & HR",
+      "guestProperty": "Gäste & Immobilien",
+      "finance": "Finanzen & Berichte",
+      "platform": "Plattform"
+    },
+    "items": {
+      "bookings-calendar": {
+        "title": "Buchungen & Kalender",
+        "desc": "Erstellen und verwalten Sie Buchungen für Touren, Transfers, Charter und Aufenthalte, mit Gästedetails, Preisen und Statusverfolgung an einem Ort."
+      },
+      "fleet-management": {
+        "title": "Fuhrparkverwaltung",
+        "desc": "Verfolgen Sie jedes Fahrzeug und Wasserfahrzeug — Zulassung, Kapazität und Status — damit Sie immer wissen, was verfügbar ist und was gewartet wird."
+      },
+      "trails-module": {
+        "title": "Wanderroutenmodul",
+        "desc": "Verwalten Sie Wanderrouten, Schwierigkeitsgrade, Entfernung, Dauer und Führerzuweisungen für Abenteuer- und Wanderbetreiber."
+      },
+      "shifts-scheduling": {
+        "title": "Schichten & Planung",
+        "desc": "Planen Sie Ihre Führer, Fahrer und Support-Mitarbeiter anhand von Buchungen, damit nichts doppelt gebucht wird."
+      },
+      "staff-roles": {
+        "title": "Personal & Rollen",
+        "desc": "Führen Sie ein vollständiges Personalverzeichnis mit Beschäftigungsart, Kontaktdaten und rollenbasiertem Zugriff für Ihr gesamtes Team."
+      },
+      "certifications": {
+        "title": "Zertifizierungen",
+        "desc": "Verfolgen Sie Führer- und Personalzertifizierungen mit ausstellenden Stellen und Ablaufdaten, damit niemand unqualifiziert im Einsatz ist."
+      },
+      "firearm-register": {
+        "title": "Waffenregister",
+        "desc": "Konforme Waffenverfolgung für Safari- und Angelbetreiber — Seriennummern, Lizenzen und sichere Lagerorte."
+      },
+      "cost-to-company": {
+        "title": "Lohnkosten",
+        "desc": "Vollständige Gehaltsabrechnungen — Gehalt, Zulagen, Abzüge und tatsächliche Kosten für das Unternehmen — pro Mitarbeiter."
+      },
+      "lodging-rooms": {
+        "title": "Unterkunft & Zimmer",
+        "desc": "Zimmerbestand, Nachttarife und Echtzeit-Belegungsstatus für Lodges, Gästehäuser und Hotels."
+      },
+      "housekeeping": {
+        "title": "Housekeeping",
+        "desc": "Weisen Sie Zimmerreinigungsaufgaben zu und verfolgen Sie sie, damit jedes Zimmer pünktlich gästefertig ist."
+      },
+      "guest-directory": {
+        "title": "Gästeverzeichnis",
+        "desc": "Eine einzige Ansicht jedes Gastes über alle Ihre Aufenthalte und Buchungen hinweg."
+      },
+      "invoicing": {
+        "title": "Pro-forma- & Steuerrechnungen",
+        "desc": "Erstellen Sie professionelle Rechnungen mit automatischer Mehrwertsteuerberechnung in Ihrer Landeswährung."
+      },
+      "reports-analytics": {
+        "title": "Berichte & Analysen",
+        "desc": "Berichte zu Auslastung, Umsatz, Personalkosten und Buchungstrends, wann immer Sie sie brauchen."
+      },
+      "csv-export": {
+        "title": "CSV-Datenexport",
+        "desc": "Exportieren Sie alle Ihre Betriebsdaten für Buchhaltung, Audits oder Ihre eigenen Tabellenkalkulationen."
+      },
+      "automatic-backups": {
+        "title": "Automatische Sicherungen",
+        "desc": "Ihre Daten werden automatisch gesichert, sodass ein verlorener Laptop oder ein Tippfehler beim Löschen Sie nie etwas kostet."
+      },
+      "multi-currency": {
+        "title": "Mehrwährung & Mehrsprachigkeit",
+        "desc": "Führen Sie Ihr Unternehmen in ZAR, KES, USD, EUR und mehr, mit Unterstützung für mehrere Sprachen in der ganzen Region."
+      },
+      "white-label-branding": {
+        "title": "White-Label-Branding",
+        "desc": "Versehen Sie gästeseitige Rechnungen und Dokumente mit Ihrem eigenen Logo und Ihren Farben (verfügbar in höheren Stufen)."
+      },
+      "built-for-africa": {
+        "title": "Entwickelt für Afrikas Betreiber",
+        "desc": "Entwickelt um die Art und Weise, wie Safari-Lodges, Shuttle-Unternehmen, Charter und Wanderführer-Betriebe tatsächlich täglich arbeiten."
+      }
+    },
+    "ctaHeading": "Sehen Sie es Ihr Unternehmen führen",
+    "ctaSubheading": "Kostenlos starten — keine Kreditkarte erforderlich.",
+    "startFree": "Kostenlos starten"
+  },
+  "WebDesign": {
+    "eyebrow": "RollingRover Productions",
+    "heroTitle": "Holen Sie sich ein individuelles Angebot für Ihre Website",
+    "heroSubtitle": "Erzählen Sie uns von Ihrem Projekt — wir melden uns mit einem Vorschlag und einem sicheren Zahlungslink, der auf Ihre Bedürfnisse zugeschnitten ist.",
+    "thanksTitle": "Danke — wir haben es erhalten",
+    "thanksBody": "Wir prüfen Ihr Projekt und senden in Kürze ein individuelles Angebot an {email}.",
+    "yourName": "Ihr Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "businessName": "Firmenname",
+    "projectType": "Projektart",
+    "pageCount": "Ungefähre Seitenanzahl",
+    "timeline": "Zeitrahmen",
+    "budgetRange": "Budgetrahmen (optional)",
+    "projectTypes": {
+      "new_website": "Neue Website",
+      "redesign": "Neugestaltung einer bestehenden Website",
+      "ecommerce": "E-Commerce-Shop",
+      "landing_page": "Landingpage",
+      "web_app": "Webanwendung"
+    },
+    "pageCounts": {
+      "1": "Nur 1 Seite",
+      "1-5": "1–5 Seiten",
+      "6-10": "6–10 Seiten",
+      "10+": "10+ Seiten"
+    },
+    "timelines": {
+      "asap": "So schnell wie möglich",
+      "1_month": "Innerhalb eines Monats",
+      "2_3_months": "2–3 Monate",
+      "flexible": "Flexibel"
+    },
+    "budgets": {
+      "none": "Keine Angabe",
+      "under_10k": "Unter R10.000",
+      "10k_25k": "R10.000 – R25.000",
+      "25k_50k": "R25.000 – R50.000",
+      "50k_plus": "R50.000+"
+    },
+    "ecommerceCheckbox": "Dieses Projekt benötigt Online-Zahlungen / E-Commerce",
+    "featuresHeading": "Funktionen, die Sie interessieren",
+    "features": {
+      "online_booking": "Online-Buchungssystem",
+      "blog": "Blog",
+      "multi_language": "Mehrsprachige Unterstützung",
+      "membership": "Mitglieder-/Login-Bereich",
+      "animations": "Individuelle Animationen",
+      "seo": "SEO-Paket",
+      "payments": "Zahlungsintegration",
+      "gallery": "Fotogalerie"
+    },
+    "detailsLabel": "Erzählen Sie uns mehr über Ihr Projekt",
+    "errorMessage": "Etwas ist schiefgelaufen — bitte versuchen Sie es erneut oder senden Sie uns direkt eine E-Mail.",
+    "sending": "Wird gesendet…",
+    "submit": "Angebot Anfordern"
+  },
+  "WebDesignThankYou": {
+    "title": "Zahlung erhalten",
+    "body": "Danke — wir haben Ihre Zahlung erhalten und melden uns in Kürze, um Ihr Projekt zu starten.",
+    "backHome": "Zurück zur Startseite"
+  },
+  "FeatureDetail": {
+    "allFeatures": "Alle Funktionen",
+    "whatYouGet": "Was Sie bekommen",
+    "whoItsFor": "Für wen es ist",
+    "seeInDashboard": "{title} in Ihrem Dashboard sehen",
+    "viewPricing": "Preise Ansehen"
+  }
+}

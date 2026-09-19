@@ -1,0 +1,350 @@
+{
+  "Nav": {
+    "features": "Funksies",
+    "pricing": "Pryse",
+    "about": "Oor Ons",
+    "signIn": "Meld Aan",
+    "startFree": "Begin Gratis"
+  },
+  "Footer": {
+    "needWebsite": "Benodig jy ook 'n webwerf? RollingRover Productions kan help",
+    "copyright": "© {year} OpDesk (Edms) Bpk. Gebou vir Afrika se operateurs.",
+    "regInfo": "Reg. Nr. 2026/648649/07 · B-BBEE Vlak 4 Bydraer",
+    "webDesignBy": "Webwerf-ontwerp deur"
+  },
+  "Home": {
+    "tagline": "Bedryf. Verken. Groei.",
+    "heroTitle": "Die beheersentrum vir",
+    "heroTitleHighlight": "Afrika se operateurs",
+    "heroSubtitle": "Wildsafari-lodges, gastehuise, vervoerdienste, pendeldienste en wandeloperateurs — alles op een platform. Besprekings, personeel, verblyf, vloot, sertifisering en fakture.",
+    "startForFree": "Begin Gratis",
+    "seeFeatures": "Bekyk Funksies",
+    "heroFootnote": "Geen kredietkaart nodig nie · Kanselleer enige tyd · Werk in jou blaaier",
+    "operatorsHeading": "Gebou vir elke Afrika-operateur",
+    "operatorsSubheading": "Een platform, elke tipe besigheid",
+    "featuresHeading": "Alles wat jy nodig het om jou besigheid te bedryf",
+    "featuresSubheading": "Geen sigblaaie nie. Geen WhatsApp-besprekings nie. Een paneelbord.",
+    "ctaHeading": "Gereed om beheer oor jou bedrywighede te neem?",
+    "ctaSubheading": "Sluit aan by operateurs regoor Afrika wat hul besigheid met OpDesk bedryf.",
+    "operatorTypes": {
+      "safari": "Wildsafari- / Wildlodges",
+      "shuttle": "Pendeldienste & Vervoer",
+      "fishing": "Vissery-vervoerdienste",
+      "yacht": "Jag-vervoerdienste",
+      "trail": "Wandelgidse",
+      "lodge": "Hotelle & Gastehuise",
+      "eastAfrica": "Oos-Afrika Toere",
+      "islandTransfer": "Eiland-vervoer",
+      "logistics": "Logistiek & Ondersteuningsdienste"
+    },
+    "features": {
+      "bookings": {
+        "title": "Besprekings & Kalender",
+        "desc": "Volledige besprekingsbestuur met sleep-en-los kalenderskedulering vir alle tipes operateurs."
+      },
+      "staff": {
+        "title": "Personeel & MH",
+        "desc": "Sertifisering, koste-tot-maatskappy-opsporing, skofte, verlofbestuur en prestasienotas."
+      },
+      "lodging": {
+        "title": "Verblyf & Kamers",
+        "desc": "Kamervoorraad, beskikbaarheidskalender, gaste-inklok/uitklok en huishoudelike taakbord."
+      },
+      "fleet": {
+        "title": "Vlootbestuur",
+        "desc": "Volg voertuie en vaartuie met lisensie-vervaldatum, padwaardigheid en versekeringsherinneringe."
+      },
+      "invoices": {
+        "title": "Pro Forma-fakture",
+        "desc": "Professionele fakture in meer as 15 geldeenhede met BTW-berekening en PDF-uitvoer."
+      },
+      "reports": {
+        "title": "Verslae & Ontleding",
+        "desc": "Okkupasiekoerse, inkomste, personeelkoste en besprekingstendense met een oogopslag."
+      },
+      "firearm": {
+        "title": "Vuurwapenregister",
+        "desc": "Voldoenende vuurwapen-opsporing vir wildsafari- en vissery-operateurs met lisensie-vervalwaarskuwings."
+      },
+      "trails": {
+        "title": "Wandelroete-module",
+        "desc": "Bestuur wandelroetes, moeilikheidsgraad, kapasiteit en gids-toewysings."
+      },
+      "logistics": {
+        "title": "Logistiek & Kosteberekenaar",
+        "desc": "Kliëntrekeninge, prysslyste met volledige geskiedenis, en 'n regte koste-/winsberekenaar vir aflewering, instandhouding en dwaaltogte."
+      }
+    }
+  },
+  "Auth": {
+    "Login": {
+      "welcomeBack": "Welkom terug",
+      "subtitle": "Meld aan by jou OpDesk-rekening",
+      "email": "E-posadres",
+      "password": "Wagwoord",
+      "forgotPassword": "Wagwoord vergeet?",
+      "signIn": "Meld Aan",
+      "signingIn": "Meld tans aan…",
+      "noAccount": "Het jy nie 'n rekening nie?",
+      "startFree": "Begin gratis"
+    },
+    "Signup": {
+      "createAccount": "Skep jou rekening",
+      "subtitle": "Begin gratis — geen kredietkaart nodig nie",
+      "step1": "Jou Besonderhede",
+      "step2": "Besigheidsopstelling",
+      "step3": "Voorkeure",
+      "fullName": "Volle Naam *",
+      "email": "E-posadres *",
+      "password": "Wagwoord *",
+      "passwordHint": "Min. 8 karakters",
+      "continue": "Gaan voort",
+      "back": "Terug",
+      "businessName": "Besigheid-/Maatskappynaam *",
+      "operatorTypeQuestion": "Watter tipe operateur is jy? *",
+      "createAccountButton": "Skep Rekening",
+      "creatingAccount": "Skep tans rekening…",
+      "haveAccount": "Het jy reeds 'n rekening?",
+      "signIn": "Meld aan",
+      "fillAllFields": "Vul asseblief alle velde in (wagwoord min. 8 karakters)",
+      "billingCurrency": "Primêre Faktuurgeldeenheid *",
+      "billingCurrencyHint": "Dit is die geldeenheid wat jy op gastefakture sal gebruik (jy kan dit enige tyd verander).",
+      "zarNotice": "OpDesk hef altyd intekengeld in Suid-Afrikaanse Rand (ZAR).",
+      "enterBusinessName": "Voer asseblief jou besigheidsnaam in",
+      "alreadyHaveAccount": "Het jy reeds 'n rekening?"
+    },
+    "ForgotPassword": {
+      "title": "Stel jou wagwoord terug",
+      "subtitle": "Voer jou e-pos in en ons stuur vir jou 'n terugstel-skakel",
+      "checkInbox": "Kyk in jou inkassie",
+      "sentTo": "Ons het 'n wagwoord-terugstel-skakel na {email} gestuur. Kyk in jou strooipos-vouer as dit nie binne 'n minuut opdaag nie.",
+      "backToLogin": "Terug na Aanmeld",
+      "email": "E-posadres",
+      "sending": "Stuur tans…",
+      "sendLink": "Stuur Terugstel-skakel"
+    },
+    "ResetPassword": {
+      "title": "Stel nuwe wagwoord",
+      "subtitle": "Kies 'n sterk wagwoord vir jou rekening",
+      "updated": "Wagwoord opgedateer!",
+      "redirecting": "Herlei jou na die paneelbord…",
+      "newPassword": "Nuwe Wagwoord",
+      "passwordHint": "Min. 8 karakters",
+      "confirmPassword": "Bevestig Wagwoord",
+      "confirmHint": "Herhaal jou wagwoord",
+      "updating": "Werk tans op…",
+      "updateButton": "Werk Wagwoord Op",
+      "mismatch": "Wagwoorde stem nie ooreen nie",
+      "tooShort": "Wagwoord moet minstens 8 karakters wees"
+    }
+  },
+  "Pricing": {
+    "heading": "Eenvoudige, deursigtige pryse",
+    "subheading": "Begin gratis. Gradueer slegs wanneer jy meer kapasiteit nodig het. Gebou vir wildsafari-, pendel-, vissery-, jag-, wandel- en verblyfoperateurs.",
+    "monthly": "Maandeliks",
+    "annual": "Jaarliks (bespaar ~17%)",
+    "operatorsTab": "Toer- & Vervoeroperateurs",
+    "lodgingTab": "Verblyf & Gasvryheid",
+    "loadingPlans": "Laai planne…",
+    "noPlans": "Pryse word tans opgedateer — kom gou weer terug.",
+    "free": "Gratis",
+    "perMonth": "/md",
+    "billedAnnually": ", jaarliks gefaktureer",
+    "startFree": "Begin Gratis",
+    "choosePlan": "Kies Plan",
+    "compareHeading": "Vergelyk planne in besonderhede",
+    "featureColumn": "Funksie",
+    "unlimited": "Onbeperk",
+    "needCapacityHeading": "Benodig jy meer kapasiteit?",
+    "needCapacitySub": "Voeg ekstra plekke en modules by enige betaalde plan.",
+    "save": "Bespaar",
+    "stillDecidingHeading": "Steeds besluiteloos?",
+    "stillDecidingSub": "Begin op die Gratis-plan — geen kredietkaart, geen tydsbeperking nie.",
+    "logisticsTab": "Logistiek & Ondersteuningsdienste"
+  },
+  "About": {
+    "eyebrow": "Ons storie",
+    "heroTitle": "Gebou deur mense wat Afrika se operateurs verstaan",
+    "heroSubtitle": "OpDesk bestaan omdat die bedryf van 'n wildsafari-lodge, 'n pendelvloot, of 'n vissery-vervoerdiens nie behoort te beteken om vyf verskillende sigblaaie en 'n WhatsApp-groep te jongleer nie.",
+    "whyHeading": "Waarom ons dit gebou het",
+    "why1": "Die meeste bedryfsagteware is gebou vir hotelle in Europa of toermaatskappye in die VSA — dit verstaan nie vuurwapenregisters, multi-geldeenheid-fakturering oor 'n dosyn Afrika-geldeenhede, of die verskil tussen 'n wildvoertuig en 'n pendelvan nie.",
+    "why2": "OpDesk is spesifiek gebou vir die operateurs wat Afrika se toerismebedryf aan die gang hou: wildsafari-lodges, gastehuise, pendel- en vervoermaatskappye, vissery- en jag-vervoerdienste, wandelgids-bedrywighede, en die logistiek- en ondersteuningsbesighede wat hulle van voorraad voorsien. Een paneelbord vir besprekings, personeel, vloot, verblyf, sertifisering en fakturering — in die geldeenheid en taal waarin jy werklik werk.",
+    "why3": "Geen kredietkaart nodig om te begin nie. Geen vaslegging nie. Net 'n instrument wat uit jou pad bly sodat jy jou besigheid kan bedryf.",
+    "whoHeading": "Vir wie ons bou",
+    "whoSubheading": "As dit soos jou besigheid klink, is OpDesk vir jou gebou",
+    "ctaHeading": "Gereed om te begin?",
+    "ctaSubheading": "Sluit aan by operateurs regoor Afrika wat hul besigheid met OpDesk bedryf.",
+    "startFree": "Begin Gratis",
+    "operatorTypes": {
+      "safari": "Wildsafari- & Wildlodges",
+      "shuttle": "Pendelmaatskappye",
+      "fishing": "Vissery-vervoerdienste",
+      "yacht": "Jag-vervoerdienste",
+      "trail": "Wandelgidse",
+      "lodge": "Hotelle & Gastehuise",
+      "eastAfrica": "Oos-Afrika Toere",
+      "islandTransfer": "Eiland-vervoer",
+      "logistics": "Logistiek & Ondersteuningsdienste"
+    }
+  },
+  "Features": {
+    "hero": {
+      "eyebrow": "Alles, op een plek",
+      "title": "Elke funksie wat jou bedryf werklik nodig het",
+      "subtitle": "Geen sigblaaie nie. Geen WhatsApp-besprekings nie. Geen gemiste sertifisering nie. Een paneelbord vir besprekings, personeel, vloot, verblyf en finansies."
+    },
+    "groups": {
+      "operations": "Bedrywighede",
+      "staffHr": "Personeel & MH",
+      "guestProperty": "Gaste & Eiendom",
+      "finance": "Finansies & Verslae",
+      "platform": "Platform"
+    },
+    "items": {
+      "bookings-calendar": {
+        "title": "Besprekings & Kalender",
+        "desc": "Skep en bestuur besprekings oor toere, oordragte, vervoerdienste en verblyf, met gastebesonderhede, pryse en statusopsporing op een plek."
+      },
+      "fleet-management": {
+        "title": "Vlootbestuur",
+        "desc": "Volg elke voertuig en vaartuig — registrasie, kapasiteit en status — sodat jy altyd weet wat beskikbaar is en wat vir instandhouding ingegaan het."
+      },
+      "trails-module": {
+        "title": "Wandelroete-module",
+        "desc": "Bestuur wandelroetes, moeilikheidsgraderings, afstand, duur en gids-toewysings vir avontuur- en stap-operateurs."
+      },
+      "shifts-scheduling": {
+        "title": "Skofte & Skedulering",
+        "desc": "Rooster jou gidse, bestuurders en ondersteuningspersoneel teen besprekings sodat niks dubbel bespreek word nie."
+      },
+      "staff-roles": {
+        "title": "Personeel & Rolle",
+        "desc": "Hou 'n volledige personeelgids met diensverhoudingtipe, kontakbesonderhede en rolgebaseerde toegang regoor jou span."
+      },
+      "certifications": {
+        "title": "Sertifisering",
+        "desc": "Volg gids- en personeelsertifisering met uitreikende liggame en vervaldatums, sodat niemand onbevoeg in die veld is nie."
+      },
+      "firearm-register": {
+        "title": "Vuurwapenregister",
+        "desc": "Voldoenende vuurwapen-opsporing vir wildsafari- en vissery-operateurs — serienommers, lisensies en veilige bergingsplekke."
+      },
+      "cost-to-company": {
+        "title": "Koste tot Maatskappy",
+        "desc": "Volledige loonstaat-uiteensettings — salaris, toelaes, aftrekkings en werklike koste tot maatskappy — per personeellid."
+      },
+      "lodging-rooms": {
+        "title": "Verblyf & Kamers",
+        "desc": "Kamervoorraad, nagtelike tariewe en intydse okkupasiestatus vir lodges, gastehuise en hotelle."
+      },
+      "housekeeping": {
+        "title": "Huishouding",
+        "desc": "Wys en volg kameromsettaaks toe sodat elke kamer betyds gastegereed is."
+      },
+      "guest-directory": {
+        "title": "Gastegids",
+        "desc": "'n Enkele oorsig van elke gas oor al jou verblyf en besprekings."
+      },
+      "invoicing": {
+        "title": "Pro Forma- & Belastingfakture",
+        "desc": "Genereer professionele fakture met outomatiese BTW-berekening in jou plaaslike geldeenheid."
+      },
+      "reports-analytics": {
+        "title": "Verslae & Ontleding",
+        "desc": "Okkupasie-, inkomste-, personeelkoste- en besprekingstendensverslae wanneer jy dit nodig het."
+      },
+      "csv-export": {
+        "title": "CSV-datauitvoer",
+        "desc": "Voer enige van jou bedryfsdata uit vir rekeningkunde, oudits, of jou eie sigblaaie."
+      },
+      "automatic-backups": {
+        "title": "Outomatiese Rugsteun",
+        "desc": "Jou data word outomaties rugsteun gemaak, sodat 'n verlore skootrekenaar of 'n foutiewe uitvee jou nooit iets kos nie."
+      },
+      "multi-currency": {
+        "title": "Multi-geldeenheid & Taal",
+        "desc": "Bedryf jou besigheid in ZAR, KES, USD, EUR en meer, met ondersteuning vir verskeie tale regoor die streek."
+      },
+      "white-label-branding": {
+        "title": "Witetiket-handelsmerk",
+        "desc": "Plaas jou eie logo en kleure op gaste-gerigte fakture en dokumente (beskikbaar op hoër vlakke)."
+      },
+      "built-for-africa": {
+        "title": "Gebou vir Afrika se Operateurs",
+        "desc": "Ontwerp rondom hoe wildsafari-lodges, pendelmaatskappye, vervoerdienste en wandeloperateurs werklik daagliks werk."
+      }
+    },
+    "ctaHeading": "Sien dit jou besigheid bedryf",
+    "ctaSubheading": "Begin gratis — geen kredietkaart nodig nie.",
+    "startFree": "Begin Gratis"
+  },
+  "WebDesign": {
+    "eyebrow": "RollingRover Productions",
+    "heroTitle": "Kry 'n pasgemaakte kwotasie vir jou webwerf",
+    "heroSubtitle": "Vertel ons van jou projek — ons kom terug met 'n voorstel en 'n veilige betaalskakel wat by jou behoeftes pas.",
+    "thanksTitle": "Dankie — ons het dit ontvang",
+    "thanksBody": "Ons sal jou projek hersien en binnekort 'n pasgemaakte kwotasie na {email} stuur.",
+    "yourName": "Jou Naam",
+    "email": "E-pos",
+    "phone": "Foon",
+    "businessName": "Besigheidsnaam",
+    "projectType": "Projektipe",
+    "pageCount": "Geskatte Aantal Bladsye",
+    "timeline": "Tydlyn",
+    "budgetRange": "Begrotingsreeks (opsioneel)",
+    "projectTypes": {
+      "new_website": "Nuwe Webwerf",
+      "redesign": "Herontwerp van Bestaande Werf",
+      "ecommerce": "E-handelswinkel",
+      "landing_page": "Bestemmingsbladsy",
+      "web_app": "Webtoepassing"
+    },
+    "pageCounts": {
+      "1": "Net 1 bladsy",
+      "1-5": "1–5 bladsye",
+      "6-10": "6–10 bladsye",
+      "10+": "10+ bladsye"
+    },
+    "timelines": {
+      "asap": "So gou moontlik",
+      "1_month": "Binne 'n maand",
+      "2_3_months": "2–3 maande",
+      "flexible": "Buigsaam"
+    },
+    "budgets": {
+      "none": "Verkies om nie te sê nie",
+      "under_10k": "Onder R10,000",
+      "10k_25k": "R10,000 – R25,000",
+      "25k_50k": "R25,000 – R50,000",
+      "50k_plus": "R50,000+"
+    },
+    "ecommerceCheckbox": "Hierdie projek benodig aanlyn betalings / e-handel",
+    "featuresHeading": "Funksies waarin jy belangstel",
+    "features": {
+      "online_booking": "Aanlyn besprekingstelsel",
+      "blog": "Blog",
+      "multi_language": "Multi-taal-ondersteuning",
+      "membership": "Lidmaatskap-/aanmeldarea",
+      "animations": "Pasgemaakte animasies",
+      "seo": "SEO-pakket",
+      "payments": "Betalingsintegrasie",
+      "gallery": "Fotogalery"
+    },
+    "detailsLabel": "Vertel ons meer van jou projek",
+    "errorMessage": "Iets het verkeerd geloop — probeer asseblief weer of e-pos ons direk.",
+    "sending": "Stuur tans…",
+    "submit": "Versoek My Kwotasie"
+  },
+  "WebDesignThankYou": {
+    "title": "Betaling ontvang",
+    "body": "Dankie — ons het jou betaling ontvang en sal binnekort kontak maak om jou projek te begin.",
+    "backHome": "Terug na Tuisblad"
+  },
+  "FeatureDetail": {
+    "allFeatures": "Alle Funksies",
+    "whatYouGet": "Wat jy kry",
+    "whoItsFor": "Vir wie dit is",
+    "seeInDashboard": "Sien {title} in jou paneelbord",
+    "viewPricing": "Bekyk Pryse"
+  }
+}

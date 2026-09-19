@@ -1,8 +1,11 @@
 'use client'
+import { useTranslations } from 'next-intl'
 import { ComingSoon } from '@/components/ui/ComingSoon'
 
 export default function Page() {
-  return <ComingSoon title="Firearm Register" description="Track firearm licences, serial numbers and safe storage." />
+  const tSidebar = useTranslations('Sidebar')
+  const t = useTranslations('Stubs')
+  return <ComingSoon title={tSidebar('items.firearmRegister')} description={t('firearmRegisterDesc')} />
 }
 
 export const dynamic = 'force-dynamic'

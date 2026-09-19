@@ -18,6 +18,7 @@ const ICONS = {
   fishing: { file: 'fishing-charters-icon.png', ratio: 1 },
   yacht: { file: 'yacht-charters-icon.png', ratio: 1 },
   shuttle: { file: 'shuttle-companies-icon.png', ratio: 1 },
+  delivery: { file: 'shuttle-companies-icon.png', ratio: 1 },
   trailGuide: { file: 'trail-guides-icon.png', ratio: 1 },
   eastAfrica: { file: 'east-africa-tours-icon.png', ratio: 1 },
   islandTransfer: { file: 'island-transfers-icon.png', ratio: 1 },

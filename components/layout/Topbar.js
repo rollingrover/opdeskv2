@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
 import { Menu, Bell, Search, ChevronDown, User, Shield } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 
 export function Topbar({ onMenuClick }) {
+  const t = useTranslations('Topbar')
   const { profile, company } = useAuth()
   const [dropOpen, setDropOpen] = useState(false)
 
@@ -18,7 +20,7 @@ export function Topbar({ onMenuClick }) {
         </button>
         <div style={{ position:'relative', display:'flex', alignItems:'center' }}>
           <Search size={15} style={{ position:'absolute', left:'0.625rem', color:'var(--gray-400)', pointerEvents:'none' }} />
-          <input placeholder="Search bookings, staff…" className="input"
+          <input placeholder={t('searchPlaceholder')} className="input"
             style={{ paddingLeft:'2rem', width:'260px', height:'2rem', fontSize:'0.8125rem', border:'1px solid var(--gray-200)' }} />
         </div>
       </div>
@@ -48,7 +50,7 @@ export function Topbar({ onMenuClick }) {
             </div>
             <div style={{ textAlign:'left', display:'flex', flexDirection:'column' }}>
               <span style={{ fontSize:'0.8125rem', fontWeight:600, color:'var(--navy)', lineHeight:1.2 }}>
-                {profile?.full_name?.split(' ')[0] || 'User'}
+                {profile?.full_name?.split(' ')[0] || t('userFallback')}
               </span>
               <span style={{ fontSize:'0.7rem', color:'var(--gray-400)', lineHeight:1.2, textTransform:'capitalize' }}>
                 {profile?.role}
@@ -71,9 +73,9 @@ export function Topbar({ onMenuClick }) {
                   <p style={{ fontSize:'0.75rem', color:'var(--gray-400)', margin:0 }}>{profile?.email}</p>
                 </div>
                 {[
-                  { href:'/settings', label:'Settings' },
-                  { href:'/settings/billing', label:'Billing' },
-                  { href:'/support', label:'Support' },
+                  { href:'/settings', label:t('settings') },
+                  { href:'/settings/billing', label:t('billing') },
+                  { href:'/support', label:t('support') },
                   ...(profile?.is_superadmin ? [{ href:'/admin', label:'Superadmin Panel' }] : []),
                 ].map(item => (
                   <Link key={item.href} href={item.href} onClick={() => setDropOpen(false)}

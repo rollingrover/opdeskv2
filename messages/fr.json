@@ -1,0 +1,350 @@
+{
+  "Nav": {
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "about": "À propos",
+    "signIn": "Se connecter",
+    "startFree": "Essai gratuit"
+  },
+  "Footer": {
+    "needWebsite": "Besoin d'un site web ? RollingRover Productions peut vous aider",
+    "copyright": "© {year} OpDesk (Pty) Ltd. Conçu pour les opérateurs africains.",
+    "regInfo": "N° d'immatriculation 2026/648649/07 · Contributeur B-BBEE Niveau 4",
+    "webDesignBy": "Conception du site par"
+  },
+  "Home": {
+    "tagline": "Opérer. Explorer. Grandir.",
+    "heroTitle": "Le centre de commande pour",
+    "heroTitleHighlight": "les opérateurs africains",
+    "heroSubtitle": "Lodges safari, gîtes, affrètements, navettes et guides de randonnée — tous réunis sur une seule plateforme. Réservations, personnel, hébergement, flotte, certifications et factures.",
+    "startForFree": "Essai gratuit",
+    "seeFeatures": "Voir les fonctionnalités",
+    "heroFootnote": "Aucune carte bancaire requise · Annulez à tout moment · Fonctionne dans votre navigateur",
+    "operatorsHeading": "Conçu pour chaque opérateur africain",
+    "operatorsSubheading": "Une plateforme, tous types d'activités",
+    "featuresHeading": "Tout ce qu'il faut pour gérer votre activité",
+    "featuresSubheading": "Fini les tableurs et les réservations par WhatsApp. Un seul tableau de bord.",
+    "ctaHeading": "Prêt à prendre le contrôle de vos opérations ?",
+    "ctaSubheading": "Rejoignez les opérateurs à travers l'Afrique qui gèrent leur activité avec OpDesk.",
+    "operatorTypes": {
+      "safari": "Safaris / Lodges de chasse",
+      "shuttle": "Navettes & Transferts",
+      "fishing": "Charters de pêche",
+      "yacht": "Charters de yacht",
+      "trail": "Guides de randonnée",
+      "lodge": "Hôtels & Gîtes",
+      "eastAfrica": "Circuits Afrique de l'Est",
+      "islandTransfer": "Transferts insulaires",
+      "logistics": "Logistique & Services de Soutien"
+    },
+    "features": {
+      "bookings": {
+        "title": "Réservations & Calendrier",
+        "desc": "Gestion complète des réservations avec un calendrier interactif pour tous types d'opérateurs."
+      },
+      "staff": {
+        "title": "Personnel & RH",
+        "desc": "Certifications, suivi du coût salarial, plannings, gestion des congés et notes de performance."
+      },
+      "lodging": {
+        "title": "Hébergement & Chambres",
+        "desc": "Inventaire des chambres, calendrier de disponibilité, arrivées/départs des clients et suivi du ménage."
+      },
+      "fleet": {
+        "title": "Gestion de flotte",
+        "desc": "Suivi des véhicules et navires avec rappels d'expiration de permis, contrôle technique et assurance."
+      },
+      "invoices": {
+        "title": "Factures Pro Forma",
+        "desc": "Factures professionnelles dans plus de 15 devises avec calcul de TVA et export PDF."
+      },
+      "reports": {
+        "title": "Rapports & Analyses",
+        "desc": "Taux d'occupation, revenus, coûts salariaux et tendances de réservation en un coup d'œil."
+      },
+      "firearm": {
+        "title": "Registre d'armes à feu",
+        "desc": "Suivi conforme des armes à feu pour opérateurs safari et pêche avec alertes d'expiration de permis."
+      },
+      "trails": {
+        "title": "Module Sentiers",
+        "desc": "Gérez les itinéraires, la difficulté, la capacité et l'affectation des guides."
+      },
+      "logistics": {
+        "title": "Logistique & Calculateur de Coûts",
+        "desc": "Comptes clients, listes de prix avec historique complet, et un véritable calculateur de coûts et de profits pour les livraisons, l'entretien et les courses."
+      }
+    }
+  },
+  "Auth": {
+    "Login": {
+      "welcomeBack": "Bon retour",
+      "subtitle": "Connectez-vous à votre compte OpDesk",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "signIn": "Se connecter",
+      "signingIn": "Connexion en cours…",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "startFree": "Essai gratuit"
+    },
+    "Signup": {
+      "createAccount": "Créez votre compte",
+      "subtitle": "Essai gratuit — aucune carte bancaire requise",
+      "step1": "Vos coordonnées",
+      "step2": "Configuration de l'entreprise",
+      "step3": "Préférences",
+      "fullName": "Nom complet *",
+      "email": "Adresse e-mail *",
+      "password": "Mot de passe *",
+      "passwordHint": "8 caractères minimum",
+      "continue": "Continuer",
+      "back": "Retour",
+      "businessName": "Nom de l'entreprise *",
+      "operatorTypeQuestion": "Quel type d'opérateur êtes-vous ? *",
+      "createAccountButton": "Créer le compte",
+      "creatingAccount": "Création du compte…",
+      "haveAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter",
+      "fillAllFields": "Veuillez remplir tous les champs (8 caractères minimum pour le mot de passe)",
+      "billingCurrency": "Devise de facturation principale *",
+      "billingCurrencyHint": "C'est la devise que vous utiliserez sur les factures des clients (vous pouvez la modifier à tout moment).",
+      "zarNotice": "OpDesk facture toujours les frais d'abonnement en Rand sud-africain (ZAR).",
+      "enterBusinessName": "Veuillez indiquer le nom de votre entreprise",
+      "alreadyHaveAccount": "Vous avez déjà un compte ?"
+    },
+    "ForgotPassword": {
+      "title": "Réinitialisez votre mot de passe",
+      "subtitle": "Saisissez votre e-mail et nous vous enverrons un lien de réinitialisation",
+      "checkInbox": "Consultez votre boîte de réception",
+      "sentTo": "Nous avons envoyé un lien de réinitialisation à {email}. Vérifiez vos courriers indésirables s'il n'arrive pas dans la minute.",
+      "backToLogin": "Retour à la connexion",
+      "email": "Adresse e-mail",
+      "sending": "Envoi en cours…",
+      "sendLink": "Envoyer le lien"
+    },
+    "ResetPassword": {
+      "title": "Définir un nouveau mot de passe",
+      "subtitle": "Choisissez un mot de passe fort pour votre compte",
+      "updated": "Mot de passe mis à jour !",
+      "redirecting": "Redirection vers le tableau de bord…",
+      "newPassword": "Nouveau mot de passe",
+      "passwordHint": "8 caractères minimum",
+      "confirmPassword": "Confirmer le mot de passe",
+      "confirmHint": "Répétez votre mot de passe",
+      "updating": "Mise à jour…",
+      "updateButton": "Mettre à jour le mot de passe",
+      "mismatch": "Les mots de passe ne correspondent pas",
+      "tooShort": "Le mot de passe doit contenir au moins 8 caractères"
+    }
+  },
+  "Pricing": {
+    "heading": "Tarification simple et transparente",
+    "subheading": "Commencez gratuitement. Passez à un forfait supérieur uniquement lorsque vous avez besoin de plus de capacité. Conçu pour les opérateurs safari, navettes, pêche, yacht, randonnée et hébergement.",
+    "monthly": "Mensuel",
+    "annual": "Annuel (économisez ~17 %)",
+    "operatorsTab": "Opérateurs Circuits & Transport",
+    "lodgingTab": "Hébergement & Hôtellerie",
+    "loadingPlans": "Chargement des forfaits…",
+    "noPlans": "Les tarifs sont en cours de mise à jour — revenez bientôt.",
+    "free": "Gratuit",
+    "perMonth": "/mois",
+    "billedAnnually": ", facturé annuellement",
+    "startFree": "Essai gratuit",
+    "choosePlan": "Choisir ce forfait",
+    "compareHeading": "Comparer les forfaits en détail",
+    "featureColumn": "Fonctionnalité",
+    "unlimited": "Illimité",
+    "needCapacityHeading": "Besoin de plus de capacité ?",
+    "needCapacitySub": "Ajoutez des emplacements et des modules supplémentaires à tout forfait payant.",
+    "save": "Économisez",
+    "stillDecidingHeading": "Vous hésitez encore ?",
+    "stillDecidingSub": "Commencez avec le forfait Gratuit — sans carte bancaire, sans limite de temps.",
+    "logisticsTab": "Logistique & Services de Soutien"
+  },
+  "About": {
+    "eyebrow": "Notre histoire",
+    "heroTitle": "Conçu par des gens qui comprennent les opérateurs africains",
+    "heroSubtitle": "OpDesk existe parce que gérer un lodge safari, une flotte de navettes ou un charter de pêche ne devrait pas signifier jongler avec cinq tableurs différents et un groupe WhatsApp.",
+    "whyHeading": "Pourquoi nous avons créé ceci",
+    "why1": "La plupart des logiciels d'exploitation sont conçus pour des hôtels en Europe ou des voyagistes aux États-Unis — ils ne comprennent pas les registres d'armes à feu, la facturation multidevise dans une douzaine de devises africaines, ou la différence entre un véhicule de safari et une navette.",
+    "why2": "OpDesk est conçu spécifiquement pour les opérateurs qui font tourner le secteur touristique africain : lodges safari, gîtes, entreprises de navettes et de transferts, charters de pêche et de yacht, opérations de guides de randonnée, et les entreprises de logistique et de soutien qui les approvisionnent. Un seul tableau de bord pour les réservations, le personnel, la flotte, l'hébergement, les certifications et la facturation — dans la devise et la langue avec lesquelles vous travaillez réellement.",
+    "why3": "Aucune carte bancaire requise pour commencer. Aucun engagement. Juste un outil qui reste discret pour vous laisser gérer votre entreprise.",
+    "whoHeading": "Pour qui nous créons",
+    "whoSubheading": "Si cela ressemble à votre entreprise, OpDesk a été conçu pour vous",
+    "ctaHeading": "Prêt à commencer ?",
+    "ctaSubheading": "Rejoignez les opérateurs à travers l'Afrique qui gèrent leur activité avec OpDesk.",
+    "startFree": "Essai gratuit",
+    "operatorTypes": {
+      "safari": "Safaris & Lodges de Chasse",
+      "shuttle": "Compagnies de Navettes",
+      "fishing": "Charters de Pêche",
+      "yacht": "Charters de Yacht",
+      "trail": "Guides de Randonnée",
+      "lodge": "Hôtels & Gîtes",
+      "eastAfrica": "Circuits Afrique de l'Est",
+      "islandTransfer": "Transferts vers les Îles",
+      "logistics": "Logistique & Services de Soutien"
+    }
+  },
+  "Features": {
+    "hero": {
+      "eyebrow": "Tout, au même endroit",
+      "title": "Chaque fonctionnalité dont votre exploitation a vraiment besoin",
+      "subtitle": "Fini les tableurs. Fini les réservations par WhatsApp. Fini les certifications manquées. Un seul tableau de bord pour les réservations, le personnel, la flotte, l'hébergement et les finances."
+    },
+    "groups": {
+      "operations": "Opérations",
+      "staffHr": "Personnel & RH",
+      "guestProperty": "Clients & Propriété",
+      "finance": "Finances & Rapports",
+      "platform": "Plateforme"
+    },
+    "items": {
+      "bookings-calendar": {
+        "title": "Réservations & Calendrier",
+        "desc": "Créez et gérez des réservations pour circuits, transferts, charters et séjours, avec les détails des clients, les prix et le suivi du statut au même endroit."
+      },
+      "fleet-management": {
+        "title": "Gestion de Flotte",
+        "desc": "Suivez chaque véhicule et navire — immatriculation, capacité et statut — pour toujours savoir ce qui est disponible et ce qui est en entretien."
+      },
+      "trails-module": {
+        "title": "Module Sentiers",
+        "desc": "Gérez les itinéraires, les niveaux de difficulté, la distance, la durée et l'affectation des guides pour les opérateurs d'aventure et de randonnée."
+      },
+      "shifts-scheduling": {
+        "title": "Quarts & Planification",
+        "desc": "Planifiez vos guides, chauffeurs et personnel de soutien en fonction des réservations pour qu'il n'y ait jamais de double réservation."
+      },
+      "staff-roles": {
+        "title": "Personnel & Rôles",
+        "desc": "Conservez un répertoire complet du personnel avec le type d'emploi, les coordonnées et l'accès basé sur les rôles pour toute votre équipe."
+      },
+      "certifications": {
+        "title": "Certifications",
+        "desc": "Suivez les certifications des guides et du personnel avec les organismes émetteurs et les dates d'expiration, pour que personne ne soit sur le terrain sans qualification."
+      },
+      "firearm-register": {
+        "title": "Registre d'Armes à Feu",
+        "desc": "Suivi conforme des armes à feu pour les opérateurs de safari et de pêche — numéros de série, permis et lieux de stockage sécurisés."
+      },
+      "cost-to-company": {
+        "title": "Coût Total Employeur",
+        "desc": "Répartitions complètes de la paie — salaire, indemnités, déductions et coût réel pour l'entreprise — par membre du personnel."
+      },
+      "lodging-rooms": {
+        "title": "Hébergement & Chambres",
+        "desc": "Inventaire des chambres, tarifs nocturnes et statut d'occupation en temps réel pour les lodges, gîtes et hôtels."
+      },
+      "housekeeping": {
+        "title": "Ménage",
+        "desc": "Attribuez et suivez les tâches de nettoyage des chambres pour que chaque chambre soit prête à temps pour les clients."
+      },
+      "guest-directory": {
+        "title": "Répertoire des Clients",
+        "desc": "Une vue unique de chaque client à travers tous vos séjours et réservations."
+      },
+      "invoicing": {
+        "title": "Factures Pro Forma & Fiscales",
+        "desc": "Générez des factures professionnelles avec calcul automatique de la TVA dans votre devise locale."
+      },
+      "reports-analytics": {
+        "title": "Rapports & Analyses",
+        "desc": "Rapports sur l'occupation, les revenus, les coûts de personnel et les tendances de réservation, quand vous en avez besoin."
+      },
+      "csv-export": {
+        "title": "Export de Données CSV",
+        "desc": "Exportez toutes vos données opérationnelles pour la comptabilité, les audits, ou vos propres tableurs."
+      },
+      "automatic-backups": {
+        "title": "Sauvegardes Automatiques",
+        "desc": "Vos données sont sauvegardées automatiquement, pour qu'un ordinateur portable perdu ou une suppression accidentelle ne vous coûte jamais rien."
+      },
+      "multi-currency": {
+        "title": "Multidevise & Multilingue",
+        "desc": "Gérez votre entreprise en ZAR, KES, USD, EUR et plus, avec la prise en charge de plusieurs langues dans toute la région."
+      },
+      "white-label-branding": {
+        "title": "Marque Blanche",
+        "desc": "Apposez votre propre logo et vos couleurs sur les factures et documents destinés aux clients (disponible sur les forfaits supérieurs)."
+      },
+      "built-for-africa": {
+        "title": "Conçu pour les Opérateurs Africains",
+        "desc": "Conçu autour de la façon dont les lodges safari, les compagnies de navettes, les charters et les opérateurs de randonnée travaillent réellement au quotidien."
+      }
+    },
+    "ctaHeading": "Voyez-le gérer votre entreprise",
+    "ctaSubheading": "Essai gratuit — aucune carte bancaire requise.",
+    "startFree": "Essai gratuit"
+  },
+  "WebDesign": {
+    "eyebrow": "RollingRover Productions",
+    "heroTitle": "Obtenez un devis personnalisé pour votre site web",
+    "heroSubtitle": "Parlez-nous de votre projet — nous reviendrons avec une proposition et un lien de paiement sécurisé adapté à vos besoins.",
+    "thanksTitle": "Merci — nous l'avons bien reçu",
+    "thanksBody": "Nous examinerons votre projet et enverrons un devis personnalisé à {email} sous peu.",
+    "yourName": "Votre Nom",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "businessName": "Nom de l'Entreprise",
+    "projectType": "Type de Projet",
+    "pageCount": "Nombre de Pages Approximatif",
+    "timeline": "Délai",
+    "budgetRange": "Fourchette Budgétaire (facultatif)",
+    "projectTypes": {
+      "new_website": "Nouveau Site Web",
+      "redesign": "Refonte d'un Site Existant",
+      "ecommerce": "Boutique E-commerce",
+      "landing_page": "Page d'Atterrissage",
+      "web_app": "Application Web"
+    },
+    "pageCounts": {
+      "1": "Juste 1 page",
+      "1-5": "1–5 pages",
+      "6-10": "6–10 pages",
+      "10+": "10+ pages"
+    },
+    "timelines": {
+      "asap": "Dès que possible",
+      "1_month": "Dans un mois",
+      "2_3_months": "2–3 mois",
+      "flexible": "Flexible"
+    },
+    "budgets": {
+      "none": "Préfère ne pas dire",
+      "under_10k": "Moins de R10 000",
+      "10k_25k": "R10 000 – R25 000",
+      "25k_50k": "R25 000 – R50 000",
+      "50k_plus": "R50 000+"
+    },
+    "ecommerceCheckbox": "Ce projet nécessite des paiements en ligne / e-commerce",
+    "featuresHeading": "Fonctionnalités qui vous intéressent",
+    "features": {
+      "online_booking": "Système de réservation en ligne",
+      "blog": "Blog",
+      "multi_language": "Support multilingue",
+      "membership": "Espace membre / connexion",
+      "animations": "Animations personnalisées",
+      "seo": "Pack SEO",
+      "payments": "Intégration de paiement",
+      "gallery": "Galerie photo"
+    },
+    "detailsLabel": "Parlez-nous en plus de votre projet",
+    "errorMessage": "Un problème est survenu — veuillez réessayer ou nous envoyer un e-mail directement.",
+    "sending": "Envoi en cours…",
+    "submit": "Demander mon devis"
+  },
+  "WebDesignThankYou": {
+    "title": "Paiement reçu",
+    "body": "Merci — nous avons bien reçu votre paiement et vous contacterons sous peu pour démarrer votre projet.",
+    "backHome": "Retour à l'Accueil"
+  },
+  "FeatureDetail": {
+    "allFeatures": "Toutes les Fonctionnalités",
+    "whatYouGet": "Ce que vous obtenez",
+    "whoItsFor": "Pour qui c'est fait",
+    "seeInDashboard": "Voir {title} dans votre tableau de bord",
+    "viewPricing": "Voir les Tarifs"
+  }
+}

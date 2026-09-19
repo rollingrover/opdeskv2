@@ -25,9 +25,14 @@ export const metadata = {
   },
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children, params }) {
+  // params.locale only exists for routes under app/[locale]/ — the
+  // dashboard tree has no locale segment, so this safely falls back to 'en'
+  // there rather than throwing on an undefined destructure.
+  const locale = (await params)?.locale || 'en'
+
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang={locale} data-scroll-behavior="smooth">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

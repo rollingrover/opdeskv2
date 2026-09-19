@@ -1,0 +1,350 @@
+{
+  "Nav": {
+    "features": "Funcionalidades",
+    "pricing": "Preços",
+    "about": "Sobre",
+    "signIn": "Entrar",
+    "startFree": "Começar Grátis"
+  },
+  "Footer": {
+    "needWebsite": "Também precisa de um site? A RollingRover Productions pode ajudar",
+    "copyright": "© {year} OpDesk (Pty) Ltd. Criado para operadores africanos.",
+    "regInfo": "N.º de Registo 2026/648649/07 · Contribuinte B-BBEE Nível 4",
+    "webDesignBy": "Design do site por"
+  },
+  "Home": {
+    "tagline": "Operar. Explorar. Crescer.",
+    "heroTitle": "O centro de comando para",
+    "heroTitleHighlight": "operadores africanos",
+    "heroSubtitle": "Lodges de safári, pousadas, fretamentos, transfers e guias de trilha — tudo numa só plataforma. Reservas, equipa, alojamento, frota, certificações e faturas.",
+    "startForFree": "Começar Grátis",
+    "seeFeatures": "Ver Funcionalidades",
+    "heroFootnote": "Sem necessidade de cartão de crédito · Cancele quando quiser · Funciona no seu navegador",
+    "operatorsHeading": "Criado para cada operador africano",
+    "operatorsSubheading": "Uma plataforma, todos os tipos de negócio",
+    "featuresHeading": "Tudo o que precisa para gerir o seu negócio",
+    "featuresSubheading": "Sem planilhas. Sem reservas por WhatsApp. Um único painel.",
+    "ctaHeading": "Pronto para assumir o controlo das suas operações?",
+    "ctaSubheading": "Junte-se a operadores em toda a África que gerem o seu negócio com o OpDesk.",
+    "operatorTypes": {
+      "safari": "Safári / Lodges de Caça",
+      "shuttle": "Transfers & Transporte",
+      "fishing": "Fretamentos de Pesca",
+      "yacht": "Fretamentos de Iate",
+      "trail": "Guias de Trilha",
+      "lodge": "Hotéis & Pousadas",
+      "eastAfrica": "Tours na África Oriental",
+      "islandTransfer": "Transfers para Ilhas",
+      "logistics": "Logística & Serviços de Apoio"
+    },
+    "features": {
+      "bookings": {
+        "title": "Reservas & Calendário",
+        "desc": "Gestão completa de reservas com calendário interativo para todos os tipos de operadores."
+      },
+      "staff": {
+        "title": "Equipa & RH",
+        "desc": "Certificações, controlo de custo por colaborador, turnos, gestão de férias e notas de desempenho."
+      },
+      "lodging": {
+        "title": "Alojamento & Quartos",
+        "desc": "Inventário de quartos, calendário de disponibilidade, check-in/check-out de hóspedes e painel de limpeza."
+      },
+      "fleet": {
+        "title": "Gestão de Frota",
+        "desc": "Acompanhe veículos e embarcações com lembretes de validade de licença, inspeção e seguro."
+      },
+      "invoices": {
+        "title": "Faturas Pro Forma",
+        "desc": "Faturas profissionais em mais de 15 moedas com cálculo de IVA e exportação em PDF."
+      },
+      "reports": {
+        "title": "Relatórios & Análises",
+        "desc": "Taxas de ocupação, receita, custos de pessoal e tendências de reservas num relance."
+      },
+      "firearm": {
+        "title": "Registo de Armas de Fogo",
+        "desc": "Controlo conforme de armas de fogo para operadores de safári e pesca com alertas de validade de licença."
+      },
+      "trails": {
+        "title": "Módulo de Trilhas",
+        "desc": "Faça a gestão de rotas, dificuldade, capacidade e atribuição de guias."
+      },
+      "logistics": {
+        "title": "Logística & Calculadora de Custos",
+        "desc": "Contas de clientes, listas de preços com histórico completo, e uma verdadeira calculadora de custo/lucro para entregas, manutenção e recados."
+      }
+    }
+  },
+  "Auth": {
+    "Login": {
+      "welcomeBack": "Bem-vindo de volta",
+      "subtitle": "Entre na sua conta OpDesk",
+      "email": "Endereço de E-mail",
+      "password": "Palavra-passe",
+      "forgotPassword": "Esqueceu a palavra-passe?",
+      "signIn": "Entrar",
+      "signingIn": "A entrar…",
+      "noAccount": "Ainda não tem conta?",
+      "startFree": "Começar grátis"
+    },
+    "Signup": {
+      "createAccount": "Crie a sua conta",
+      "subtitle": "Comece grátis — sem necessidade de cartão de crédito",
+      "step1": "Os Seus Dados",
+      "step2": "Configuração do Negócio",
+      "step3": "Preferências",
+      "fullName": "Nome Completo *",
+      "email": "Endereço de E-mail *",
+      "password": "Palavra-passe *",
+      "passwordHint": "Mín. 8 caracteres",
+      "continue": "Continuar",
+      "back": "Voltar",
+      "businessName": "Nome da Empresa *",
+      "operatorTypeQuestion": "Que tipo de operador é você? *",
+      "createAccountButton": "Criar Conta",
+      "creatingAccount": "A criar conta…",
+      "haveAccount": "Já tem uma conta?",
+      "signIn": "Entrar",
+      "fillAllFields": "Por favor preencha todos os campos (palavra-passe mín. 8 caracteres)",
+      "billingCurrency": "Moeda de Faturação Principal *",
+      "billingCurrencyHint": "Esta é a moeda que irá usar nas faturas dos hóspedes (pode alterá-la a qualquer momento).",
+      "zarNotice": "O OpDesk cobra sempre as taxas de subscrição em Rand Sul-Africano (ZAR).",
+      "enterBusinessName": "Por favor indique o nome da sua empresa",
+      "alreadyHaveAccount": "Já tem uma conta?"
+    },
+    "ForgotPassword": {
+      "title": "Redefina a sua palavra-passe",
+      "subtitle": "Introduza o seu e-mail e enviaremos um link de redefinição",
+      "checkInbox": "Verifique a sua caixa de entrada",
+      "sentTo": "Enviámos um link de redefinição de palavra-passe para {email}. Verifique a pasta de spam se não chegar dentro de um minuto.",
+      "backToLogin": "Voltar ao Início de Sessão",
+      "email": "Endereço de E-mail",
+      "sending": "A enviar…",
+      "sendLink": "Enviar Link de Redefinição"
+    },
+    "ResetPassword": {
+      "title": "Definir nova palavra-passe",
+      "subtitle": "Escolha uma palavra-passe forte para a sua conta",
+      "updated": "Palavra-passe atualizada!",
+      "redirecting": "A redirecionar para o painel…",
+      "newPassword": "Nova Palavra-passe",
+      "passwordHint": "Mín. 8 caracteres",
+      "confirmPassword": "Confirmar Palavra-passe",
+      "confirmHint": "Repita a sua palavra-passe",
+      "updating": "A atualizar…",
+      "updateButton": "Atualizar Palavra-passe",
+      "mismatch": "As palavras-passe não coincidem",
+      "tooShort": "A palavra-passe deve ter pelo menos 8 caracteres"
+    }
+  },
+  "Pricing": {
+    "heading": "Preços simples e transparentes",
+    "subheading": "Comece grátis. Faça upgrade apenas quando precisar de mais capacidade. Criado para operadores de safári, transfers, pesca, iate, trilhas e alojamento.",
+    "monthly": "Mensal",
+    "annual": "Anual (poupe ~17%)",
+    "operatorsTab": "Operadores de Tours & Transporte",
+    "lodgingTab": "Alojamento & Hotelaria",
+    "loadingPlans": "A carregar planos…",
+    "noPlans": "Os preços estão a ser atualizados — volte em breve.",
+    "free": "Grátis",
+    "perMonth": "/mês",
+    "billedAnnually": ", faturado anualmente",
+    "startFree": "Começar Grátis",
+    "choosePlan": "Escolher Plano",
+    "compareHeading": "Comparar planos em detalhe",
+    "featureColumn": "Funcionalidade",
+    "unlimited": "Ilimitado",
+    "needCapacityHeading": "Precisa de mais capacidade?",
+    "needCapacitySub": "Adicione mais vagas e módulos a qualquer plano pago.",
+    "save": "Poupe",
+    "stillDecidingHeading": "Ainda indeciso?",
+    "stillDecidingSub": "Comece com o plano Grátis — sem cartão de crédito, sem limite de tempo.",
+    "logisticsTab": "Logística & Serviços de Apoio"
+  },
+  "About": {
+    "eyebrow": "A nossa história",
+    "heroTitle": "Criado por pessoas que compreendem os operadores africanos",
+    "heroSubtitle": "O OpDesk existe porque gerir um lodge de safári, uma frota de transfers ou um charter de pesca não deveria significar fazer malabarismos com cinco folhas de cálculo diferentes e um grupo de WhatsApp.",
+    "whyHeading": "Porque criámos isto",
+    "why1": "A maioria dos softwares de operações é criada para hotéis na Europa ou operadoras turísticas nos EUA — não compreendem registos de armas de fogo, faturação multi-moeda em várias moedas africanas, ou a diferença entre um veículo de safári e uma carrinha de transfer.",
+    "why2": "O OpDesk é criado especificamente para os operadores que mantêm o setor turístico africano em funcionamento: lodges de safári, pousadas, empresas de transfers, charters de pesca e de iate, operações de guias de trilha, e as empresas de logística e apoio que os abastecem. Um único painel para reservas, equipa, frota, alojamento, certificações e faturação — na moeda e no idioma em que realmente trabalha.",
+    "why3": "Não é necessário cartão de crédito para começar. Sem compromissos. Apenas uma ferramenta que não atrapalha, para que possa gerir o seu negócio.",
+    "whoHeading": "Para quem criamos",
+    "whoSubheading": "Se isto soa como o seu negócio, o OpDesk foi criado para si",
+    "ctaHeading": "Pronto para começar?",
+    "ctaSubheading": "Junte-se a operadores em toda a África que gerem o seu negócio com o OpDesk.",
+    "startFree": "Começar Grátis",
+    "operatorTypes": {
+      "safari": "Safári & Lodges de Caça",
+      "shuttle": "Empresas de Transfer",
+      "fishing": "Charters de Pesca",
+      "yacht": "Charters de Iate",
+      "trail": "Guias de Trilha",
+      "lodge": "Hotéis & Pousadas",
+      "eastAfrica": "Tours na África Oriental",
+      "islandTransfer": "Transfers para Ilhas",
+      "logistics": "Logística & Serviços de Apoio"
+    }
+  },
+  "Features": {
+    "hero": {
+      "eyebrow": "Tudo, num só lugar",
+      "title": "Todas as funcionalidades que a sua operação realmente precisa",
+      "subtitle": "Sem planilhas. Sem reservas por WhatsApp. Sem certificações esquecidas. Um único painel para reservas, equipa, frota, alojamento e finanças."
+    },
+    "groups": {
+      "operations": "Operações",
+      "staffHr": "Equipa & RH",
+      "guestProperty": "Hóspedes & Propriedade",
+      "finance": "Finanças & Relatórios",
+      "platform": "Plataforma"
+    },
+    "items": {
+      "bookings-calendar": {
+        "title": "Reservas & Calendário",
+        "desc": "Crie e faça a gestão de reservas de tours, transfers, charters e estadias, com detalhes de hóspedes, preços e acompanhamento de estado num só lugar."
+      },
+      "fleet-management": {
+        "title": "Gestão de Frota",
+        "desc": "Acompanhe cada veículo e embarcação — matrícula, capacidade e estado — para saber sempre o que está disponível e o que está em manutenção."
+      },
+      "trails-module": {
+        "title": "Módulo de Trilhas",
+        "desc": "Faça a gestão de rotas, níveis de dificuldade, distância, duração e atribuição de guias para operadores de aventura e caminhadas."
+      },
+      "shifts-scheduling": {
+        "title": "Turnos & Escalas",
+        "desc": "Escale os seus guias, motoristas e equipa de apoio de acordo com as reservas para que nada fique com reserva duplicada."
+      },
+      "staff-roles": {
+        "title": "Equipa & Funções",
+        "desc": "Mantenha um diretório completo de equipa com tipo de vínculo, contactos e acesso baseado em funções em toda a sua equipa."
+      },
+      "certifications": {
+        "title": "Certificações",
+        "desc": "Acompanhe certificações de guias e equipa com entidades emissoras e datas de validade, para que ninguém esteja no terreno sem qualificação."
+      },
+      "firearm-register": {
+        "title": "Registo de Armas de Fogo",
+        "desc": "Controlo conforme de armas de fogo para operadores de safári e pesca — números de série, licenças e locais de armazenamento seguro."
+      },
+      "cost-to-company": {
+        "title": "Custo para a Empresa",
+        "desc": "Discriminações completas da folha de pagamento — salário, subsídios, deduções e custo real para a empresa — por membro da equipa."
+      },
+      "lodging-rooms": {
+        "title": "Alojamento & Quartos",
+        "desc": "Inventário de quartos, tarifas noturnas e estado de ocupação em tempo real para lodges, pousadas e hotéis."
+      },
+      "housekeeping": {
+        "title": "Limpeza",
+        "desc": "Atribua e acompanhe tarefas de limpeza de quartos para que cada quarto esteja pronto a tempo para os hóspedes."
+      },
+      "guest-directory": {
+        "title": "Diretório de Hóspedes",
+        "desc": "Uma vista única de cada hóspede em todas as suas estadias e reservas."
+      },
+      "invoicing": {
+        "title": "Faturas Pro Forma & Fiscais",
+        "desc": "Gere faturas profissionais com cálculo automático de IVA na sua moeda local."
+      },
+      "reports-analytics": {
+        "title": "Relatórios & Análises",
+        "desc": "Relatórios de ocupação, receita, custo de pessoal e tendências de reservas sempre que precisar."
+      },
+      "csv-export": {
+        "title": "Exportação de Dados CSV",
+        "desc": "Exporte qualquer um dos seus dados operacionais para contabilidade, auditorias, ou as suas próprias planilhas."
+      },
+      "automatic-backups": {
+        "title": "Cópias de Segurança Automáticas",
+        "desc": "Os seus dados são copiados automaticamente, para que um portátil perdido ou uma eliminação acidental nunca lhe custe nada."
+      },
+      "multi-currency": {
+        "title": "Multi-moeda & Multilíngue",
+        "desc": "Gira o seu negócio em ZAR, KES, USD, EUR e mais, com suporte para vários idiomas em toda a região."
+      },
+      "white-label-branding": {
+        "title": "Marca Branca",
+        "desc": "Coloque o seu próprio logótipo e cores em faturas e documentos voltados para hóspedes (disponível em planos superiores)."
+      },
+      "built-for-africa": {
+        "title": "Criado para Operadores Africanos",
+        "desc": "Desenhado em torno de como lodges de safári, empresas de transfer, charters e operadores de trilhas realmente trabalham no dia a dia."
+      }
+    },
+    "ctaHeading": "Veja-o a gerir o seu negócio",
+    "ctaSubheading": "Comece grátis — sem necessidade de cartão de crédito.",
+    "startFree": "Começar Grátis"
+  },
+  "WebDesign": {
+    "eyebrow": "RollingRover Productions",
+    "heroTitle": "Obtenha um orçamento personalizado para o seu site",
+    "heroSubtitle": "Conte-nos sobre o seu projeto — voltaremos com uma proposta e um link de pagamento seguro adaptado às suas necessidades.",
+    "thanksTitle": "Obrigado — já recebemos",
+    "thanksBody": "Iremos rever o seu projeto e enviar um orçamento personalizado para {email} em breve.",
+    "yourName": "O Seu Nome",
+    "email": "E-mail",
+    "phone": "Telefone",
+    "businessName": "Nome da Empresa",
+    "projectType": "Tipo de Projeto",
+    "pageCount": "Número Aproximado de Páginas",
+    "timeline": "Prazo",
+    "budgetRange": "Faixa de Orçamento (opcional)",
+    "projectTypes": {
+      "new_website": "Novo Site",
+      "redesign": "Redesenho de Site Existente",
+      "ecommerce": "Loja E-commerce",
+      "landing_page": "Landing Page",
+      "web_app": "Aplicação Web"
+    },
+    "pageCounts": {
+      "1": "Apenas 1 página",
+      "1-5": "1–5 páginas",
+      "6-10": "6–10 páginas",
+      "10+": "10+ páginas"
+    },
+    "timelines": {
+      "asap": "O mais rápido possível",
+      "1_month": "Dentro de um mês",
+      "2_3_months": "2–3 meses",
+      "flexible": "Flexível"
+    },
+    "budgets": {
+      "none": "Prefiro não dizer",
+      "under_10k": "Abaixo de R10.000",
+      "10k_25k": "R10.000 – R25.000",
+      "25k_50k": "R25.000 – R50.000",
+      "50k_plus": "R50.000+"
+    },
+    "ecommerceCheckbox": "Este projeto precisa de pagamentos online / e-commerce",
+    "featuresHeading": "Funcionalidades do seu interesse",
+    "features": {
+      "online_booking": "Sistema de reservas online",
+      "blog": "Blog",
+      "multi_language": "Suporte multilíngue",
+      "membership": "Área de membros / início de sessão",
+      "animations": "Animações personalizadas",
+      "seo": "Pacote SEO",
+      "payments": "Integração de pagamento",
+      "gallery": "Galeria de fotos"
+    },
+    "detailsLabel": "Conte-nos mais sobre o seu projeto",
+    "errorMessage": "Algo correu mal — tente novamente ou envie-nos um e-mail diretamente.",
+    "sending": "A enviar…",
+    "submit": "Solicitar Orçamento"
+  },
+  "WebDesignThankYou": {
+    "title": "Pagamento recebido",
+    "body": "Obrigado — recebemos o seu pagamento e entraremos em contacto em breve para iniciar o seu projeto.",
+    "backHome": "Voltar ao Início"
+  },
+  "FeatureDetail": {
+    "allFeatures": "Todas as Funcionalidades",
+    "whatYouGet": "O que recebe",
+    "whoItsFor": "Para quem é",
+    "seeInDashboard": "Veja {title} no seu painel",
+    "viewPricing": "Ver Preços"
+  }
+}

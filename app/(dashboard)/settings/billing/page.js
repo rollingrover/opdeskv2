@@ -3,6 +3,7 @@ import { BrandIcon } from '@/components/ui/BrandIcon'
 import { useEffect, useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -11,6 +12,9 @@ import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { Package, Calendar, AlertTriangle, Check } from 'lucide-react'
 
 function BillingContent() {
+  const t = useTranslations('Billing')
+  const tCommon = useTranslations('Common')
+  const tAddons = useTranslations('SettingsAddons')
   const { company, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
@@ -23,8 +27,8 @@ function BillingContent() {
   const [checkingOut, setCheckingOut] = useState(null)
 
   useEffect(() => {
-    if (searchParams.get('subscribed')) toast.success('Subscription set up — your trial has started')
-    if (searchParams.get('cancelled')) toast.error('Checkout was cancelled')
+    if (searchParams.get('subscribed')) toast.success(t('subscriptionSetUp'))
+    if (searchParams.get('cancelled')) toast.error(t('checkoutCancelled'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -54,7 +58,7 @@ function BillingContent() {
         body: JSON.stringify({ packageId }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Checkout failed')
+      if (!res.ok) throw new Error(data.error || t('checkoutFailed'))
       window.location.href = data.paymentUrl
     } catch (err) {
       toast.error(err.message)
@@ -62,7 +66,9 @@ function BillingContent() {
     }
   }
 
-  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title="Set up your company first" />
+  const addonLabel = key => tAddons.has(`labels.${key}`) ? tAddons(`labels.${key}`) : key.replace(/_/g, ' ')
+
+  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
   const addonTotal = addons.reduce((sum, a) => sum + (Number(a.price_per_unit) || 0) * (a.quantity || 1), 0)
@@ -78,15 +84,15 @@ function BillingContent() {
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">Billing</h1>
-          <p className="page-subtitle">Your current plan and add-ons</p>
+          <h1 className="page-title">{t('title')}</h1>
+          <p className="page-subtitle">{t('subtitle')}</p>
         </div>
       </div>
 
       {paymentFailed && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', background: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: '0.75rem', padding: '0.875rem 1.125rem', marginBottom: '1.25rem' }}>
           <AlertTriangle size={16} color="#DC2626" />
-          <span style={{ fontSize: '0.8125rem', color: '#991B1B' }}>Your last payment didn't go through — please check your card details with PayFast or contact support.</span>
+          <span style={{ fontSize: '0.8125rem', color: '#991B1B' }}>{t('paymentFailedBanner')}</span>
         </div>
       )}
 
@@ -94,7 +100,7 @@ function BillingContent() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', background: 'var(--cream)', border: '1px solid var(--gold)', borderRadius: '0.75rem', padding: '0.875rem 1.125rem', marginBottom: '1.25rem' }}>
           <Check size={16} color="var(--gold)" />
           <span style={{ fontSize: '0.8125rem', color: 'var(--navy)' }}>
-            You're on a free trial — {trialDaysLeft > 0 ? `${trialDaysLeft} day${trialDaysLeft === 1 ? '' : 's'} left` : 'ending today'}. Billing starts automatically after that, no action needed.
+            {t('trialIntro', { status: trialDaysLeft > 0 ? (trialDaysLeft === 1 ? t('daySingularLeft', { days: trialDaysLeft }) : t('dayPluralLeft', { days: trialDaysLeft })) : t('trialEndingToday') })}
           </span>
         </div>
       )}
@@ -104,15 +110,15 @@ function BillingContent() {
           <div style={{ display: 'flex', gap: '0.75rem' }}>
             <Package size={22} color="var(--gold)" />
             <div>
-              <p style={{ margin: 0, fontWeight: 700, fontSize: '1.125rem', color: 'var(--navy)' }}>{pkg?.name || 'No plan assigned'}</p>
-              <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{pkg?.tagline || 'Choose a plan below to get started.'}</p>
+              <p style={{ margin: 0, fontWeight: 700, fontSize: '1.125rem', color: 'var(--navy)' }}>{pkg?.name || t('noPlanAssigned')}</p>
+              <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{pkg?.tagline || t('choosePlanBelow')}</p>
             </div>
           </div>
-          <Link href="/pricing" className="btn btn-outline btn-sm">Compare Plans</Link>
+          <Link href="/pricing" className="btn btn-outline btn-sm">{t('comparePlans')}</Link>
         </div>
         {company.subscription_expires_at && !inTrial && (
           <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--gray-100)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
-            <Calendar size={14} /> Next charge {new Date(company.subscription_expires_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })}
+            <Calendar size={14} /> {t('nextCharge', { date: new Date(company.subscription_expires_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' }) })}
           </div>
         )}
       </div>
@@ -120,8 +126,8 @@ function BillingContent() {
       {pkg && (
         <div className="card card-shadow" style={{ padding: 0, overflow: 'hidden', marginBottom: '1.25rem' }}>
           <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.9375rem', color: 'var(--navy)' }}>Monthly Charges</h3>
-            <Link href="/settings/addons" className="btn btn-primary btn-sm">Manage Add-ons</Link>
+            <h3 style={{ margin: 0, fontSize: '0.9375rem', color: 'var(--navy)' }}>{t('monthlyCharges')}</h3>
+            <Link href="/settings/addons" className="btn btn-primary btn-sm">{t('manageAddons')}</Link>
           </div>
           <table className="table">
             <tbody>
@@ -131,14 +137,14 @@ function BillingContent() {
               </tr>
               {addons.map(a => (
                 <tr key={a.id}>
-                  <td style={{ color: 'var(--navy)', textTransform: 'capitalize' }}>{a.addon_key?.replace(/_/g, ' ')} {a.quantity > 1 ? `×${a.quantity}` : ''}</td>
+                  <td style={{ color: 'var(--navy)' }}>{addonLabel(a.addon_key)} {a.quantity > 1 ? `×${a.quantity}` : ''}</td>
                   <td style={{ textAlign: 'right', color: Number(a.price_per_unit) === 0 ? 'var(--teal)' : 'var(--gray-500)' }}>
-                    {Number(a.price_per_unit) === 0 ? 'Free' : `${company.currency} ${(a.price_per_unit * a.quantity).toLocaleString()}/mo`}
+                    {Number(a.price_per_unit) === 0 ? t('free') : `${company.currency} ${(a.price_per_unit * a.quantity).toLocaleString()}/mo`}
                   </td>
                 </tr>
               ))}
               <tr>
-                <td style={{ fontWeight: 700, color: 'var(--navy)' }}>Total</td>
+                <td style={{ fontWeight: 700, color: 'var(--navy)' }}>{t('total')}</td>
                 <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--gold)' }}>{company.currency} {monthlyTotal.toLocaleString()}/mo</td>
               </tr>
             </tbody>
@@ -149,8 +155,8 @@ function BillingContent() {
       {upgradeOptions.length > 0 && (
         <div className="card card-shadow" style={{ padding: 0, overflow: 'hidden' }}>
           <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--gray-100)' }}>
-            <h3 style={{ margin: 0, fontSize: '0.9375rem', color: 'var(--navy)' }}>{pkg ? 'Upgrade Your Plan' : 'Choose a Plan'}</h3>
-            <p style={{ margin: '0.25rem 0 0', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>Every paid plan starts with a free 30-day trial — you won't be charged until it ends.</p>
+            <h3 style={{ margin: 0, fontSize: '0.9375rem', color: 'var(--navy)' }}>{pkg ? t('upgradeYourPlan') : t('choosePlan')}</h3>
+            <p style={{ margin: '0.25rem 0 0', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{t('trialNote')}</p>
           </div>
           <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {upgradeOptions.map(p => (
@@ -165,7 +171,7 @@ function BillingContent() {
                   <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{p.tagline} · {p.currency} {Number(p.monthly_price).toLocaleString()}/mo</p>
                 </div>
                 <button className="btn btn-primary btn-sm" disabled={checkingOut === p.id} onClick={() => startCheckout(p.id)}>
-                  {checkingOut === p.id ? 'Redirecting…' : 'Start Free Trial'}
+                  {checkingOut === p.id ? t('redirecting') : t('startFreeTrial')}
                 </button>
               </div>
             ))}

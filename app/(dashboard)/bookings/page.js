@@ -1,6 +1,7 @@
 'use client'
 import { BrandIcon } from '@/components/ui/BrandIcon'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -22,6 +23,9 @@ const emptyForm = {
 }
 
 export default function BookingsPage() {
+  const t = useTranslations('Bookings')
+  const tStatus = useTranslations('StatusBadge')
+  const tCommon = useTranslations('Common')
   const { company, profile, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
@@ -80,14 +84,14 @@ export default function BookingsPage() {
     }])
     setSaving(false)
     if (error) { toast.error(error.message); return }
-    toast.success('Booking created')
+    toast.success(t('bookingCreated'))
     setModalOpen(false)
     setForm(emptyForm)
     load()
   }
 
   if (needsCompany) {
-    return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title="Set up your company first" description="Bookings need a company to belong to." />
+    return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} description={t('needsCompanyDesc')} />
   }
   if (loading) return <PageLoader />
 
@@ -104,25 +108,25 @@ export default function BookingsPage() {
       <LimitBanner resourceKey="bookings_per_month" limitInfo={bookingsLimit} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">Bookings</h1>
-          <p className="page-subtitle">{bookings.length} booking{bookings.length === 1 ? '' : 's'}</p>
+          <h1 className="page-title">{t('title')}</h1>
+          <p className="page-subtitle">{bookings.length} {bookings.length === 1 ? t('bookingSingular') : t('bookingPlural')}</p>
         </div>
         <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
-          <Plus size={16} /> New Booking
+          <Plus size={16} /> {t('newBooking')}
         </button>
       </div>
 
       <div className="card card-shadow">
         {bookings.length === 0 ? (
-          <EmptyState icon={<BrandIcon name="noBookings" size={48} />} title="No bookings yet"
-            description="Create your first booking to get started."
-            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>New Booking</button>} />
+          <EmptyState icon={<BrandIcon name="noBookings" size={48} />} title={t('noBookingsTitle')}
+            description={t('noBookingsDesc')}
+            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>{t('newBooking')}</button>} />
         ) : (
           <div className="table-wrap">
             <table className="table">
               <thead>
                 <tr>
-                  <th>Ref</th><th>Guest</th><th>Type</th><th>Dates</th><th>Pax</th><th>Resources</th><th>Total</th><th>Status</th>
+                  <th>{t('colRef')}</th><th>{t('colGuest')}</th><th>{t('colType')}</th><th>{t('colDates')}</th><th>{t('colPax')}</th><th>{t('colResources')}</th><th>{t('colTotal')}</th><th>{t('colStatus')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -133,7 +137,7 @@ export default function BookingsPage() {
                       <p style={{ margin: 0, fontWeight: 600, fontSize: '0.875rem', color: 'var(--navy)' }}>{b.guest_name || '—'}</p>
                       {b.guest_email && <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--gray-400)' }}>{b.guest_email}</p>}
                     </td>
-                    <td style={{ textTransform: 'capitalize' }}>{b.booking_type}</td>
+                    <td style={{ textTransform: 'capitalize' }}>{{tour:t('typeTour'),transfer:t('typeTransfer'),charter:t('typeCharter'),accommodation:t('typeAccommodation')}[b.booking_type] || b.booking_type}</td>
                     <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
                       {b.start_date ? new Date(b.start_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' }) : '—'}
                       {b.end_date && b.end_date !== b.start_date ? ` – ${new Date(b.end_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })}` : ''}
@@ -158,61 +162,61 @@ export default function BookingsPage() {
         )}
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New Booking" size="lg"
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('newBooking')} size="lg"
         footer={<>
-          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>Cancel</button>
-          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? 'Saving…' : 'Create Booking'}</button>
+          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{t('cancel')}</button>
+          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? t('saving') : t('createBooking')}</button>
         </>}>
         <form onSubmit={handleSave}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-            <Input label="Guest Name" required value={form.guest_name} onChange={e => setForm({ ...form, guest_name: e.target.value })} />
-            <Input label="Guest Email" type="email" value={form.guest_email} onChange={e => setForm({ ...form, guest_email: e.target.value })} />
-            <Input label="Guest Phone" value={form.guest_phone} onChange={e => setForm({ ...form, guest_phone: e.target.value })} />
-            <Input label="Guests" type="number" min="1" value={form.guest_count} onChange={e => setForm({ ...form, guest_count: e.target.value })} />
-            <Input label="Start Date" type="date" required value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} />
-            <Input label="End Date" type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} />
-            <Select label="Status" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-              {BOOKING_STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+            <Input label={t('guestName')} required value={form.guest_name} onChange={e => setForm({ ...form, guest_name: e.target.value })} />
+            <Input label={t('guestEmail')} type="email" value={form.guest_email} onChange={e => setForm({ ...form, guest_email: e.target.value })} />
+            <Input label={t('guestPhone')} value={form.guest_phone} onChange={e => setForm({ ...form, guest_phone: e.target.value })} />
+            <Input label={t('guests')} type="number" min="1" value={form.guest_count} onChange={e => setForm({ ...form, guest_count: e.target.value })} />
+            <Input label={t('startDate')} type="date" required value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} />
+            <Input label={t('endDate')} type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} />
+            <Select label={t('status')} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+              {BOOKING_STATUSES.map(s => <option key={s.value} value={s.value}>{tStatus(s.value)}</option>)}
             </Select>
-            <Select label="Type" value={form.booking_type} onChange={e => setForm({ ...form, booking_type: e.target.value })}>
-              <option value="tour">Tour</option>
-              <option value="transfer">Transfer</option>
-              <option value="charter">Charter</option>
-              <option value="accommodation">Accommodation</option>
+            <Select label={t('type')} value={form.booking_type} onChange={e => setForm({ ...form, booking_type: e.target.value })}>
+              <option value="tour">{t('typeTour')}</option>
+              <option value="transfer">{t('typeTransfer')}</option>
+              <option value="charter">{t('typeCharter')}</option>
+              <option value="accommodation">{t('typeAccommodation')}</option>
             </Select>
-            <Input label="Total Amount" type="number" step="0.01" value={form.amount_total} onChange={e => setForm({ ...form, amount_total: e.target.value })} />
-            <Input label="Amount Paid" type="number" step="0.01" value={form.amount_paid} onChange={e => setForm({ ...form, amount_paid: e.target.value })} />
+            <Input label={t('totalAmount')} type="number" step="0.01" value={form.amount_total} onChange={e => setForm({ ...form, amount_total: e.target.value })} />
+            <Input label={t('amountPaid')} type="number" step="0.01" value={form.amount_paid} onChange={e => setForm({ ...form, amount_paid: e.target.value })} />
           </div>
 
           <div style={{ marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid var(--gray-100)' }}>
             <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>
-              Assign Resources (optional)
+              {t('assignResources')}
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-              <Select label="Guide" value={form.guide_id} onChange={e => setForm({ ...form, guide_id: e.target.value })}>
-                <option value="">— None —</option>
+              <Select label={t('guide')} value={form.guide_id} onChange={e => setForm({ ...form, guide_id: e.target.value })}>
+                <option value="">{t('none')}</option>
                 {guides.map(g => <option key={g.id} value={g.id}>{g.full_name}</option>)}
               </Select>
-              <Select label="Driver" value={form.driver_id} onChange={e => setForm({ ...form, driver_id: e.target.value })}>
-                <option value="">— None —</option>
+              <Select label={t('driver')} value={form.driver_id} onChange={e => setForm({ ...form, driver_id: e.target.value })}>
+                <option value="">{t('none')}</option>
                 {drivers.map(d => <option key={d.id} value={d.id}>{d.full_name}</option>)}
               </Select>
-              <Select label="Vehicle" value={form.vehicle_id} onChange={e => setForm({ ...form, vehicle_id: e.target.value })}>
-                <option value="">— None —</option>
-                {vehicles.map(v => <option key={v.id} value={v.id}>{v.name} {v.status !== 'available' ? `(${v.status})` : ''}</option>)}
+              <Select label={t('vehicle')} value={form.vehicle_id} onChange={e => setForm({ ...form, vehicle_id: e.target.value })}>
+                <option value="">{t('none')}</option>
+                {vehicles.map(v => <option key={v.id} value={v.id}>{v.name} {v.status !== 'available' ? `(${tStatus(v.status)})` : ''}</option>)}
               </Select>
-              <Select label="Vessel" value={form.vessel_id} onChange={e => setForm({ ...form, vessel_id: e.target.value })}>
-                <option value="">— None —</option>
-                {vessels.map(v => <option key={v.id} value={v.id}>{v.name} {v.status !== 'available' ? `(${v.status})` : ''}</option>)}
+              <Select label={t('vessel')} value={form.vessel_id} onChange={e => setForm({ ...form, vessel_id: e.target.value })}>
+                <option value="">{t('none')}</option>
+                {vessels.map(v => <option key={v.id} value={v.id}>{v.name} {v.status !== 'available' ? `(${tStatus(v.status)})` : ''}</option>)}
               </Select>
-              <Select label="Room" value={form.room_id} onChange={e => setForm({ ...form, room_id: e.target.value })}>
-                <option value="">— None —</option>
-                {rooms.map(r => <option key={r.id} value={r.id}>{r.name} {r.status !== 'available' ? `(${r.status})` : ''}</option>)}
+              <Select label={t('room')} value={form.room_id} onChange={e => setForm({ ...form, room_id: e.target.value })}>
+                <option value="">{t('none')}</option>
+                {rooms.map(r => <option key={r.id} value={r.id}>{r.name} {r.status !== 'available' ? `(${tStatus(r.status)})` : ''}</option>)}
               </Select>
             </div>
           </div>
 
-          <Textarea label="Notes" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
+          <Textarea label={t('notes')} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
         </form>
       </Modal>
     </div>

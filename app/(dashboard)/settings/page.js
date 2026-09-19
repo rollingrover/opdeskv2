@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -7,17 +8,20 @@ import { Input, Select } from '@/components/ui/FormField'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { OPERATOR_TYPES, CURRENCIES, LANGUAGES } from '@/lib/constants'
 import Link from 'next/link'
-import { CreditCard, Package } from 'lucide-react'
+import { CreditCard, Package, Upload } from 'lucide-react'
 
 export default function SettingsPage() {
+  const t = useTranslations('SettingsMain')
   const { company, profile, needsCompany, reload, loading: authLoading } = useAuth()
   const supabase = createClient()
   const toast = useToast()
   const [form, setForm] = useState({
     name: '', operator_type: 'safari', currency: 'ZAR', language: 'en',
     country: 'ZA', timezone: 'Africa/Johannesburg', billing_email: '', phone: '',
+    bookkeeper_email: '',
   })
   const [saving, setSaving] = useState(false)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
 
   useEffect(() => {
     if (company) {
@@ -43,7 +47,7 @@ export default function SettingsPage() {
       })
       setSaving(false)
       if (compErr) { toast.error(compErr.message); return }
-      toast.success('Company created!')
+      toast.success(t('companyCreated'))
       await reload()
       return
     }
@@ -52,11 +56,33 @@ export default function SettingsPage() {
       name: form.name, operator_type: form.operator_type, currency: form.currency,
       language: form.language, country: form.country, timezone: form.timezone,
       billing_email: form.billing_email, phone: form.phone,
+      bookkeeper_email: form.bookkeeper_email || null,
     }).eq('id', company.id)
     setSaving(false)
     if (error) { toast.error(error.message); return }
-    toast.success('Settings saved')
+    toast.success(t('settingsSaved'))
     reload()
+  }
+
+  async function uploadLogo(e) {
+    const file = e.target.files?.[0]
+    if (!file || !company) return
+    if (file.size > 5 * 1024 * 1024) { toast.error(t('logoTooLarge')); return }
+    if (!['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'].includes(file.type)) {
+      toast.error(t('logoWrongType')); return
+    }
+    setUploadingLogo(true)
+    const ext = file.name.split('.').pop()
+    const path = `${company.id}/logo.${ext}`
+    const { error: uploadErr } = await supabase.storage.from('logos').upload(path, file, { upsert: true })
+    if (uploadErr) { setUploadingLogo(false); toast.error(uploadErr.message); return }
+    const { data: urlData } = supabase.storage.from('logos').getPublicUrl(path)
+    const { error: dbErr } = await supabase.from('companies').update({ logo_url: urlData.publicUrl }).eq('id', company.id)
+    setUploadingLogo(false)
+    if (dbErr) { toast.error(dbErr.message); return }
+    toast.success(t('logoUpdated'))
+    reload?.()
+    e.target.value = ''
   }
 
   if (authLoading) return <PageLoader />
@@ -66,37 +92,67 @@ export default function SettingsPage() {
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">Settings</h1>
-          <p className="page-subtitle">{needsCompany || !company ? 'Set up your company to get started' : 'Manage your company profile'}</p>
+          <h1 className="page-title">{t('title')}</h1>
+          <p className="page-subtitle">{needsCompany || !company ? t('setupSubtitle') : t('manageSubtitle')}</p>
         </div>
       </div>
 
       {!needsCompany && company && (
         <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-          <Link href="/settings/billing" className="btn btn-outline btn-sm"><CreditCard size={15} /> Billing & Plan</Link>
-          <Link href="/settings/addons" className="btn btn-outline btn-sm"><Package size={15} /> Add-ons</Link>
+          <Link href="/settings/billing" className="btn btn-outline btn-sm"><CreditCard size={15} /> {t('billingAndPlan')}</Link>
+          <Link href="/settings/addons" className="btn btn-outline btn-sm"><Package size={15} /> {t('addons')}</Link>
         </div>
       )}
 
       <div className="card card-shadow" style={{ maxWidth: 640 }}>
         <form onSubmit={handleSave}>
-          <Input label="Company Name" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+          <Input label={t('companyName')} required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-            <Select label="Operator Type" value={form.operator_type} onChange={e => setForm({ ...form, operator_type: e.target.value })}>
-              {OPERATOR_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            <Select label={t('operatorType')} value={form.operator_type} onChange={e => setForm({ ...form, operator_type: e.target.value })}>
+              {OPERATOR_TYPES.map(ot => <option key={ot.value} value={ot.value}>{t(`operatorTypes.${ot.value}`)}</option>)}
             </Select>
-            <Select label="Currency" value={form.currency} onChange={e => setForm({ ...form, currency: e.target.value })}>
+            <Select label={t('currency')} value={form.currency} onChange={e => setForm({ ...form, currency: e.target.value })}>
               {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.code} — {c.name}</option>)}
             </Select>
-            <Select label="Language" value={form.language} onChange={e => setForm({ ...form, language: e.target.value })}>
+            <Select label={t('language')} value={form.language} onChange={e => setForm({ ...form, language: e.target.value })}>
               {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
             </Select>
-            <Input label="Country" value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} />
-            <Input label="Billing Email" type="email" value={form.billing_email || ''} onChange={e => setForm({ ...form, billing_email: e.target.value })} />
-            <Input label="Phone" value={form.phone || ''} onChange={e => setForm({ ...form, phone: e.target.value })} />
+            <Input label={t('country')} value={form.country} onChange={e => setForm({ ...form, country: e.target.value })} />
+            <Input label={t('billingEmail')} type="email" value={form.billing_email || ''} onChange={e => setForm({ ...form, billing_email: e.target.value })} />
+            <Input label={t('phone')} value={form.phone || ''} onChange={e => setForm({ ...form, phone: e.target.value })} />
           </div>
+          {!needsCompany && company && (
+            <div style={{ marginTop: '0.5rem', paddingTop: '1rem', borderTop: '1px solid var(--gray-100)' }}>
+              <label className="label">{t('companyLogo')}</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+                {company.logo_url ? (
+                  <img src={company.logo_url} alt="Company logo" style={{ height: 48, maxWidth: 120, objectFit: 'contain', borderRadius: '0.375rem', border: '1px solid var(--gray-100)', padding: '0.375rem' }} />
+                ) : (
+                  <div style={{ height: 48, width: 48, borderRadius: '0.375rem', background: 'var(--gray-50)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Upload size={18} color="var(--gray-300)" />
+                  </div>
+                )}
+                <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer' }}>
+                  {uploadingLogo ? t('uploading') : company.logo_url ? t('replaceLogo') : t('uploadLogo')}
+                  <input type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={uploadLogo} disabled={uploadingLogo} style={{ display: 'none' }} />
+                </label>
+              </div>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '-0.25rem' }}>
+                {t('logoAppearsOn')}
+              </p>
+            </div>
+          )}
+          {!needsCompany && company && (
+            <div style={{ marginTop: '0.5rem', paddingTop: '1rem', borderTop: '1px solid var(--gray-100)' }}>
+              <Input label={t('bookkeeperEmail')} type="email" placeholder="bookkeeper@example.com"
+                value={form.bookkeeper_email || ''} onChange={e => setForm({ ...form, bookkeeper_email: e.target.value })} />
+              <p style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '-0.5rem' }}>
+                {t('bookkeeperDesc')}
+              </p>
+            </div>
+          )}
           <button className="btn btn-primary" disabled={saving} type="submit">
-            {saving ? 'Saving…' : (needsCompany || !company ? 'Create Company' : 'Save Changes')}
+            {saving ? t('saving') : (needsCompany || !company ? t('createCompany') : t('saveChanges'))}
           </button>
         </form>
       </div>

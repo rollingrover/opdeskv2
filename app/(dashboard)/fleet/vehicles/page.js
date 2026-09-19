@@ -1,6 +1,7 @@
 'use client'
 import { BrandIcon } from '@/components/ui/BrandIcon'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -17,6 +18,9 @@ import Link from 'next/link'
 const emptyForm = { name: '', make: '', model: '', year: '', registration: '', capacity: '', status: 'available' }
 
 export default function VehiclesPage() {
+  const t = useTranslations('Fleet')
+  const tCommon = useTranslations('Common')
+  const tStatus = useTranslations('StatusBadge')
   const { company, profile, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
@@ -52,11 +56,11 @@ export default function VehiclesPage() {
     }])
     setSaving(false)
     if (error) { toast.error(error.message); return }
-    toast.success('Vehicle added')
+    toast.success(t('vehicleAdded'))
     setModalOpen(false); setForm(emptyForm); load()
   }
 
-  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title="Set up your company first" />
+  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
   const vehiclesLimit = checkLimit('vehicles', rows.length, { profile, company, companyAddons: addons })
@@ -67,20 +71,20 @@ export default function VehiclesPage() {
       <LimitBanner resourceKey="vehicles" limitInfo={vehiclesLimit} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">Vehicles</h1>
-          <p className="page-subtitle">{rows.length} vehicle{rows.length === 1 ? '' : 's'} · <Link href="/fleet/vessels" style={{ color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>View Vessels <BrandIcon name="arrowRight" size={11} /></Link></p>
+          <h1 className="page-title">{t('vehiclesTitle')}</h1>
+          <p className="page-subtitle">{rows.length} {rows.length === 1 ? t('vehicleSingular') : t('vehiclePlural')} · <Link href="/fleet/vessels" style={{ color: 'var(--gold)', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>{t('viewVessels')} <BrandIcon name="arrowRight" size={11} /></Link></p>
         </div>
-        <button className="btn btn-primary" onClick={() => setModalOpen(true)}><Plus size={16} /> Add Vehicle</button>
+        <button className="btn btn-primary" onClick={() => setModalOpen(true)}><Plus size={16} /> {t('addVehicle')}</button>
       </div>
 
       <div className="card card-shadow">
         {rows.length === 0 ? (
-          <EmptyState icon={<BrandIcon name="noVehicles" size={48} />} title="No vehicles yet" description="Add your game vehicles, shuttles or transfer vehicles."
-            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>Add Vehicle</button>} />
+          <EmptyState icon={<BrandIcon name="noVehicles" size={48} />} title={t('noVehiclesTitle')} description={t('noVehiclesDesc')}
+            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>{t('addVehicle')}</button>} />
         ) : (
           <div className="table-wrap">
             <table className="table">
-              <thead><tr><th>Vehicle</th><th>Make/Model</th><th>Registration</th><th>Capacity</th><th>Status</th></tr></thead>
+              <thead><tr><th>{t('colVehicle')}</th><th>{t('colMakeModel')}</th><th>{t('colRegistration')}</th><th>{t('colCapacity')}</th><th>{t('colStatus')}</th></tr></thead>
               <tbody>
                 {rows.map(v => (
                   <tr key={v.id}>
@@ -97,23 +101,23 @@ export default function VehiclesPage() {
         )}
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Add Vehicle"
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('addVehicle')}
         footer={<>
-          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>Cancel</button>
-          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? 'Saving…' : 'Add Vehicle'}</button>
+          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{t('cancel')}</button>
+          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? t('saving') : t('addVehicle')}</button>
         </>}>
         <form onSubmit={handleSave}>
-          <Input label="Vehicle Name" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+          <Input label={t('vehicleName')} required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-            <Input label="Make" value={form.make} onChange={e => setForm({ ...form, make: e.target.value })} />
-            <Input label="Model" value={form.model} onChange={e => setForm({ ...form, model: e.target.value })} />
-            <Input label="Year" type="number" value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} />
-            <Input label="Registration" value={form.registration} onChange={e => setForm({ ...form, registration: e.target.value })} />
-            <Input label="Capacity" type="number" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
-            <Select label="Status" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-              <option value="available">Available</option>
-              <option value="in_use">In Use</option>
-              <option value="maintenance">Maintenance</option>
+            <Input label={t('make')} value={form.make} onChange={e => setForm({ ...form, make: e.target.value })} />
+            <Input label={t('model')} value={form.model} onChange={e => setForm({ ...form, model: e.target.value })} />
+            <Input label={t('year')} type="number" value={form.year} onChange={e => setForm({ ...form, year: e.target.value })} />
+            <Input label={t('registration')} value={form.registration} onChange={e => setForm({ ...form, registration: e.target.value })} />
+            <Input label={t('capacity')} type="number" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
+            <Select label={t('status')} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+              <option value="available">{tStatus('available')}</option>
+              <option value="in_use">{tStatus('in_use')}</option>
+              <option value="maintenance">{tStatus('maintenance')}</option>
             </Select>
           </div>
         </form>

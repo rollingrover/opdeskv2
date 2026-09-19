@@ -8,7 +8,8 @@ import { Plus, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react'
 const emptyForm = {
   name: '', slug: '', tagline: '', description: '', monthly_price: 0, annual_price: 0,
   currency: 'ZAR', badge: '', sort_order: 0, recommended_for: [],
-  limits: { vehicles: 1, guides: 1, rooms: 1, bookings_per_month: 20 },
+  limits: { vehicles: 1, guides: 1, rooms: 1, bookings_per_month: 20, clients: 1, orders_per_month: 20,
+    vehicle_cost_suggestions: false, recurring_orders: false, advanced_reporting: false, quoted_vs_actual: false, cost_breakdown_analytics: false },
   modules: { certifications: false, shifts: false, costs: false, leave: false },
 }
 
@@ -17,6 +18,16 @@ const VERTICAL_TAGS = [
   { key: 'fishing', label: 'Fishing Charter' }, { key: 'yacht', label: 'Yacht Charter' },
   { key: 'trail', label: 'Trail Guide' }, { key: 'lodge', label: 'Hotel / Guesthouse / Lodging' },
   { key: 'eastafrica', label: 'East Africa Tours' }, { key: 'transfer', label: 'Island Transfers' },
+  { key: 'delivery', label: 'Logistics & Support Services' },
+]
+
+const LOGISTICS_LIMIT_KEYS = ['clients', 'orders_per_month']
+const LOGISTICS_FEATURE_KEYS = [
+  { key: 'vehicle_cost_suggestions', label: 'Vehicle Cost Suggestions' },
+  { key: 'recurring_orders', label: 'Recurring Order Templates' },
+  { key: 'advanced_reporting', label: 'Advanced Reporting' },
+  { key: 'quoted_vs_actual', label: 'Quoted vs. Actual Cost Tracking' },
+  { key: 'cost_breakdown_analytics', label: 'Cost Breakdown & Export' },
 ]
 
 function slugify(name) {
@@ -58,7 +69,9 @@ function SAMarketingPackages() {
       name: p.name, slug: p.slug, tagline: p.tagline || '', description: p.description || '',
       monthly_price: p.monthly_price, annual_price: p.annual_price, currency: p.currency || 'ZAR',
       badge: p.badge || '', sort_order: p.sort_order, recommended_for: p.recommended_for || [],
-      limits: { vehicles: 1, guides: 1, rooms: 1, bookings_per_month: null, ...(p.limits || {}) },
+      limits: { vehicles: 1, guides: 1, rooms: 1, bookings_per_month: null, clients: 1, orders_per_month: null,
+        vehicle_cost_suggestions: false, recurring_orders: false, advanced_reporting: false, quoted_vs_actual: false, cost_breakdown_analytics: false,
+        ...(p.limits || {}) },
       modules: { certifications: false, shifts: false, costs: false, leave: false, ...(p.modules || {}) },
     })
     setEditing(p)
@@ -215,7 +228,7 @@ function SAMarketingPackages() {
               <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Resource Limits</h3>
               <p style={{ color: '#6b7280', fontSize: 11, marginBottom: 12 }}>Leave blank for unlimited.</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 14 }}>
-                {['vehicles', 'guides', 'rooms', 'bookings_per_month'].map(key => (
+                {(form.recommended_for.includes('delivery') ? LOGISTICS_LIMIT_KEYS : ['vehicles', 'guides', 'rooms', 'bookings_per_month']).map(key => (
                   <div key={key}>
                     <label style={labelStyle}>{key.replace(/_/g, ' ')}</label>
                     <input type="number" min="0" style={inputStyle} placeholder="Unlimited"
@@ -225,6 +238,21 @@ function SAMarketingPackages() {
                 ))}
               </div>
             </div>
+
+            {form.recommended_for.includes('delivery') && (
+              <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 16 }}>
+                <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Logistics Features</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  {LOGISTICS_FEATURE_KEYS.map(f => (
+                    <label key={f.key} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#9ca3af', fontSize: 13, cursor: 'pointer' }}>
+                      <input type="checkbox" checked={!!form.limits[f.key]} style={{ accentColor: '#D4A853' }}
+                        onChange={e => setForm({ ...form, limits: { ...form.limits, [f.key]: e.target.checked } })} />
+                      {f.label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 16 }}>
               <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Included Modules</h3>

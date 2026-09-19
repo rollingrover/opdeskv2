@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -12,17 +13,11 @@ import { notify } from '@/lib/notify'
 import { BrandIcon } from '@/components/ui/BrandIcon'
 import { Plus } from 'lucide-react'
 
-const CATEGORIES = [
-  { value: 'bug', label: 'Something\u2019s not working' },
-  { value: 'billing', label: 'Billing or plan question' },
-  { value: 'feature_request', label: 'Feature request' },
-  { value: 'other', label: 'Other' },
-]
-const STATUS_LABELS = { open: 'Open', in_progress: 'In Progress', resolved: 'Resolved', closed: 'Closed' }
-
+const CATEGORY_VALUES = ['bug', 'billing', 'feature_request', 'other']
 const emptyForm = { category: 'bug', subject: '', description: '', priority: 'normal' }
 
 export default function SupportPage() {
+  const t = useTranslations('Support')
   const { company, profile, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
@@ -56,7 +51,7 @@ export default function SupportPage() {
       companyName: company?.name, submitterEmail: profile?.email,
       category: form.category, priority: form.priority, subject: form.subject, description: form.description,
     })
-    toast.success('Ticket submitted — our team will get back to you')
+    toast.success(t('ticketSubmitted'))
     setModalOpen(false); setForm(emptyForm); load()
   }
 
@@ -67,30 +62,30 @@ export default function SupportPage() {
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">Support</h1>
-          <p className="page-subtitle">{tickets.length} ticket{tickets.length === 1 ? '' : 's'}</p>
+          <h1 className="page-title">{t('title')}</h1>
+          <p className="page-subtitle">{tickets.length} {tickets.length === 1 ? t('ticketSingular') : t('ticketPlural')}</p>
         </div>
         <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
-          <Plus size={16} /> New Ticket
+          <Plus size={16} /> {t('newTicket')}
         </button>
       </div>
 
       <div className="card card-shadow">
         {tickets.length === 0 ? (
-          <EmptyState icon={<BrandIcon name="errorIcon" size={48} />} title="No support tickets yet"
-            description="Something not working, a billing question, or an idea for a feature — raise it here."
-            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>New Ticket</button>} />
+          <EmptyState icon={<BrandIcon name="errorIcon" size={48} />} title={t('noTicketsTitle')}
+            description={t('noTicketsDesc')}
+            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>{t('newTicket')}</button>} />
         ) : (
           <div className="table-wrap">
             <table className="table">
-              <thead><tr><th>Subject</th><th>Category</th><th>Submitted</th><th>Status</th></tr></thead>
+              <thead><tr><th>{t('colSubject')}</th><th>{t('colCategory')}</th><th>{t('colSubmitted')}</th><th>{t('colStatus')}</th></tr></thead>
               <tbody>
-                {tickets.map(t => (
-                  <tr key={t.id}>
-                    <td style={{ fontWeight: 600, color: 'var(--navy)' }}>{t.subject}</td>
-                    <td style={{ textTransform: 'capitalize' }}>{CATEGORIES.find(c => c.value === t.category)?.label || t.category}</td>
-                    <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{new Date(t.created_at).toLocaleDateString('en-ZA')}</td>
-                    <td><StatusBadge status={t.status} /></td>
+                {tickets.map(tk => (
+                  <tr key={tk.id}>
+                    <td style={{ fontWeight: 600, color: 'var(--navy)' }}>{tk.subject}</td>
+                    <td>{CATEGORY_VALUES.includes(tk.category) ? t(`categories.${tk.category}`) : tk.category}</td>
+                    <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{new Date(tk.created_at).toLocaleDateString('en-ZA')}</td>
+                    <td><StatusBadge status={tk.status} /></td>
                   </tr>
                 ))}
               </tbody>
@@ -99,22 +94,22 @@ export default function SupportPage() {
         )}
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New Support Ticket"
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('newSupportTicket')}
         footer={<>
-          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>Cancel</button>
-          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? 'Sending…' : 'Submit Ticket'}</button>
+          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{t('cancel')}</button>
+          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? t('sending') : t('submitTicket')}</button>
         </>}>
         <form onSubmit={handleSave}>
-          <Select label="Category" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
-            {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+          <Select label={t('category')} value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}>
+            {CATEGORY_VALUES.map(c => <option key={c} value={c}>{t(`categories.${c}`)}</option>)}
           </Select>
-          <Input label="Subject" required value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} />
-          <Textarea label="Description" required rows={5} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
-          <Select label="Priority" value={form.priority} onChange={e => setForm({ ...form, priority: e.target.value })}>
-            <option value="low">Low</option>
-            <option value="normal">Normal</option>
-            <option value="high">High</option>
-            <option value="urgent">Urgent</option>
+          <Input label={t('subject')} required value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} />
+          <Textarea label={t('description')} required rows={5} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} />
+          <Select label={t('priority')} value={form.priority} onChange={e => setForm({ ...form, priority: e.target.value })}>
+            <option value="low">{t('priorities.low')}</option>
+            <option value="normal">{t('priorities.normal')}</option>
+            <option value="high">{t('priorities.high')}</option>
+            <option value="urgent">{t('priorities.urgent')}</option>
           </Select>
         </form>
       </Modal>

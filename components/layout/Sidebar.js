@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { OpDeskLogo } from './OpDeskLogo'
 import { OPERATOR_MODULES } from '@/lib/constants'
@@ -9,67 +10,81 @@ import {
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
   Shield, MapPin, Crosshair, LogOut, ChevronRight, Bed,
   ClipboardList, UserCheck, DollarSign, Clock, Plane,
-  TrendingUp, Star, Package, Briefcase
+  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck
 } from 'lucide-react'
 
 const ALL_NAV = [
   {
-    section: 'Operations',
+    sectionKey: 'operations',
     items: [
-      { href:'/dashboard',   icon: LayoutDashboard, label:'Dashboard',        module:'always' },
-      { href:'/bookings',    icon: BookOpen,         label:'Bookings',         module:'bookings' },
-      { href:'/calendar',    icon: CalendarDays,     label:'Calendar',         module:'bookings' },
+      { href:'/dashboard',   icon: LayoutDashboard, key:'dashboard',        module:'always' },
+      { href:'/bookings',    icon: BookOpen,         key:'bookings',         module:'bookings' },
+      { href:'/calendar',    icon: CalendarDays,     key:'calendar',         module:'bookings' },
     ]
   },
   {
-    section: 'Staff & HR',
+    sectionKey: 'staffHr',
     items: [
-      { href:'/staff',              icon: Users,       label:'Staff Members',    module:'staff' },
-      { href:'/staff/certifications', icon: UserCheck, label:'Certifications',  module:'certs' },
-      { href:'/staff/costs',        icon: DollarSign,  label:'Cost to Company',  module:'costs' },
-      { href:'/staff/shifts',       icon: Clock,       label:'Shifts',           module:'shifts' },
-      { href:'/staff/leave',        icon: Plane,       label:'Leave',            module:'leave' },
+      { href:'/staff',              icon: Users,       key:'staffMembers',    module:'staff' },
+      { href:'/staff/certifications', icon: UserCheck, key:'certifications',  module:'certs' },
+      { href:'/staff/costs',        icon: DollarSign,  key:'costToCompany',  module:'costs' },
+      { href:'/staff/shifts',       icon: Clock,       key:'shifts',           module:'shifts' },
+      { href:'/staff/leave',        icon: Plane,       key:'leave',            module:'leave' },
     ]
   },
   {
-    section: 'Lodging',
+    sectionKey: 'lodging',
     items: [
-      { href:'/lodging',             icon: Hotel,       label:'Room Overview',    module:'rooms' },
-      { href:'/lodging/rooms',       icon: Bed,         label:'Rooms',            module:'rooms' },
-      { href:'/lodging/calendar',    icon: CalendarDays,label:'Availability',     module:'rooms' },
-      { href:'/lodging/housekeeping',icon: ClipboardList,label:'Housekeeping',    module:'housekeeping' },
-      { href:'/lodging/guests',      icon: Users,       label:'Guests',           module:'rooms' },
+      { href:'/lodging',             icon: Hotel,       key:'roomOverview',    module:'rooms' },
+      { href:'/lodging/rooms',       icon: Bed,         key:'rooms',            module:'rooms' },
+      { href:'/lodging/calendar',    icon: CalendarDays,key:'availability',     module:'rooms' },
+      { href:'/lodging/housekeeping',icon: ClipboardList,key:'housekeeping',    module:'housekeeping' },
+      { href:'/lodging/guests',      icon: Users,       key:'guests',           module:'rooms' },
+      { href:'/lodging/channel-sync',icon: RefreshCw,   key:'channelSync',     module:'rooms' },
     ]
   },
   {
-    section: 'Fleet',
+    sectionKey: 'logistics',
     items: [
-      { href:'/fleet/vehicles', icon: Truck, label:'Vehicles', module:'vehicles' },
-      { href:'/fleet/vessels',  icon: Ship,  label:'Vessels',  module:'vessels' },
+      { href:'/delivery/clients',    icon: Users,       key:'clients',          module:'delivery_clients' },
+      { href:'/delivery/price-list', icon: DollarSign,  key:'priceList',       module:'delivery_clients' },
+      { href:'/delivery/orders',     icon: Package,     key:'orders',           module:'delivery_orders' },
+      { href:'/delivery/statements', icon: FileText,    key:'deliveryStatements', module:'delivery_orders' },
     ]
   },
   {
-    section: 'More',
+    sectionKey: 'fleet',
     items: [
-      { href:'/guides',           icon: UserCheck,   label:'Guides',           module:'guides' },
-      { href:'/trails',           icon: MapPin,       label:'Trails',           module:'trails' },
-      { href:'/firearm-register', icon: Crosshair,   label:'Firearm Register', module:'firearm' },
-      { href:'/invoices',         icon: FileText,    label:'Invoices',         module:'invoices' },
-      { href:'/quotations',       icon: FileText,    label:'Quotations',       module:'quotations' },
-      { href:'/reports',          icon: BarChart3,   label:'Reports',          module:'reports' },
+      { href:'/fleet/vehicles', icon: Truck, key:'vehicles', module:'vehicles' },
+      { href:'/fleet/vessels',  icon: Ship,  key:'vessels',  module:'vessels' },
     ]
   },
   {
-    section: 'Account',
+    sectionKey: 'more',
     items: [
-      { href:'/settings',        icon: Settings,    label:'Settings',  module:'always' },
-      { href:'/settings/addons', icon: Package,     label:'Add-ons',   module:'always' },
-      { href:'/support',         icon: HelpCircle,  label:'Support',   module:'always' },
+      { href:'/guides',           icon: UserCheck,   key:'guides',           module:'guides' },
+      { href:'/trails',           icon: MapPin,       key:'trails',           module:'trails' },
+      { href:'/firearm-register', icon: Crosshair,   key:'firearmRegister', module:'firearm' },
+      { href:'/invoices',         icon: FileText,    key:'invoices',         module:'invoices' },
+      { href:'/invoices/statements', icon: FileText, key:'clientStatements', module:'invoices' },
+      { href:'/quotations',       icon: FileText,    key:'quotations',       module:'quotations' },
+      { href:'/checklists',       icon: ClipboardCheck, key:'checklists',     module:'checklists' },
+      { href:'/reports',          icon: BarChart3,   key:'reports',          module:'reports' },
+    ]
+  },
+  {
+    sectionKey: 'account',
+    items: [
+      { href:'/settings',        icon: Settings,    key:'settings',  module:'always' },
+      { href:'/settings/addons', icon: Package,     key:'addons',   module:'always' },
+      { href:'/settings/public-profile', icon: Globe, key:'publicProfile', module:'always' },
+      { href:'/support',         icon: HelpCircle,  key:'support',   module:'always' },
     ]
   },
 ]
 
 export function Sidebar({ mobileOpen, onClose }) {
+  const t = useTranslations('Sidebar')
   const pathname = usePathname()
   const { company, profile, signOut } = useAuth()
   const operatorType = company?.operator_type || 'safari'
@@ -102,15 +117,15 @@ export function Sidebar({ mobileOpen, onClose }) {
             )
             if (!visibleItems.length) return null
             return (
-              <div key={group.section}>
-                <div className="sidebar-section-label">{group.section}</div>
+              <div key={group.sectionKey}>
+                <div className="sidebar-section-label">{t(`sections.${group.sectionKey}`)}</div>
                 {visibleItems.map(item => {
                   const Icon = item.icon
                   const active = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href))
                   return (
                     <Link key={item.href} href={item.href} className={`nav-item${active ? ' active' : ''}`} onClick={onClose}>
                       <Icon size={16} />
-                      <span style={{ flex:1 }}>{item.label}</span>
+                      <span style={{ flex:1 }}>{t(`items.${item.key}`)}</span>
                       {active && <ChevronRight size={14} />}
                     </Link>
                   )
@@ -121,6 +136,9 @@ export function Sidebar({ mobileOpen, onClose }) {
 
           {profile?.is_superadmin && (
             <div>
+              {/* Superadmin section deliberately stays in English — this is
+                  OpDesk's own team using it, not customers, so translating
+                  it isn't worth the effort relative to everything else. */}
               <div className="sidebar-section-label">Superadmin</div>
               {[
                 { href:'/admin/revenue',   icon: TrendingUp, label:'Revenue' },
@@ -150,7 +168,7 @@ export function Sidebar({ mobileOpen, onClose }) {
         <div style={{ padding:'0.75rem', borderTop:'1px solid rgba(255,255,255,0.08)' }}>
           <button onClick={signOut} className="nav-item" style={{ width:'100%', border:'none', background:'none', cursor:'pointer' }}>
             <LogOut size={16} />
-            <span>Sign Out</span>
+            <span>{t('signOut')}</span>
           </button>
         </div>
       </aside>

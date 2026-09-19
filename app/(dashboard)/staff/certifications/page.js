@@ -1,6 +1,7 @@
 'use client'
 import { BrandIcon } from '@/components/ui/BrandIcon'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -12,10 +13,17 @@ import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { hasModuleAccess } from '@/lib/moduleAccess'
 import { AlertTriangle, Award, Plus } from 'lucide-react'
 
+// Official South African certification/licence designations — kept as-is
+// regardless of UI language, the same way "PDF" or a company's registered
+// name wouldn't be translated. An FGASA qualification is called FGASA
+// whether the page is in French or Afrikaans.
 const CERT_TYPES = ['FGASA', 'PDP', 'Skippers Ticket', 'First Aid', 'Firearm Competency', 'Trail Guide Licence', 'Other']
 const emptyForm = { staff_id: '', cert_type: '', cert_number: '', issuing_body: '', issue_date: '', expiry_date: '', notes: '' }
 
 export default function CertificationsPage() {
+  const t = useTranslations('Certifications')
+  const tCommon = useTranslations('Common')
+  const tStaff = useTranslations('Staff')
   const { company, profile, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
@@ -56,19 +64,19 @@ export default function CertificationsPage() {
     }])
     setSaving(false)
     if (error) { toast.error(error.message); return }
-    toast.success('Certification added')
+    toast.success(t('certAdded'))
     setModalOpen(false); setForm(emptyForm); load()
   }
 
   async function remove(id) {
-    if (!confirm('Delete this certification record?')) return
+    if (!confirm(t('confirmDelete'))) return
     const { error } = await supabase.from('staff_certifications').delete().eq('id', id)
     if (error) { toast.error(error.message); return }
-    toast.success('Deleted')
+    toast.success(t('deleted'))
     load()
   }
 
-  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title="Set up your company first" />
+  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
   if (!access) return <ModuleLocked moduleKey="certifications" />
 
@@ -78,9 +86,9 @@ export default function CertificationsPage() {
   function expiryStatus(dateStr) {
     if (!dateStr) return null
     const d = new Date(dateStr)
-    if (d < today) return { label: 'Expired', color: '#ef4444' }
-    if (d < in30) return { label: 'Expiring soon', color: '#f59e0b' }
-    return { label: 'Valid', color: '#22c55e' }
+    if (d < today) return { label: t('statusExpired'), expired: true, color: '#ef4444' }
+    if (d < in30) return { label: t('statusExpiringSoon'), expired: false, color: '#f59e0b' }
+    return { label: t('statusValid'), expired: false, color: '#22c55e' }
   }
 
   return (
@@ -88,25 +96,25 @@ export default function CertificationsPage() {
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">Certifications</h1>
-          <p className="page-subtitle">{certs.length} record{certs.length === 1 ? '' : 's'}</p>
+          <h1 className="page-title">{t('title')}</h1>
+          <p className="page-subtitle">{certs.length} {certs.length === 1 ? t('recordSingular') : t('recordPlural')}</p>
         </div>
         <button className="btn btn-primary" onClick={() => setModalOpen(true)} disabled={staff.length === 0}>
-          <Plus size={16} /> Add Certification
+          <Plus size={16} /> {t('addCertification')}
         </button>
       </div>
 
       <div className="card card-shadow">
         {staff.length === 0 ? (
-          <EmptyState icon={<BrandIcon name="addStaff" size={48} />} title="Add staff first" description="You need at least one active staff member before adding a certification." />
+          <EmptyState icon={<BrandIcon name="addStaff" size={48} />} title={t('addStaffFirstTitle')} description={t('addStaffFirstDesc')} />
         ) : certs.length === 0 ? (
-          <EmptyState icon={<Award size={40} color="var(--gray-400)" />} title="No certifications yet"
-            description="Track FGASA, PDP, skippers tickets, first aid and other qualifications with expiry alerts."
-            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>Add Certification</button>} />
+          <EmptyState icon={<Award size={40} color="var(--gray-400)" />} title={t('noCertsTitle')}
+            description={t('noCertsDesc')}
+            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>{t('addCertification')}</button>} />
         ) : (
           <div className="table-wrap">
             <table className="table">
-              <thead><tr><th>Staff</th><th>Type</th><th>Cert #</th><th>Issuing Body</th><th>Expiry</th><th>Status</th></tr></thead>
+              <thead><tr><th>{t('colStaff')}</th><th>{t('colType')}</th><th>{t('colCertNumber')}</th><th>{t('colIssuingBody')}</th><th>{t('colExpiry')}</th><th>{t('colStatus')}</th></tr></thead>
               <tbody>
                 {certs.map(c => {
                   const st = expiryStatus(c.expiry_date)
@@ -120,13 +128,13 @@ export default function CertificationsPage() {
                       <td>
                         {st && (
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: st.color, fontSize: '0.75rem', fontWeight: 700 }}>
-                            {st.label === 'Expired' && <AlertTriangle size={12} />} {st.label}
+                            {st.expired && <AlertTriangle size={12} />} {st.label}
                           </span>
                         )}
                       </td>
                       <td>
                         <button onClick={() => remove(c.id)} style={{ color: 'var(--red, #ef4444)', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: 600 }}>
-                          Delete
+                          {tStaff('delete')}
                         </button>
                       </td>
                     </tr>
@@ -138,27 +146,27 @@ export default function CertificationsPage() {
         )}
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Add Certification"
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('addCertification')}
         footer={<>
-          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>Cancel</button>
-          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? 'Saving…' : 'Add Certification'}</button>
+          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{tStaff('cancel')}</button>
+          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? tStaff('saving') : t('addCertification')}</button>
         </>}>
         <form onSubmit={handleSave}>
-          <Select label="Staff Member" required value={form.staff_id} onChange={e => setForm({ ...form, staff_id: e.target.value })}>
-            <option value="">Select…</option>
+          <Select label={tStaff('staffMember')} required value={form.staff_id} onChange={e => setForm({ ...form, staff_id: e.target.value })}>
+            <option value="">{tStaff('select')}</option>
             {staff.map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
           </Select>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-            <Select label="Certification Type" required value={form.cert_type} onChange={e => setForm({ ...form, cert_type: e.target.value })}>
-              <option value="">Select…</option>
-              {CERT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+            <Select label={t('certificationType')} required value={form.cert_type} onChange={e => setForm({ ...form, cert_type: e.target.value })}>
+              <option value="">{tStaff('select')}</option>
+              {CERT_TYPES.map(ct => <option key={ct} value={ct}>{ct}</option>)}
             </Select>
-            <Input label="Certificate Number" value={form.cert_number} onChange={e => setForm({ ...form, cert_number: e.target.value })} />
-            <Input label="Issuing Body" value={form.issuing_body} onChange={e => setForm({ ...form, issuing_body: e.target.value })} />
-            <Input label="Issue Date" type="date" value={form.issue_date} onChange={e => setForm({ ...form, issue_date: e.target.value })} />
-            <Input label="Expiry Date" type="date" value={form.expiry_date} onChange={e => setForm({ ...form, expiry_date: e.target.value })} />
+            <Input label={t('certificateNumber')} value={form.cert_number} onChange={e => setForm({ ...form, cert_number: e.target.value })} />
+            <Input label={t('issuingBody')} value={form.issuing_body} onChange={e => setForm({ ...form, issuing_body: e.target.value })} />
+            <Input label={t('issueDate')} type="date" value={form.issue_date} onChange={e => setForm({ ...form, issue_date: e.target.value })} />
+            <Input label={t('expiryDate')} type="date" value={form.expiry_date} onChange={e => setForm({ ...form, expiry_date: e.target.value })} />
           </div>
-          <Textarea label="Notes" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
+          <Textarea label={tStaff('notes')} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
         </form>
       </Modal>
     </div>

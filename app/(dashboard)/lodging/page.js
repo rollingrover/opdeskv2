@@ -1,6 +1,7 @@
 'use client'
 import { BrandIcon } from '@/components/ui/BrandIcon'
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -18,6 +19,10 @@ import Link from 'next/link'
 const emptyForm = { name: '', room_type: 'double', floor: '', capacity: 2, rate_per_night: 0, status: 'available' }
 
 export default function LodgingPage() {
+  const t = useTranslations('Lodging')
+  const tSidebar = useTranslations('Sidebar')
+  const tCommon = useTranslations('Common')
+  const tStatus = useTranslations('StatusBadge')
   const { company, profile, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
@@ -54,11 +59,11 @@ export default function LodgingPage() {
     }])
     setSaving(false)
     if (error) { toast.error(error.message); return }
-    toast.success('Room added')
+    toast.success(t('roomAdded'))
     setModalOpen(false); setForm(emptyForm); load()
   }
 
-  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title="Set up your company first" />
+  if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
   const occupied = rooms.filter(r => r.status === 'occupied').length
@@ -70,20 +75,20 @@ export default function LodgingPage() {
       <LimitBanner resourceKey="rooms" limitInfo={roomsLimit} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">Room Overview</h1>
-          <p className="page-subtitle">{occupied}/{rooms.length} occupied tonight</p>
+          <h1 className="page-title">{t('title')}</h1>
+          <p className="page-subtitle">{occupied}/{rooms.length} {t('occupiedTonight')}</p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <Link href="/lodging/housekeeping" className="btn btn-outline btn-sm">Housekeeping</Link>
-          <Link href="/lodging/guests" className="btn btn-outline btn-sm">Guests</Link>
-          <button className="btn btn-primary" onClick={() => setModalOpen(true)}><Plus size={16} /> Add Room</button>
+          <Link href="/lodging/housekeeping" className="btn btn-outline btn-sm">{tSidebar('items.housekeeping')}</Link>
+          <Link href="/lodging/guests" className="btn btn-outline btn-sm">{tSidebar('items.guests')}</Link>
+          <button className="btn btn-primary" onClick={() => setModalOpen(true)}><Plus size={16} /> {t('addRoom')}</button>
         </div>
       </div>
 
       {rooms.length === 0 ? (
         <div className="card card-shadow">
-          <EmptyState icon={<BrandIcon name="noRooms" size={48} />} title="No rooms yet" description="Add your rooms to start tracking occupancy."
-            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>Add Room</button>} />
+          <EmptyState icon={<BrandIcon name="noRooms" size={48} />} title={t('noRoomsTitle')} description={t('noRoomsDesc')}
+            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>{t('addRoom')}</button>} />
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1rem' }}>
@@ -96,31 +101,31 @@ export default function LodgingPage() {
                 </div>
                 <StatusBadge status={r.status} />
               </div>
-              <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--gray-500)', textTransform: 'capitalize' }}>{r.room_type?.replace(/_/g, ' ')} · sleeps {r.capacity}</p>
-              <p style={{ margin: '0.375rem 0 0', fontSize: '0.875rem', fontWeight: 600, color: 'var(--navy)' }}>{r.currency} {Number(r.rate_per_night).toLocaleString()}/night</p>
+              <p style={{ margin: 0, fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{t(`types.${r.room_type}`)} · {t('sleeps')} {r.capacity}</p>
+              <p style={{ margin: '0.375rem 0 0', fontSize: '0.875rem', fontWeight: 600, color: 'var(--navy)' }}>{r.currency} {Number(r.rate_per_night).toLocaleString()}{t('perNight')}</p>
             </div>
           ))}
         </div>
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Add Room"
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('addRoom')}
         footer={<>
-          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>Cancel</button>
-          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? 'Saving…' : 'Add Room'}</button>
+          <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{t('cancel')}</button>
+          <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? t('saving') : t('addRoom')}</button>
         </>}>
         <form onSubmit={handleSave}>
-          <Input label="Room Name" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+          <Input label={t('roomName')} required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-            <Select label="Room Type" value={form.room_type} onChange={e => setForm({ ...form, room_type: e.target.value })}>
-              {ROOM_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+            <Select label={t('roomType')} value={form.room_type} onChange={e => setForm({ ...form, room_type: e.target.value })}>
+              {ROOM_TYPES.map(rt => <option key={rt.value} value={rt.value}>{t(`types.${rt.value}`)}</option>)}
             </Select>
-            <Input label="Floor" type="number" value={form.floor} onChange={e => setForm({ ...form, floor: e.target.value })} />
-            <Input label="Capacity" type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
-            <Input label={`Rate / Night (${company.currency})`} type="number" step="0.01" value={form.rate_per_night} onChange={e => setForm({ ...form, rate_per_night: e.target.value })} />
-            <Select label="Status" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-              <option value="available">Available</option>
-              <option value="occupied">Occupied</option>
-              <option value="maintenance">Maintenance</option>
+            <Input label={t('floor')} type="number" value={form.floor} onChange={e => setForm({ ...form, floor: e.target.value })} />
+            <Input label={t('capacity')} type="number" min="1" value={form.capacity} onChange={e => setForm({ ...form, capacity: e.target.value })} />
+            <Input label={`${t('ratePerNight')} (${company.currency})`} type="number" step="0.01" value={form.rate_per_night} onChange={e => setForm({ ...form, rate_per_night: e.target.value })} />
+            <Select label={t('status')} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+              <option value="available">{tStatus('available')}</option>
+              <option value="occupied">{tStatus('occupied')}</option>
+              <option value="maintenance">{tStatus('maintenance')}</option>
             </Select>
           </div>
         </form>

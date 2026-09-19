@@ -1,4 +1,6 @@
 'use client'
+import { useTranslations } from 'next-intl'
+
 export function Badge({ children, color = 'gray', dot = false }) {
   return (
     <span className={`badge badge-${color}`}>
@@ -8,32 +10,18 @@ export function Badge({ children, color = 'gray', dot = false }) {
   )
 }
 
+const STATUS_COLORS = {
+  pending:'amber', confirmed:'green', completed:'blue', cancelled:'red', no_show:'gray',
+  active:'green', inactive:'gray', available:'green', in_use:'blue', occupied:'blue', maintenance:'amber',
+  valid:'green', expiring_soon:'amber', expired:'red', clean:'green', dirty:'red',
+  open:'blue', resolved:'green', draft:'gray', sent:'blue', paid:'green', overdue:'red',
+  accepted:'green', declined:'red', scheduled:'amber', approved:'green',
+  in_progress:'amber', closed:'gray',
+}
+
 export function StatusBadge({ status }) {
-  const map = {
-    pending:    { color:'amber', label:'Pending' },
-    confirmed:  { color:'green', label:'Confirmed' },
-    completed:  { color:'blue',  label:'Completed' },
-    cancelled:  { color:'red',   label:'Cancelled' },
-    no_show:    { color:'gray',  label:'No Show' },
-    active:     { color:'green', label:'Active' },
-    inactive:   { color:'gray',  label:'Inactive' },
-    available:  { color:'green', label:'Available' },
-    in_use:     { color:'blue',  label:'In Use' },
-    maintenance:{ color:'amber', label:'Maintenance' },
-    valid:      { color:'green', label:'Valid' },
-    expiring_soon:{ color:'amber',label:'Expiring Soon' },
-    expired:    { color:'red',   label:'Expired' },
-    clean:      { color:'green', label:'Clean' },
-    dirty:      { color:'red',   label:'Dirty' },
-    open:       { color:'blue',  label:'Open' },
-    resolved:   { color:'green', label:'Resolved' },
-    draft:      { color:'gray',  label:'Draft' },
-    sent:       { color:'blue',  label:'Sent' },
-    paid:       { color:'green', label:'Paid' },
-    overdue:    { color:'red',   label:'Overdue' },
-    accepted:   { color:'green', label:'Accepted' },
-    declined:   { color:'red',   label:'Declined' },
-  }
-  const { color, label } = map[status] || { color:'gray', label: status }
+  const t = useTranslations('StatusBadge')
+  const color = STATUS_COLORS[status] || 'gray'
+  const label = STATUS_COLORS[status] ? t(status) : status
   return <Badge color={color} dot>{label}</Badge>
 }

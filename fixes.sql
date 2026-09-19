@@ -1137,3 +1137,734 @@ create policy subscription_payments_select on public.subscription_payments for s
 -- No insert/update policy for any client role — this table is only ever
 -- written by the PayFast ITN webhook, which uses the service-role key and
 -- bypasses RLS entirely (see app/api/payfast/notify/route.js).
+-- ============================================================================
+-- OpDesk — iCal channel sync (Airbnb/Booking.com busy-date sync)
+-- ============================================================================
+
+-- Each room gets a stable, unguessable export token — this is what goes in
+-- the iCal URL you paste into Airbnb/Booking.com's "import calendar" field.
+-- It's not a secret in the security sense (an iCal feed only exposes busy/
+-- free dates, no guest data), just unguessable enough that someone can't
+-- enumerate every room's feed by trying sequential IDs.
+alter table public.rooms add column if not exists ical_export_token uuid default gen_random_uuid();
+
+-- Where to pull external busy-dates FROM (the iCal export URL Airbnb/
+-- Booking.com already give you in their own calendar settings).
+create table if not exists public.room_ical_feeds (
+  id uuid primary key default gen_random_uuid(),
+  room_id uuid not null references public.rooms(id) on delete cascade,
+  company_id uuid not null references public.companies(id),
+  source_name text not null default 'other',  -- airbnb | booking_com | other
+  feed_url text not null,
+  last_synced_at timestamptz,
+  last_sync_status text,   -- ok | error
+  last_sync_error text,
+  created_at timestamptz not null default now()
+);
+
+grant select, insert, update, delete on public.room_ical_feeds to authenticated;
+alter table public.room_ical_feeds enable row level security;
+
+drop policy if exists room_ical_feeds_select on public.room_ical_feeds;
+create policy room_ical_feeds_select on public.room_ical_feeds for select
+  using (company_id = public.current_company_id() or public.is_superadmin());
+
+drop policy if exists room_ical_feeds_insert on public.room_ical_feeds;
+create policy room_ical_feeds_insert on public.room_ical_feeds for insert
+  with check (company_id = public.current_company_id());
+
+drop policy if exists room_ical_feeds_update on public.room_ical_feeds;
+create policy room_ical_feeds_update on public.room_ical_feeds for update
+  using (company_id = public.current_company_id())
+  with check (company_id = public.current_company_id());
+
+drop policy if exists room_ical_feeds_delete on public.room_ical_feeds;
+create policy room_ical_feeds_delete on public.room_ical_feeds for delete
+  using (company_id = public.current_company_id() or public.is_superadmin());
+
+-- Busy date ranges pulled in from external feeds. Deliberately NOT the same
+-- table as real bookings — these carry no guest info, they're just "this
+-- room is unavailable" markers from another platform, so the app can tell
+-- them apart from a genuine OpDesk booking everywhere they're displayed.
+create table if not exists public.room_blocked_dates (
+  id uuid primary key default gen_random_uuid(),
+  room_id uuid not null references public.rooms(id) on delete cascade,
+  company_id uuid not null references public.companies(id),
+  feed_id uuid references public.room_ical_feeds(id) on delete cascade,
+  source_name text not null default 'other',
+  external_uid text,        -- the UID from the external VEVENT, for de-duping on re-sync
+  start_date date not null,
+  end_date date not null,
+  synced_at timestamptz not null default now()
+);
+
+grant select on public.room_blocked_dates to authenticated;
+alter table public.room_blocked_dates enable row level security;
+
+drop policy if exists room_blocked_dates_select on public.room_blocked_dates;
+create policy room_blocked_dates_select on public.room_blocked_dates for select
+  using (company_id = public.current_company_id() or public.is_superadmin());
+-- No client insert/update/delete policy — only the sync cron job (service
+-- role) writes these, same reasoning as subscription_payments earlier.
+
+-- Add-on: iCal channel sync, gated Professional+ or purchasable individually.
+insert into public.addon_pricing (addon_key, monthly_price, annual_price)
+select 'ical_sync', 149, 1490
+where not exists (select 1 from public.addon_pricing where addon_key = 'ical_sync');
+
+update public.marketing_packages
+set modules = modules || jsonb_build_object('ical_sync', true)
+where slug in ('professional', 'enterprise', 'lodge-professional', 'lodge-enterprise');
+
+update public.marketing_packages
+set modules = modules || jsonb_build_object('ical_sync', false)
+where slug not in ('professional', 'enterprise', 'lodge-professional', 'lodge-enterprise');
+-- ============================================================================
+-- OpDesk — Delivery & Supply Services vertical: clients, price list with
+-- history, orders with snapshotted line-item prices, mixed staff/casual
+-- worker costing, payments and statements
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 1. Clients — the lodges/businesses a supplier delivers to. Distinct from
+-- OpDesk's own tenant concept and from tourist "guests" used elsewhere —
+-- this is the supplier's own running-account customer list.
+-- ----------------------------------------------------------------------------
+create table if not exists public.delivery_clients (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id),
+  name text not null,
+  contact_person text,
+  phone text,
+  email text,
+  delivery_address text,
+  notes text,
+  active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+-- ----------------------------------------------------------------------------
+-- 2. Stock items (price list) + price history. current_cost/sell_price are
+-- always "what it is right now"; every change is logged to
+-- stock_price_history rather than overwritten, so past prices stay visible.
+-- ----------------------------------------------------------------------------
+create table if not exists public.stock_items (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id),
+  name text not null,
+  unit text,
+  current_cost_price numeric not null default 0,
+  current_sell_price numeric not null default 0,
+  active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.stock_price_history (
+  id uuid primary key default gen_random_uuid(),
+  stock_item_id uuid not null references public.stock_items(id) on delete cascade,
+  company_id uuid not null references public.companies(id),
+  cost_price numeric not null,
+  sell_price numeric not null,
+  effective_date date not null default current_date,
+  created_at timestamptz not null default now()
+);
+
+-- Log a history row automatically whenever a stock item's prices change —
+-- this is the mechanism that actually satisfies "keep track of prices,
+-- older prices": nobody has to remember to log it, it's captured for free
+-- the moment they update a price.
+create or replace function public.log_stock_price_change()
+returns trigger language plpgsql as $$
+begin
+  if (tg_op = 'INSERT') or
+     (new.current_cost_price is distinct from old.current_cost_price) or
+     (new.current_sell_price is distinct from old.current_sell_price) then
+    insert into public.stock_price_history (stock_item_id, company_id, cost_price, sell_price)
+    values (new.id, new.company_id, new.current_cost_price, new.current_sell_price);
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_log_stock_price_change on public.stock_items;
+create trigger trg_log_stock_price_change
+  after insert or update on public.stock_items
+  for each row execute function public.log_stock_price_change();
+
+-- ----------------------------------------------------------------------------
+-- 3. Orders + line items. Line items snapshot the price at order time
+-- (item_name, unit_cost_price, unit_sell_price) rather than referencing the
+-- live stock_items row — prices change weekly, and a three-week-old order
+-- must keep showing what was actually charged then, not silently update
+-- when this week's price list changes.
+-- ----------------------------------------------------------------------------
+create table if not exists public.delivery_orders (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id),
+  client_id uuid not null references public.delivery_clients(id),
+  order_ref text not null,
+  order_date date not null default current_date,
+  vehicle_id uuid references public.vehicles(id),
+  vehicle_cost_estimate numeric not null default 0,
+  status text not null default 'draft',  -- draft | delivered | invoiced | paid
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.delivery_order_items (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references public.delivery_orders(id) on delete cascade,
+  stock_item_id uuid references public.stock_items(id),
+  item_name text not null,
+  unit text,
+  quantity numeric not null,
+  unit_cost_price numeric not null,
+  unit_sell_price numeric not null,
+  created_at timestamptz not null default now()
+);
+
+-- Drivers and loaders on an order — either a real staff member (cost pulled
+-- from their Cost to Company record) or casual/day labor (a name and a flat
+-- manual cost). Both roles support either kind, since a delivery business
+-- might use a casual relief driver just as often as a casual loader.
+create table if not exists public.delivery_order_workers (
+  id uuid primary key default gen_random_uuid(),
+  order_id uuid not null references public.delivery_orders(id) on delete cascade,
+  role text not null,  -- 'driver' | 'loader'
+  staff_id uuid references public.staff(id),
+  casual_name text,
+  cost numeric not null default 0,
+  created_at timestamptz not null default now(),
+  constraint worker_is_staff_or_casual check (
+    (staff_id is not null and casual_name is null) or
+    (staff_id is null and casual_name is not null)
+  )
+);
+
+-- ----------------------------------------------------------------------------
+-- 4. Client payments — a running ledger against a client's account, not
+-- necessarily one-to-one with a single order (suppliers are often paid in
+-- batches covering several deliveries at once).
+-- ----------------------------------------------------------------------------
+create table if not exists public.delivery_client_payments (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id),
+  client_id uuid not null references public.delivery_clients(id),
+  amount numeric not null,
+  payment_date date not null default current_date,
+  method text,
+  reference text,
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+
+-- ----------------------------------------------------------------------------
+-- 5. RLS — standard tenant-scoped pattern used throughout the rest of the app
+-- ----------------------------------------------------------------------------
+do $$
+declare
+  t text;
+begin
+  for t in select unnest(array[
+    'delivery_clients', 'stock_items', 'stock_price_history',
+    'delivery_orders', 'delivery_order_items', 'delivery_order_workers',
+    'delivery_client_payments'
+  ])
+  loop
+    execute format('grant select, insert, update, delete on public.%I to authenticated', t);
+    execute format('alter table public.%I enable row level security', t);
+  end loop;
+end $$;
+
+-- Tables with a direct company_id column get the simple policy set.
+do $$
+declare
+  t text;
+begin
+  for t in select unnest(array[
+    'delivery_clients', 'stock_items', 'stock_price_history',
+    'delivery_orders', 'delivery_client_payments'
+  ])
+  loop
+    execute format('drop policy if exists %I_select on public.%I', t, t);
+    execute format('create policy %I_select on public.%I for select using (company_id = public.current_company_id() or public.is_superadmin())', t, t);
+    execute format('drop policy if exists %I_insert on public.%I', t, t);
+    execute format('create policy %I_insert on public.%I for insert with check (company_id = public.current_company_id())', t, t);
+    execute format('drop policy if exists %I_update on public.%I', t, t);
+    execute format('create policy %I_update on public.%I for update using (company_id = public.current_company_id()) with check (company_id = public.current_company_id())', t, t);
+    execute format('drop policy if exists %I_delete on public.%I', t, t);
+    execute format('create policy %I_delete on public.%I for delete using (company_id = public.current_company_id() or public.is_superadmin())', t, t);
+  end loop;
+end $$;
+
+-- delivery_order_items and delivery_order_workers scope via their parent
+-- order's company_id (they have no company_id column of their own).
+drop policy if exists delivery_order_items_select on public.delivery_order_items;
+create policy delivery_order_items_select on public.delivery_order_items for select
+  using (exists (select 1 from public.delivery_orders o where o.id = order_id and (o.company_id = public.current_company_id() or public.is_superadmin())));
+drop policy if exists delivery_order_items_insert on public.delivery_order_items;
+create policy delivery_order_items_insert on public.delivery_order_items for insert
+  with check (exists (select 1 from public.delivery_orders o where o.id = order_id and o.company_id = public.current_company_id()));
+drop policy if exists delivery_order_items_update on public.delivery_order_items;
+create policy delivery_order_items_update on public.delivery_order_items for update
+  using (exists (select 1 from public.delivery_orders o where o.id = order_id and o.company_id = public.current_company_id()));
+drop policy if exists delivery_order_items_delete on public.delivery_order_items;
+create policy delivery_order_items_delete on public.delivery_order_items for delete
+  using (exists (select 1 from public.delivery_orders o where o.id = order_id and (o.company_id = public.current_company_id() or public.is_superadmin())));
+
+drop policy if exists delivery_order_workers_select on public.delivery_order_workers;
+create policy delivery_order_workers_select on public.delivery_order_workers for select
+  using (exists (select 1 from public.delivery_orders o where o.id = order_id and (o.company_id = public.current_company_id() or public.is_superadmin())));
+drop policy if exists delivery_order_workers_insert on public.delivery_order_workers;
+create policy delivery_order_workers_insert on public.delivery_order_workers for insert
+  with check (exists (select 1 from public.delivery_orders o where o.id = order_id and o.company_id = public.current_company_id()));
+drop policy if exists delivery_order_workers_update on public.delivery_order_workers;
+create policy delivery_order_workers_update on public.delivery_order_workers for update
+  using (exists (select 1 from public.delivery_orders o where o.id = order_id and o.company_id = public.current_company_id()));
+drop policy if exists delivery_order_workers_delete on public.delivery_order_workers;
+create policy delivery_order_workers_delete on public.delivery_order_workers for delete
+  using (exists (select 1 from public.delivery_orders o where o.id = order_id and (o.company_id = public.current_company_id() or public.is_superadmin())));
+
+
+-- ----------------------------------------------------------------------------
+-- 6. Gating — new module, Professional+ or purchasable individually,
+-- same pattern as Certifications/Shifts/Quotations/iCal Sync.
+-- ----------------------------------------------------------------------------
+insert into public.addon_pricing (addon_key, monthly_price, annual_price)
+select 'delivery_management', 199, 1990
+where not exists (select 1 from public.addon_pricing where addon_key = 'delivery_management');
+
+update public.marketing_packages
+set modules = modules || jsonb_build_object('delivery_management', true)
+where slug in ('professional', 'enterprise', 'lodge-professional', 'lodge-enterprise');
+
+update public.marketing_packages
+set modules = modules || jsonb_build_object('delivery_management', false)
+where slug not in ('professional', 'enterprise', 'lodge-professional', 'lodge-enterprise');
+-- ============================================================================
+-- OpDesk — Bookkeeper/accounts officer email (ungated, every plan) + PDF
+-- statement infrastructure support
+-- ============================================================================
+
+-- Every company can set an accounts/bookkeeping contact — this is basic
+-- infrastructure, not a premium feature, so it's deliberately not gated
+-- behind any tier the way Certifications/Shifts/etc. are.
+alter table public.companies add column if not exists bookkeeper_email text;
+-- ============================================================================
+-- OpDesk — Logistics & Support Services: dedicated package ladder, job
+-- types, and tiered feature gating (vehicle cost suggestions, advanced
+-- reporting) reusing the existing limits/modules jsonb pattern
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 1. Job types — generalizes the existing Orders model to cover trade/
+-- maintenance callouts and errand/procurement runs, not just bulk stock
+-- delivery. Defaulting existing rows to 'delivery' preserves everything
+-- your current customer already has.
+-- ----------------------------------------------------------------------------
+alter table public.delivery_orders add column if not exists job_type text not null default 'delivery';
+-- job_type: delivery | maintenance | errand | procurement | other
+
+-- ----------------------------------------------------------------------------
+-- 2. The new operator type + Logistics & Support Services packages.
+-- Free/Basic/Standard match the existing ladders' price points; Professional
+-- and Enterprise are priced lower, reflecting a newer, less-proven vertical
+-- with typically thinner-margin customers (tradespeople, small delivery ops)
+-- than an established lodge or safari operator.
+--
+-- Feature gating for this vertical reuses the existing `limits` jsonb on
+-- marketing_packages rather than inventing a new gating mechanism:
+--   clients, orders_per_month   — numeric caps, same pattern as rooms/vehicles
+--   vehicle_cost_suggestions    — Standard+: suggests an average cost per
+--                                 vehicle from past orders instead of a blank field
+--   recurring_orders            — Professional+: repeat-order templates (not yet built — see summary)
+--   advanced_reporting          — Professional+: profit trend + client ranking
+--   quoted_vs_actual            — Enterprise: quote vs. real cost tracking (not yet built)
+--   cost_breakdown_analytics    — Enterprise: cost-mix analytics + CSV export (not yet built)
+-- ----------------------------------------------------------------------------
+insert into public.marketing_packages (name, slug, tagline, monthly_price, annual_price, badge, recommended_for, limits, modules, sort_order)
+select * from (values
+  ('Logistics Free', 'logistics-free', 'Try it out — a single client, light volume', 0, 0, null,
+   ARRAY['delivery']::text[],
+   '{"clients":1,"orders_per_month":20,"vehicle_cost_suggestions":false,"recurring_orders":false,"advanced_reporting":false,"quoted_vs_actual":false,"cost_breakdown_analytics":false}'::jsonb,
+   '{"certifications":false,"shifts":false,"costs":false,"leave":false}'::jsonb, 20),
+  ('Logistics Basic', 'logistics-basic', 'Solo operators and small delivery runs', 299, 2990, null,
+   ARRAY['delivery']::text[],
+   '{"clients":5,"orders_per_month":null,"vehicle_cost_suggestions":false,"recurring_orders":false,"advanced_reporting":false,"quoted_vs_actual":false,"cost_breakdown_analytics":false}'::jsonb,
+   '{"certifications":false,"shifts":false,"costs":false,"leave":false}'::jsonb, 21),
+  ('Logistics Standard', 'logistics-standard', 'Growing supply, trade, and errand businesses', 999, 9990, 'Most Popular',
+   ARRAY['delivery']::text[],
+   '{"clients":20,"orders_per_month":null,"vehicle_cost_suggestions":true,"recurring_orders":false,"advanced_reporting":false,"quoted_vs_actual":false,"cost_breakdown_analytics":false}'::jsonb,
+   '{"certifications":false,"shifts":true,"costs":false,"leave":true}'::jsonb, 22),
+  ('Logistics Professional', 'logistics-professional', 'Multi-client operations with real reporting needs', 1899, 18990, null,
+   ARRAY['delivery']::text[],
+   '{"clients":null,"orders_per_month":null,"vehicle_cost_suggestions":true,"recurring_orders":true,"advanced_reporting":true,"quoted_vs_actual":false,"cost_breakdown_analytics":false}'::jsonb,
+   '{"certifications":true,"shifts":true,"costs":false,"leave":true}'::jsonb, 23),
+  ('Logistics Enterprise', 'logistics-enterprise', 'Established logistics and support service operations', 3699, 36990, null,
+   ARRAY['delivery']::text[],
+   '{"clients":null,"orders_per_month":null,"vehicle_cost_suggestions":true,"recurring_orders":true,"advanced_reporting":true,"quoted_vs_actual":true,"cost_breakdown_analytics":true}'::jsonb,
+   '{"certifications":true,"shifts":true,"costs":true,"leave":true}'::jsonb, 24)
+) as v(name,slug,tagline,monthly_price,annual_price,badge,recommended_for,limits,modules,sort_order)
+where not exists (select 1 from public.marketing_packages where slug = v.slug);
+-- ============================================================================
+-- OpDesk — Public Operator Profiles (marketing-only, no booking/payment)
+-- Free on every plan.
+-- ============================================================================
+
+-- Opt-in flags, deliberately separate — a lodge might want a public
+-- description and photos without ever exposing live availability, or vice
+-- versa. Both default to false: this is opt-IN, never opt-out.
+alter table public.companies add column if not exists public_profile_enabled boolean not null default false;
+alter table public.companies add column if not exists public_calendar_enabled boolean not null default false;
+alter table public.companies add column if not exists public_description text;
+alter table public.companies add column if not exists public_slug text unique;
+
+-- current_company_id() was previously only granted to `authenticated` —
+-- fine until now, since anon never needed to touch a table gated partly by
+-- it. With public profiles, Postgres evaluates every RLS policy on a table
+-- together (even ones that don't end up applying to the caller's role), so
+-- if evaluating company_photos_select_own's call to this function raises a
+-- permission error for anon, the WHOLE query fails — even though the
+-- separate company_photos_select_public policy would have legitimately
+-- allowed the row. The function itself is safe to expose: it just returns
+-- NULL when there's no matching profile, which is exactly the anon case.
+grant execute on function public.current_company_id() to anon;
+grant execute on function public.is_superadmin() to anon;
+
+-- RLS controls which ROWS are visible, not which COLUMNS — so a plain
+-- public-read policy on `companies` itself would leak email, billing, and
+-- subscription internals for any company that opts into a public profile.
+-- This function answers only "yes/no, does this company have profiles
+-- turned on" without exposing anything else, the same safe pattern
+-- current_company_id()/is_superadmin() already use.
+create or replace function public.company_has_public_profile(p_company_id uuid)
+returns boolean language sql stable security definer set search_path = public
+as $$
+  select exists (select 1 from public.companies where id = p_company_id and public_profile_enabled = true)
+$$;
+grant execute on function public.company_has_public_profile(uuid) to anon, authenticated;
+
+-- The actual data source for public profile pages — a narrow view exposing
+-- ONLY fields that are genuinely meant to be public, never the base table
+-- directly (which anon correctly cannot read at all).
+create or replace view public.public_operator_profiles as
+select id, name, public_slug, public_description, operator_type, country, public_calendar_enabled, created_at
+from public.companies
+where public_profile_enabled = true and public_slug is not null;
+
+grant select on public.public_operator_profiles to anon, authenticated;
+
+-- Exposes ONLY start/end dates for a company's bookings, never guest names,
+-- amounts, or any other detail — and only when that company has explicitly
+-- opted into public_calendar_enabled. This is the same busy/free-only
+-- principle already used for the Airbnb/Booking.com iCal sync, applied here
+-- to the public profile page instead.
+create or replace function public.get_public_busy_dates(p_company_id uuid)
+returns table(start_date date, end_date date)
+language sql stable security definer set search_path = public
+as $$
+  select b.start_date, b.end_date
+  from public.bookings b
+  where b.company_id = p_company_id
+    and exists (
+      select 1 from public.companies c
+      where c.id = p_company_id and c.public_profile_enabled = true and c.public_calendar_enabled = true
+    )
+$$;
+grant execute on function public.get_public_busy_dates(uuid) to anon, authenticated;
+
+-- Photos — metadata only; the actual image bytes live in Supabase Storage
+-- (see the bucket + storage policies below).
+create table if not exists public.company_photos (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id) on delete cascade,
+  storage_path text not null,
+  caption text,
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
+);
+
+grant select, insert, update, delete on public.company_photos to authenticated;
+grant select on public.company_photos to anon; -- public profile pages need to read these without a session
+alter table public.company_photos enable row level security;
+
+drop policy if exists company_photos_select_own on public.company_photos;
+create policy company_photos_select_own on public.company_photos for select
+  using (company_id = public.current_company_id() or public.is_superadmin());
+
+-- Separate, additional read policy: anyone (including anonymous visitors)
+-- can see photos for a company that has actually opted into a public
+-- profile — this is what makes /operators/[slug] work without a login.
+drop policy if exists company_photos_select_public on public.company_photos;
+create policy company_photos_select_public on public.company_photos for select
+  using (public.company_has_public_profile(company_id));
+
+drop policy if exists company_photos_insert on public.company_photos;
+create policy company_photos_insert on public.company_photos for insert
+  with check (company_id = public.current_company_id());
+drop policy if exists company_photos_update on public.company_photos;
+create policy company_photos_update on public.company_photos for update
+  using (company_id = public.current_company_id());
+drop policy if exists company_photos_delete on public.company_photos;
+create policy company_photos_delete on public.company_photos for delete
+  using (company_id = public.current_company_id() or public.is_superadmin());
+
+-- ----------------------------------------------------------------------------
+-- Storage bucket for the actual photo files. Public read (profile photos
+-- are meant to be publicly viewable once a company opts in — access control
+-- for WHICH companies show up happens at the app/query level via
+-- public_profile_enabled, same as any other public marketing image), write
+-- restricted to a company's own folder path (company_id/filename.jpg).
+-- ----------------------------------------------------------------------------
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+select 'company-photos', 'company-photos', true, 5242880, array['image/jpeg','image/png','image/webp']
+where not exists (select 1 from storage.buckets where id = 'company-photos');
+
+drop policy if exists company_photos_storage_read on storage.objects;
+create policy company_photos_storage_read on storage.objects for select
+  using (bucket_id = 'company-photos');
+
+drop policy if exists company_photos_storage_insert on storage.objects;
+create policy company_photos_storage_insert on storage.objects for insert
+  with check (bucket_id = 'company-photos' and (storage.foldername(name))[1] = public.current_company_id()::text);
+
+drop policy if exists company_photos_storage_delete on storage.objects;
+create policy company_photos_storage_delete on storage.objects for delete
+  using (bucket_id = 'company-photos' and (storage.foldername(name))[1] = public.current_company_id()::text);
+-- ============================================================================
+-- OpDesk — Real payment capture and statements for the general Invoices
+-- module (previously "Paid" was just a manually-picked status with no
+-- actual payment record behind it — no amount, no date, no partial
+-- payments). Applies the same pattern already built and tested for the
+-- Logistics vertical.
+-- ============================================================================
+
+create table if not exists public.invoice_payments (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id),
+  invoice_id uuid not null references public.invoices(id) on delete cascade,
+  amount numeric not null,
+  payment_date date not null default current_date,
+  method text,
+  reference text,
+  notes text,
+  created_at timestamptz not null default now()
+);
+
+grant select, insert, update, delete on public.invoice_payments to authenticated;
+alter table public.invoice_payments enable row level security;
+
+drop policy if exists invoice_payments_select on public.invoice_payments;
+create policy invoice_payments_select on public.invoice_payments for select
+  using (company_id = public.current_company_id() or public.is_superadmin());
+drop policy if exists invoice_payments_insert on public.invoice_payments;
+create policy invoice_payments_insert on public.invoice_payments for insert
+  with check (company_id = public.current_company_id());
+drop policy if exists invoice_payments_update on public.invoice_payments;
+create policy invoice_payments_update on public.invoice_payments for update
+  using (company_id = public.current_company_id());
+drop policy if exists invoice_payments_delete on public.invoice_payments;
+create policy invoice_payments_delete on public.invoice_payments for delete
+  using (company_id = public.current_company_id() or public.is_superadmin());
+
+-- Keeps invoices.amount_paid / paid_at / status in sync automatically —
+-- these columns already existed in the original schema but were never
+-- actually populated by any code. Any existing or future code reading them
+-- directly (reports, exports) gets a correct value without needing to know
+-- the new invoice_payments table exists. Never overrides a manual
+-- 'cancelled' status, and never downgrades 'paid' back to 'sent' if a
+-- payment is edited down — only forward transitions on the paid path.
+create or replace function public.sync_invoice_payment_totals()
+returns trigger language plpgsql as $$
+declare
+  v_invoice_id uuid;
+  v_total_paid numeric;
+  v_invoice_total numeric;
+  v_current_status text;
+begin
+  v_invoice_id := coalesce(new.invoice_id, old.invoice_id);
+  select coalesce(sum(amount), 0) into v_total_paid from public.invoice_payments where invoice_id = v_invoice_id;
+  select total, status into v_invoice_total, v_current_status from public.invoices where id = v_invoice_id;
+
+  update public.invoices
+  set amount_paid = v_total_paid,
+      paid_at = case when v_total_paid >= v_invoice_total and v_invoice_total > 0 then now() else null end,
+      status = case
+        when v_total_paid >= v_invoice_total and v_invoice_total > 0 and v_current_status not in ('cancelled') then 'paid'
+        when v_current_status = 'paid' and v_total_paid < v_invoice_total then 'sent'
+        else v_current_status
+      end
+  where id = v_invoice_id;
+
+  return coalesce(new, old);
+end;
+$$;
+
+drop trigger if exists trg_sync_invoice_payment_totals on public.invoice_payments;
+create trigger trg_sync_invoice_payment_totals
+  after insert or update or delete on public.invoice_payments
+  for each row execute function public.sync_invoice_payment_totals();
+-- ============================================================================
+-- OpDesk — Pricing restructure: Lodging as the anchor vertical (kept
+-- near-competition), Tours & Transport at 30% below Lodging, Logistics &
+-- Support a further 20% below Tours. Deliberate reversal of the previous
+-- relationship, where Tours was priced slightly above Lodging.
+-- ============================================================================
+
+-- Tours & Transport (generic ladder) — was 349/1099/2499/4999, now 30% below Lodging
+update public.marketing_packages set monthly_price = 209, annual_price = 2090 where slug = 'basic';
+update public.marketing_packages set monthly_price = 699, annual_price = 6990 where slug = 'standard';
+update public.marketing_packages set monthly_price = 1609, annual_price = 16090 where slug = 'professional';
+update public.marketing_packages set monthly_price = 3219, annual_price = 32190 where slug = 'enterprise';
+
+-- Logistics & Support Services — was 299/999/1899/3699, now a further 20% below the new Tours rates
+update public.marketing_packages set monthly_price = 169, annual_price = 1690 where slug = 'logistics-basic';
+update public.marketing_packages set monthly_price = 559, annual_price = 5590 where slug = 'logistics-standard';
+update public.marketing_packages set monthly_price = 1289, annual_price = 12890 where slug = 'logistics-professional';
+update public.marketing_packages set monthly_price = 2579, annual_price = 25790 where slug = 'logistics-enterprise';
+
+-- Lodging stays unchanged — it's the anchor.
+-- ============================================================================
+-- OpDesk — Checklist & Inventory Lists module (Professional+ on Tours &
+-- Transport and Lodging), plus a real security fix for the logo storage
+-- bucket that's existed unused since the original schema.
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- 1. Fix the logos bucket RLS. The original policy only checked
+-- `auth.uid() is not null` on insert — ANY logged-in user from ANY company
+-- could upload to ANY path in this bucket, including overwriting another
+-- company's logo if they knew or guessed the path. Nothing has actually
+-- used this bucket yet, so this is the right moment to close it properly
+-- before real usage begins, matching the same company-folder-scoped
+-- pattern already used correctly for company-photos.
+-- ----------------------------------------------------------------------------
+drop policy if exists "company_logos" on storage.objects;
+drop policy if exists "logos_insert_own_company" on storage.objects;
+create policy "logos_insert_own_company" on storage.objects for insert
+  with check (bucket_id = 'logos' and (storage.foldername(name))[1] = public.current_company_id()::text);
+
+drop policy if exists "logos_update_own_company" on storage.objects;
+create policy "logos_update_own_company" on storage.objects for update
+  using (bucket_id = 'logos' and (storage.foldername(name))[1] = public.current_company_id()::text);
+
+drop policy if exists "logos_delete_own_company" on storage.objects;
+create policy "logos_delete_own_company" on storage.objects for delete
+  using (bucket_id = 'logos' and (storage.foldername(name))[1] = public.current_company_id()::text);
+
+-- ----------------------------------------------------------------------------
+-- 2. Checklist templates and items. One flexible system covers both the
+-- trip/vehicle checklist (Safari & Shuttle) and room inventory (Lodging)
+-- use cases — both are just "a named list of items, some with a quantity" —
+-- rather than building two structurally-identical systems.
+-- ----------------------------------------------------------------------------
+create table if not exists public.checklist_templates (
+  id uuid primary key default gen_random_uuid(),
+  company_id uuid not null references public.companies(id) on delete cascade,
+  name text not null,
+  category text not null default 'general', -- trip_check | room_inventory | general — a label only, not enforced
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.checklist_items (
+  id uuid primary key default gen_random_uuid(),
+  template_id uuid not null references public.checklist_templates(id) on delete cascade,
+  name text not null,
+  quantity text, -- free text ("2", "x4 per room") — deliberately not numeric-only, since some items are just a yes/no check
+  sort_order int not null default 0,
+  created_at timestamptz not null default now()
+);
+
+grant select, insert, update, delete on public.checklist_templates to authenticated;
+grant select, insert, update, delete on public.checklist_items to authenticated;
+alter table public.checklist_templates enable row level security;
+alter table public.checklist_items enable row level security;
+
+drop policy if exists checklist_templates_select on public.checklist_templates;
+create policy checklist_templates_select on public.checklist_templates for select
+  using (company_id = public.current_company_id() or public.is_superadmin());
+drop policy if exists checklist_templates_insert on public.checklist_templates;
+create policy checklist_templates_insert on public.checklist_templates for insert
+  with check (company_id = public.current_company_id());
+drop policy if exists checklist_templates_update on public.checklist_templates;
+create policy checklist_templates_update on public.checklist_templates for update
+  using (company_id = public.current_company_id());
+drop policy if exists checklist_templates_delete on public.checklist_templates;
+create policy checklist_templates_delete on public.checklist_templates for delete
+  using (company_id = public.current_company_id() or public.is_superadmin());
+
+-- checklist_items has no company_id of its own — scope via the parent template.
+drop policy if exists checklist_items_select on public.checklist_items;
+create policy checklist_items_select on public.checklist_items for select
+  using (exists (select 1 from public.checklist_templates t where t.id = template_id and (t.company_id = public.current_company_id() or public.is_superadmin())));
+drop policy if exists checklist_items_insert on public.checklist_items;
+create policy checklist_items_insert on public.checklist_items for insert
+  with check (exists (select 1 from public.checklist_templates t where t.id = template_id and t.company_id = public.current_company_id()));
+drop policy if exists checklist_items_update on public.checklist_items;
+create policy checklist_items_update on public.checklist_items for update
+  using (exists (select 1 from public.checklist_templates t where t.id = template_id and t.company_id = public.current_company_id()));
+drop policy if exists checklist_items_delete on public.checklist_items;
+create policy checklist_items_delete on public.checklist_items for delete
+  using (exists (select 1 from public.checklist_templates t where t.id = template_id and (t.company_id = public.current_company_id() or public.is_superadmin())));
+
+-- ----------------------------------------------------------------------------
+-- 3. Gating — Professional+ on Tours & Transport and Lodging specifically,
+-- matching what was actually asked for (not Logistics, not lower tiers).
+-- ----------------------------------------------------------------------------
+insert into public.addon_pricing (addon_key, monthly_price, annual_price)
+select 'checklists', 99, 990
+where not exists (select 1 from public.addon_pricing where addon_key = 'checklists');
+
+update public.marketing_packages
+set modules = modules || jsonb_build_object('checklists', true)
+where slug in ('professional', 'enterprise', 'lodge-professional', 'lodge-enterprise');
+
+update public.marketing_packages
+set modules = modules || jsonb_build_object('checklists', false)
+where slug not in ('professional', 'enterprise', 'lodge-professional', 'lodge-enterprise');
+-- ============================================================================
+-- OpDesk — Pricing rebalance: module add-ons raised to real standalone
+-- value, package prices trimmed so that Standard and Professional tiers
+-- (across all three verticals) are always at least 20% cheaper than
+-- buying the same bundled modules individually. Basic and Enterprise
+-- tiers are treated as legitimate exceptions since their value is driven
+-- by capacity (room/vehicle/guide slot limits, up to unlimited at
+-- Enterprise) rather than by these specific gated modules, and unlimited
+-- capacity has no finite individual add-on price to compare against.
+-- ============================================================================
+
+-- Module add-on prices, raised to reflect real standalone value
+update public.addon_pricing set monthly_price = 260, annual_price = 2600 where addon_key = 'leave';
+update public.addon_pricing set monthly_price = 260, annual_price = 2600 where addon_key = 'checklists';
+update public.addon_pricing set monthly_price = 260, annual_price = 2600 where addon_key = 'quotations';
+update public.addon_pricing set monthly_price = 390, annual_price = 3900 where addon_key = 'ical_sync';
+update public.addon_pricing set monthly_price = 390, annual_price = 3900 where addon_key = 'certifications';
+update public.addon_pricing set monthly_price = 520, annual_price = 5200 where addon_key = 'schedules_module';
+update public.addon_pricing set monthly_price = 520, annual_price = 5200 where addon_key = 'delivery_management';
+update public.addon_pricing set monthly_price = 650, annual_price = 6500 where addon_key = 'cost_to_company';
+
+-- hr_bundle (Certifications + Shifts + Cost to Company + Leave) directly
+-- bundles four modules just repriced above. Left at its old R499, it would
+-- now sit at a 73% discount off the new component sum (R1,820) -- no
+-- longer a credible bundle deal, just looks like a stale price. Rebalanced
+-- to a genuine ~40% bundle discount instead.
+update public.addon_pricing set monthly_price = 1090, annual_price = 10900 where addon_key = 'hr_bundle';
+
+-- Package prices — Tours & Transport
+update public.marketing_packages set monthly_price = 200,  annual_price = 2000  where slug = 'basic';
+update public.marketing_packages set monthly_price = 690,  annual_price = 6900  where slug = 'standard';
+update public.marketing_packages set monthly_price = 1600, annual_price = 16000 where slug = 'professional';
+update public.marketing_packages set monthly_price = 2740, annual_price = 27400 where slug = 'enterprise';
+
+-- Package prices — Lodging
+update public.marketing_packages set monthly_price = 280,  annual_price = 2800  where slug = 'lodge-basic';
+update public.marketing_packages set monthly_price = 860,  annual_price = 8600  where slug = 'lodge-standard';
+update public.marketing_packages set monthly_price = 2160, annual_price = 21600 where slug = 'lodge-professional';
+update public.marketing_packages set monthly_price = 3910, annual_price = 39100 where slug = 'lodge-enterprise';
+
+-- Package prices — Logistics & Support Services
+update public.marketing_packages set monthly_price = 550,  annual_price = 5500  where slug = 'logistics-standard';
+update public.marketing_packages set monthly_price = 970,  annual_price = 9700  where slug = 'logistics-professional';
+update public.marketing_packages set monthly_price = 2190, annual_price = 21900 where slug = 'logistics-enterprise';

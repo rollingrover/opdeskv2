@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -27,7 +28,7 @@ function StatCard({ icon: Icon, label, value, sub, color = '#1B8A8F' }) {
   )
 }
 
-function CertAlert({ cert }) {
+function CertAlert({ cert, t }) {
   const daysLeft = Math.ceil((new Date(cert.expiry_date) - new Date()) / 86400000)
   const isExpired = daysLeft < 0
   return (
@@ -40,7 +41,7 @@ function CertAlert({ cert }) {
           {cert.staff?.full_name} — {cert.cert_type?.replace(/_/g,' ')}
         </p>
         <p style={{ margin:0, fontSize:'0.75rem', color:'var(--gray-400)' }}>
-          {isExpired ? `Expired ${Math.abs(daysLeft)} days ago` : `Expires in ${daysLeft} days`}
+          {isExpired ? t('expired', { days: Math.abs(daysLeft) }) : t('expiresIn', { days: daysLeft })}
         </p>
       </div>
       <StatusBadge status={isExpired ? 'expired' : 'expiring_soon'} />
@@ -48,7 +49,11 @@ function CertAlert({ cert }) {
   )
 }
 
+const LOCALE_MAP = { en: 'en-ZA', af: 'af-ZA', fr: 'fr-FR', pt: 'pt-PT', de: 'de-DE' }
+
 export default function DashboardPage() {
+  const t = useTranslations('DashboardHome')
+  const locale = useLocale()
   const { company, profileError, needsCompany } = useAuth()
   const supabase = createClient()
   const [stats, setStats]     = useState({ totalBookings:0, confirmedToday:0, totalStaff:0, occupiedRooms:0, totalRooms:0 })
@@ -58,11 +63,6 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!company) { setLoading(false); return }
-    // Company can arrive a render or two after mount (AuthContext loads it
-    // asynchronously) — without this, `loading` stays stuck at the `false`
-    // it was set to on the very first render (when company was still null),
-    // so the component below renders its main body before `stats` has ever
-    // been populated for this company.
     setLoading(true)
     async function load() {
       const today = new Date().toISOString().split('T')[0]
@@ -99,26 +99,28 @@ export default function DashboardPage() {
 
   if (profileError) {
     return (
-      <EmptyState icon={<BrandIcon name="errorIcon" size={48} />} title="We couldn't load your profile"
-        description="Your account exists, but no profile record was found for it. Please contact support or try signing out and back in."
-        action={<Link href="/auth/login" className="btn btn-primary btn-sm">Back to login</Link>} />
+      <EmptyState icon={<BrandIcon name="errorIcon" size={48} />} title={t('profileErrorTitle')}
+        description={t('profileErrorDesc')}
+        action={<Link href="/auth/login" className="btn btn-primary btn-sm">{t('backToLogin')}</Link>} />
     )
   }
 
   if (needsCompany || !company) {
     return (
-      <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title="Finish setting up your company"
-        description="Your account isn't linked to a company yet, so there's no data to show."
-        action={<Link href="/settings" className="btn btn-primary btn-sm">Go to Settings</Link>} />
+      <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={t('needsCompanyTitle')}
+        description={t('needsCompanyDesc')}
+        action={<Link href="/settings" className="btn btn-primary btn-sm">{t('goToSettings')}</Link>} />
     )
   }
 
   const greeting = () => {
     const h = new Date().getHours()
-    if (h < 12) return 'Good morning'
-    if (h < 17) return 'Good afternoon'
-    return 'Good evening'
+    if (h < 12) return t('greetingMorning')
+    if (h < 17) return t('greetingAfternoon')
+    return t('greetingEvening')
   }
+
+  const dateLocale = LOCALE_MAP[locale] || 'en-ZA'
 
   return (
     <div>
@@ -128,17 +130,17 @@ export default function DashboardPage() {
           {greeting()}, {company.name} <BrandIcon name="greeting" size={28} />
         </h1>
         <p style={{ margin:'0.25rem 0 0', color:'var(--gray-400)', fontSize:'0.875rem' }}>
-          Here's what's happening today — {new Date().toLocaleDateString('en-ZA', { weekday:'long', day:'numeric', month:'long' })}
+          {t('subtitle', { date: new Date().toLocaleDateString(dateLocale, { weekday:'long', day:'numeric', month:'long' }) })}
         </p>
       </div>
 
       {/* Stats */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:'1rem', marginBottom:'1.75rem' }}>
-        <StatCard icon={BookOpen}    label="Bookings This Month" value={stats.totalBookings || 0}  sub="all time" color="var(--teal)" />
-        <StatCard icon={Calendar}    label="Check-ins Today"     value={stats.confirmedToday || 0} sub="confirmed" color="var(--orange)" />
-        <StatCard icon={Users}       label="Active Staff"        value={stats.totalStaff || 0}     sub="employees" color="var(--navy)" />
+        <StatCard icon={BookOpen}    label={t('statsBookings')} value={stats.totalBookings || 0}  sub={t('allTime')} color="var(--teal)" />
+        <StatCard icon={Calendar}    label={t('statsCheckins')}     value={stats.confirmedToday || 0} sub={t('confirmed')} color="var(--orange)" />
+        <StatCard icon={Users}       label={t('statsStaff')}        value={stats.totalStaff || 0}     sub={t('employees')} color="var(--navy)" />
         {stats.totalRooms > 0 && (
-          <StatCard icon={Hotel} label="Rooms Occupied" value={`${stats.occupiedRooms}/${stats.totalRooms}`} sub="tonight" color="var(--gold)" />
+          <StatCard icon={Hotel} label={t('statsRooms')} value={`${stats.occupiedRooms}/${stats.totalRooms}`} sub={t('tonight')} color="var(--gold)" />
         )}
       </div>
 
@@ -146,20 +148,20 @@ export default function DashboardPage() {
         {/* Recent Bookings */}
         <div className="card card-shadow">
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1rem' }}>
-            <h2 style={{ margin:0, fontSize:'1rem' }}>Recent Bookings</h2>
+            <h2 style={{ margin:0, fontSize:'1rem' }}>{t('recentBookings')}</h2>
             <Link href="/bookings" className="btn btn-ghost btn-sm" style={{ fontSize:'0.8125rem', color:'var(--gold)' }}>
-              View all <ArrowRight size={14} />
+              {t('viewAll')} <ArrowRight size={14} />
             </Link>
           </div>
           {bookings.length === 0 ? (
-            <EmptyState icon={<BrandIcon name="noBookings" size={48} />} title="No bookings yet" description="Your bookings will appear here once created."
-              action={<Link href="/bookings" className="btn btn-primary btn-sm">New Booking</Link>} />
+            <EmptyState icon={<BrandIcon name="noBookings" size={48} />} title={t('noBookingsTitle')} description={t('noBookingsDesc')}
+              action={<Link href="/bookings" className="btn btn-primary btn-sm">{t('newBooking')}</Link>} />
           ) : (
             <div className="table-wrap">
               <table className="table">
                 <thead>
                   <tr>
-                    <th>Ref</th><th>Guest</th><th>Date</th><th>Status</th>
+                    <th>{t('colRef')}</th><th>{t('colGuest')}</th><th>{t('colDate')}</th><th>{t('colStatus')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -168,10 +170,10 @@ export default function DashboardPage() {
                       <td><span style={{ fontFamily:'monospace', fontSize:'0.8rem', color:'var(--navy)', fontWeight:600 }}>{b.booking_ref}</span></td>
                       <td>
                         <p style={{ margin:0, fontWeight:600, fontSize:'0.875rem', color:'var(--navy)' }}>{b.guest_name || '—'}</p>
-                        {b.staff?.full_name && <p style={{ margin:0, fontSize:'0.75rem', color:'var(--gray-400)' }}>Guide: {b.staff.full_name}</p>}
+                        {b.staff?.full_name && <p style={{ margin:0, fontSize:'0.75rem', color:'var(--gray-400)' }}>{t('guide', { name: b.staff.full_name })}</p>}
                       </td>
                       <td style={{ fontSize:'0.8125rem', color:'var(--gray-500)' }}>
-                        {b.start_date ? new Date(b.start_date).toLocaleDateString('en-ZA', { day:'numeric', month:'short' }) : '—'}
+                        {b.start_date ? new Date(b.start_date).toLocaleDateString(dateLocale, { day:'numeric', month:'short' }) : '—'}
                       </td>
                       <td><StatusBadge status={b.status} /></td>
                     </tr>
@@ -185,19 +187,19 @@ export default function DashboardPage() {
         {/* Cert Alerts */}
         <div className="card card-shadow">
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'1rem' }}>
-            <h2 style={{ margin:0, fontSize:'1rem' }}>Certification Alerts</h2>
+            <h2 style={{ margin:0, fontSize:'1rem' }}>{t('certAlertsHeading')}</h2>
             <Link href="/staff/certifications" className="btn btn-ghost btn-sm" style={{ fontSize:'0.8125rem', color:'var(--gold)' }}>
-              Manage <ArrowRight size={14} />
+              {t('manage')} <ArrowRight size={14} />
             </Link>
           </div>
           {certAlerts.length === 0 ? (
             <div style={{ padding:'1.5rem 0', textAlign:'center' }}>
               <CheckCircle size={32} color="var(--teal)" style={{ marginBottom:'0.5rem' }} />
-              <p style={{ margin:0, fontSize:'0.875rem', color:'var(--gray-400)' }}>All certifications are up to date</p>
+              <p style={{ margin:0, fontSize:'0.875rem', color:'var(--gray-400)' }}>{t('allCertsUpToDate')}</p>
             </div>
           ) : (
             <div>
-              {certAlerts.map(c => <CertAlert key={c.id} cert={c} />)}
+              {certAlerts.map(c => <CertAlert key={c.id} cert={c} t={t} />)}
             </div>
           )}
         </div>
@@ -206,10 +208,10 @@ export default function DashboardPage() {
       {/* Quick actions */}
       <div style={{ marginTop:'1.25rem', display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:'0.75rem' }}>
         {[
-          { href:'/bookings', label:'New Booking', icon:'noBookings', color:'var(--teal)' },
-          { href:'/staff',    label:'Add Staff',   icon:'addStaff', color:'var(--navy)' },
-          { href:'/invoices', label:'New Invoice', icon:'newInvoice', color:'var(--gold)' },
-          { href:'/settings', label:'Settings',    icon:'settingsIcon', color:'var(--gray-500)' },
+          { href:'/bookings', key:'newBooking', icon:'noBookings', color:'var(--teal)' },
+          { href:'/staff',    key:'addStaff',   icon:'addStaff', color:'var(--navy)' },
+          { href:'/invoices', key:'newInvoice', icon:'newInvoice', color:'var(--gold)' },
+          { href:'/settings', key:'settings',    icon:'settingsIcon', color:'var(--gray-500)' },
         ].map(a => (
           <Link key={a.href} href={a.href} style={{
             background:'white', border:'1px solid var(--gray-200)', borderRadius:'0.75rem',
@@ -219,7 +221,7 @@ export default function DashboardPage() {
           onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)' }}
           onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--gray-200)'; e.currentTarget.style.boxShadow = 'none' }}>
             <BrandIcon name={a.icon} size={28} />
-            <span style={{ fontSize:'0.875rem', fontWeight:600, color:'var(--navy)' }}>{a.label}</span>
+            <span style={{ fontSize:'0.875rem', fontWeight:600, color:'var(--navy)' }}>{t(`quickActions.${a.key}`)}</span>
           </Link>
         ))}
       </div>
