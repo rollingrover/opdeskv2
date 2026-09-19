@@ -15,7 +15,7 @@ export async function POST(request) {
     if (!companyId) return NextResponse.json({ error: 'companyId is required' }, { status: 400 })
 
     const { data: company, error: companyErr } = await supabase
-      .from('companies').select('id, package_id, payfast_token').eq('id', companyId).maybeSingle()
+      .from('companies').select('id, package_id, payfast_token, location_discount_pct').eq('id', companyId).maybeSingle()
     if (companyErr || !company) return NextResponse.json({ error: 'Company not found' }, { status: 404 })
 
     // No PayFast token means this company never went through PayFast
@@ -33,7 +33,11 @@ export async function POST(request) {
       supabase.from('company_addons').select('price_per_unit, quantity').eq('company_id', companyId).eq('active', true),
     ])
 
-    const packagePrice = Number(pkg?.monthly_price) || 0
+    // Extra locations linked under an Enterprise org get a fixed 20%
+    // discount on that location's own package price (see link_new_location)
+    // — add-ons are still charged in full.
+    const discountPct = Number(company.location_discount_pct) || 0
+    const packagePrice = (Number(pkg?.monthly_price) || 0) * (1 - discountPct / 100)
     const addonsTotal = (addons || []).reduce((sum, a) => sum + (Number(a.price_per_unit) || 0) * (a.quantity || 1), 0)
     const newTotal = packagePrice + addonsTotal
 
