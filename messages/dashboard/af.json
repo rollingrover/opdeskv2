@@ -1128,7 +1128,8 @@
     "title": "Liggings",
     "subtitle": "Bestuur elke ligging onder jou rekening en wissel tussen hulle.",
     "addLocation": "Voeg Ligging By",
-    "needsEnterprise": "Om verskeie liggings onder een aanmelding te bestuur is 'n Enterprise-plan kenmerk. Elke ligging het steeds sy eie subskripsie, 20% afslag sodra dit gekoppel is.",
+    "needsProfessional": "Om verskeie liggings onder een aanmelding te bestuur benodig die Professional-plan of hoër. Professional laat tot 3 liggings in totaal toe (10% afslag elk); Enterprise laat onbeperkte liggings toe (20% afslag elk). Elke ligging het steeds sy eie subskripsie.",
+    "professionalCapReached": "Jy het die Professional-plan se limiet van 3 liggings in totaal bereik. Gradeer op na Enterprise vir onbeperkte liggings.",
     "colName": "Ligging",
     "colType": "Tipe",
     "current": "huidig",
@@ -1142,7 +1143,7 @@
     "operatorType": "Besigheidstipe",
     "currency": "Geldeenheid",
     "planForThisLocation": "Plan vir Hierdie Ligging",
-    "discountNote": "Enterprise afslag toegepas — {price}/mnd vir hierdie ligging.",
+    "discountNote": "Afslag toegepas — {price}/mnd vir hierdie ligging.",
     "billingEmail": "Faktuur E-pos",
     "phone": "Foon"
   },

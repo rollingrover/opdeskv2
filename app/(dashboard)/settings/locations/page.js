@@ -47,13 +47,17 @@ function LocationsContent() {
   useEffect(() => { load() }, [company])
 
   useEffect(() => {
-    if (searchParams.get('add') === '1' && company?.package?.slug === 'enterprise' && isOwner) setModalOpen(true)
+    if (searchParams.get('add') === '1' && ['professional', 'enterprise'].includes(company?.package?.slug) && isOwner) setModalOpen(true)
   }, [searchParams, company, isOwner])
 
   if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
-  const isEnterprise = company?.package?.slug === 'enterprise'
+  const tierSlug = company?.package?.slug
+  const isEnterprise = tierSlug === 'enterprise'
+  const isProfessional = tierSlug === 'professional'
+  const canAddLocations = isEnterprise || isProfessional
+  const atProfessionalCap = isProfessional && locations.length >= 3
 
   async function handleAdd(e) {
     e.preventDefault()
@@ -83,7 +87,8 @@ function LocationsContent() {
   }
 
   const selectedPkg = packages.find(p => p.slug === form.package_slug)
-  const discountedPrice = selectedPkg ? (Number(selectedPkg.monthly_price) * 0.8).toLocaleString() : null
+  const myDiscountPct = isEnterprise ? 20 : isProfessional ? 10 : 0
+  const discountedPrice = selectedPkg ? (Number(selectedPkg.monthly_price) * (1 - myDiscountPct / 100)).toLocaleString() : null
 
   return (
     <div>
@@ -93,16 +98,22 @@ function LocationsContent() {
           <h1 className="page-title">{t('title')}</h1>
           <p className="page-subtitle">{t('subtitle')}</p>
         </div>
-        {isOwner && isEnterprise && (
-          <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
+        {isOwner && canAddLocations && (
+          <button className="btn btn-primary" onClick={() => setModalOpen(true)} disabled={atProfessionalCap}
+            title={atProfessionalCap ? t('professionalCapReached') : ''}>
             <Plus size={16} /> {t('addLocation')}
           </button>
         )}
       </div>
 
-      {!isEnterprise && (
+      {!canAddLocations && (
         <div style={{ background: 'var(--cream)', border: '1px solid var(--gray-100)', borderRadius: '0.75rem', padding: '0.875rem 1.25rem', marginBottom: '1.25rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
-          {t('needsEnterprise')}
+          {t('needsProfessional')}
+        </div>
+      )}
+      {atProfessionalCap && (
+        <div style={{ background: 'var(--cream)', border: '1px solid var(--gray-100)', borderRadius: '0.75rem', padding: '0.875rem 1.25rem', marginBottom: '1.25rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
+          {t('professionalCapReached')}
         </div>
       )}
 

@@ -1128,7 +1128,8 @@
     "title": "Localizações",
     "subtitle": "Faça a gestão de cada localização na sua conta e alterne entre elas.",
     "addLocation": "Adicionar Localização",
-    "needsEnterprise": "Gerir várias localizações com um único login é uma funcionalidade do plano Enterprise. Cada localização mantém a sua própria subscrição, com 20% de desconto após ligada.",
+    "needsProfessional": "Gerir várias localizações com um único login requer pelo menos o plano Professional. O Professional permite até 3 localizações no total (10% de desconto cada); o Enterprise permite localizações ilimitadas (20% de desconto cada). Cada localização mantém a sua própria subscrição.",
+    "professionalCapReached": "Atingiu o limite de 3 localizações no total do plano Professional. Atualize para Enterprise para localizações ilimitadas.",
     "colName": "Localização",
     "colType": "Tipo",
     "current": "atual",
@@ -1142,7 +1143,7 @@
     "operatorType": "Tipo de Negócio",
     "currency": "Moeda",
     "planForThisLocation": "Plano para Esta Localização",
-    "discountNote": "Desconto Enterprise aplicado — {price}/mês para esta localização.",
+    "discountNote": "Desconto aplicado — {price}/mês para esta localização.",
     "billingEmail": "Email de Faturação",
     "phone": "Telefone"
   },

@@ -1128,7 +1128,8 @@
     "title": "Locations",
     "subtitle": "Manage every location under your account and switch between them.",
     "addLocation": "Add Location",
-    "needsEnterprise": "Managing multiple locations under one login is an Enterprise plan feature. Each location still has its own subscription, discounted 20% once linked.",
+    "needsProfessional": "Managing multiple locations under one login needs the Professional plan or higher. Professional allows up to 3 sites total (10% discount each); Enterprise allows unlimited sites (20% discount each). Each location still has its own subscription.",
+    "professionalCapReached": "You've reached the Professional plan's limit of 3 locations total. Upgrade to Enterprise for unlimited locations.",
     "colName": "Location",
     "colType": "Type",
     "current": "current",
@@ -1142,7 +1143,7 @@
     "operatorType": "Business Type",
     "currency": "Currency",
     "planForThisLocation": "Plan for This Location",
-    "discountNote": "Enterprise discount applied — {price}/mo for this location.",
+    "discountNote": "Discount applied — {price}/mo for this location.",
     "billingEmail": "Billing Email",
     "phone": "Phone"
   },

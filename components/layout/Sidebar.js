@@ -152,7 +152,7 @@ export function Sidebar({ mobileOpen, onClose }) {
   // otherwise if the company's operator type includes that base module.
   function isVisible(item) {
     if (item.module === 'always' && item.special === 'enterpriseLocations') {
-      return company?.package?.slug === 'enterprise' || !!company?.organization_id
+      return ['professional', 'enterprise'].includes(company?.package?.slug) || !!company?.organization_id
     }
     if (item.module === 'always') return true
     if (item.gate) return hasModuleAccess(item.gate, { profile, company, companyAddons })

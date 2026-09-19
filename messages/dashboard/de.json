@@ -1128,7 +1128,8 @@
     "title": "Standorte",
     "subtitle": "Verwalten Sie jeden Standort unter Ihrem Konto und wechseln Sie zwischen ihnen.",
     "addLocation": "Standort hinzufügen",
-    "needsEnterprise": "Die Verwaltung mehrerer Standorte unter einem Login ist eine Enterprise-Funktion. Jeder Standort hat weiterhin ein eigenes Abo, nach Verknüpfung mit 20 % Rabatt.",
+    "needsProfessional": "Die Verwaltung mehrerer Standorte unter einem Login erfordert mindestens den Professional-Tarif. Professional erlaubt bis zu 3 Standorte insgesamt (je 10 % Rabatt); Enterprise erlaubt unbegrenzt viele Standorte (je 20 % Rabatt). Jeder Standort hat weiterhin ein eigenes Abo.",
+    "professionalCapReached": "Sie haben das Limit von 3 Standorten des Professional-Tarifs erreicht. Wechseln Sie zu Enterprise für unbegrenzte Standorte.",
     "colName": "Standort",
     "colType": "Typ",
     "current": "aktuell",
@@ -1142,7 +1143,7 @@
     "operatorType": "Geschäftsart",
     "currency": "Währung",
     "planForThisLocation": "Tarif für diesen Standort",
-    "discountNote": "Enterprise-Rabatt angewendet — {price}/Monat für diesen Standort.",
+    "discountNote": "Rabatt angewendet — {price}/Monat für diesen Standort.",
     "billingEmail": "Rechnungs-E-Mail",
     "phone": "Telefon"
   },

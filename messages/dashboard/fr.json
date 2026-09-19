@@ -1128,7 +1128,8 @@
     "title": "Établissements",
     "subtitle": "Gérez chaque établissement de votre compte et basculez entre eux.",
     "addLocation": "Ajouter un Établissement",
-    "needsEnterprise": "Gérer plusieurs établissements sous une seule connexion est une fonctionnalité du forfait Enterprise. Chaque établissement conserve son propre abonnement, avec 20 % de réduction une fois lié.",
+    "needsProfessional": "Gérer plusieurs établissements sous une seule connexion nécessite au moins le forfait Professional. Professional permet jusqu'à 3 établissements au total (10 % de réduction chacun) ; Enterprise permet un nombre illimité d'établissements (20 % de réduction chacun). Chaque établissement conserve son propre abonnement.",
+    "professionalCapReached": "Vous avez atteint la limite de 3 établissements au total du forfait Professional. Passez à Enterprise pour un nombre illimité d'établissements.",
     "colName": "Établissement",
     "colType": "Type",
     "current": "actuel",
@@ -1142,7 +1143,7 @@
     "operatorType": "Type d'Activité",
     "currency": "Devise",
     "planForThisLocation": "Forfait pour cet Établissement",
-    "discountNote": "Réduction Enterprise appliquée — {price}/mois pour cet établissement.",
+    "discountNote": "Réduction appliquée — {price}/mois pour cet établissement.",
     "billingEmail": "E-mail de Facturation",
     "phone": "Téléphone"
   },
