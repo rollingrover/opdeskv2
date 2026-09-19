@@ -19,6 +19,7 @@
       "costToCompany": "Coût Total Employeur",
       "shifts": "Quarts",
       "leave": "Congés",
+      "handbook": "Guide",
       "roomOverview": "Aperçu des Chambres",
       "rooms": "Chambres",
       "availability": "Disponibilité",
@@ -1128,5 +1129,29 @@
     "discountNote": "Réduction Enterprise appliquée — {price}/mois pour cet établissement.",
     "billingEmail": "E-mail de Facturation",
     "phone": "Téléphone"
+  },
+  "Handbook": {
+    "title": "Guide de l'Entreprise",
+    "subtitle": "Rédigez vos règles, procédures et politiques, et exportez-les à tout moment en PDF à votre marque.",
+    "downloadPdf": "Télécharger le PDF",
+    "generating": "Génération…",
+    "noSectionsYet": "Ajoutez d'abord une section",
+    "addSection": "Ajouter une Section",
+    "noSectionsTitle": "Aucune section pour le moment",
+    "noSectionsDesc": "Commencez par votre première politique — un code de conduite, des procédures de sécurité, ou une politique de congés.",
+    "editSection": "Modifier la Section",
+    "newSection": "Nouvelle Section",
+    "sectionTitle": "Titre de la Section",
+    "sectionTitlePlaceholder": "ex. Code de Conduite",
+    "sectionContent": "Contenu",
+    "sectionContentPlaceholder": "Rédigez la politique ou la procédure ici. Laissez une ligne vide entre les paragraphes.",
+    "contentHint": "Texte brut — laissez une ligne vide entre les paragraphes pour en commencer un nouveau dans le PDF.",
+    "cancel": "Annuler",
+    "saving": "Enregistrement…",
+    "save": "Enregistrer",
+    "sectionCreated": "Section ajoutée",
+    "sectionUpdated": "Section mise à jour",
+    "sectionDeleted": "Section supprimée",
+    "confirmDelete": "Supprimer « {title} » ? Cette action est irréversible."
   }
 }

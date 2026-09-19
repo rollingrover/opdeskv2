@@ -19,6 +19,7 @@
       "costToCompany": "Lohnkosten",
       "shifts": "Schichten",
       "leave": "Urlaub",
+      "handbook": "Handbuch",
       "roomOverview": "Zimmerübersicht",
       "rooms": "Zimmer",
       "availability": "Verfügbarkeit",
@@ -1128,5 +1129,29 @@
     "discountNote": "Enterprise-Rabatt angewendet — {price}/Monat für diesen Standort.",
     "billingEmail": "Rechnungs-E-Mail",
     "phone": "Telefon"
+  },
+  "Handbook": {
+    "title": "Firmenhandbuch",
+    "subtitle": "Schreiben Sie Ihre Regeln, Verfahren und Richtlinien und exportieren Sie sie jederzeit als gebrandetes PDF.",
+    "downloadPdf": "PDF herunterladen",
+    "generating": "Wird erstellt…",
+    "noSectionsYet": "Zuerst einen Abschnitt hinzufügen",
+    "addSection": "Abschnitt hinzufügen",
+    "noSectionsTitle": "Noch keine Abschnitte",
+    "noSectionsDesc": "Beginnen Sie mit Ihrer ersten Richtlinie — ein Verhaltenskodex, Sicherheitsverfahren oder eine Urlaubsregelung.",
+    "editSection": "Abschnitt bearbeiten",
+    "newSection": "Neuer Abschnitt",
+    "sectionTitle": "Abschnittstitel",
+    "sectionTitlePlaceholder": "z. B. Verhaltenskodex",
+    "sectionContent": "Inhalt",
+    "sectionContentPlaceholder": "Schreiben Sie die Richtlinie oder das Verfahren hier. Lassen Sie eine Leerzeile zwischen Absätzen.",
+    "contentHint": "Reiner Text — lassen Sie eine Leerzeile zwischen Absätzen, um im PDF einen neuen zu beginnen.",
+    "cancel": "Abbrechen",
+    "saving": "Wird gespeichert…",
+    "save": "Speichern",
+    "sectionCreated": "Abschnitt hinzugefügt",
+    "sectionUpdated": "Abschnitt aktualisiert",
+    "sectionDeleted": "Abschnitt gelöscht",
+    "confirmDelete": "\"{title}\" löschen? Dies kann nicht rückgängig gemacht werden."
   }
 }

@@ -129,13 +129,18 @@ function SACompanyDetail({ companyId }) {
     const trialEndsAt = startingTrial ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() : null
     const { data, error } = await supabase.rpc('sa_update_company', {
       p_company_id: companyId, p_package_id: pkg.id, p_subscription_expires_at: expires,
+      p_subscription_tier: pkg.slug,
       p_account_status: startingTrial ? 'trial' : null,
       p_trial_ends_at: trialEndsAt,
     })
     setSaving(false)
     if (error) { toast.error(error.message); return }
     setCo({ ...data, package: pkg })
-    toast.success(startingTrial ? `Moved to ${pkg.name} — 30-day trial started` : `Moved to ${pkg.name}`)
+    const sync = await syncPayfastAmount(companyId)
+    toast.success(
+      sync.synced === false && sync.error ? `Moved to ${pkg.name}, but PayFast sync failed: ${sync.error}`
+      : startingTrial ? `Moved to ${pkg.name} — 30-day trial started` : `Moved to ${pkg.name}`
+    )
     setExpiresAt('')
   }
 

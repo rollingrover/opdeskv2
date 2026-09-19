@@ -19,6 +19,7 @@
       "costToCompany": "Custo para a Empresa",
       "shifts": "Turnos",
       "leave": "Férias",
+      "handbook": "Manual",
       "roomOverview": "Visão Geral dos Quartos",
       "rooms": "Quartos",
       "availability": "Disponibilidade",
@@ -1128,5 +1129,29 @@
     "discountNote": "Desconto Enterprise aplicado — {price}/mês para esta localização.",
     "billingEmail": "Email de Faturação",
     "phone": "Telefone"
+  },
+  "Handbook": {
+    "title": "Manual da Empresa",
+    "subtitle": "Escreva as suas regras, procedimentos e políticas, e exporte-as a qualquer momento como PDF personalizado.",
+    "downloadPdf": "Descarregar PDF",
+    "generating": "A gerar…",
+    "noSectionsYet": "Adicione primeiro uma secção",
+    "addSection": "Adicionar Secção",
+    "noSectionsTitle": "Ainda não há secções",
+    "noSectionsDesc": "Comece com a sua primeira política — um código de conduta, procedimentos de segurança, ou uma política de licenças.",
+    "editSection": "Editar Secção",
+    "newSection": "Nova Secção",
+    "sectionTitle": "Título da Secção",
+    "sectionTitlePlaceholder": "ex. Código de Conduta",
+    "sectionContent": "Conteúdo",
+    "sectionContentPlaceholder": "Escreva a política ou procedimento aqui. Deixe uma linha em branco entre parágrafos.",
+    "contentHint": "Texto simples — deixe uma linha em branco entre parágrafos para iniciar um novo no PDF.",
+    "cancel": "Cancelar",
+    "saving": "A guardar…",
+    "save": "Guardar",
+    "sectionCreated": "Secção adicionada",
+    "sectionUpdated": "Secção atualizada",
+    "sectionDeleted": "Secção eliminada",
+    "confirmDelete": "Eliminar \"{title}\"? Esta ação não pode ser desfeita."
   }
 }

@@ -19,6 +19,7 @@
       "costToCompany": "Cost to Company",
       "shifts": "Shifts",
       "leave": "Leave",
+      "handbook": "Handbook",
       "roomOverview": "Room Overview",
       "rooms": "Rooms",
       "availability": "Availability",
@@ -1128,5 +1129,29 @@
     "discountNote": "Enterprise discount applied — {price}/mo for this location.",
     "billingEmail": "Billing Email",
     "phone": "Phone"
+  },
+  "Handbook": {
+    "title": "Company Handbook",
+    "subtitle": "Write out your rules, procedures and policies, and export them as a branded PDF anytime.",
+    "downloadPdf": "Download PDF",
+    "generating": "Generating…",
+    "noSectionsYet": "Add a section first",
+    "addSection": "Add Section",
+    "noSectionsTitle": "No sections yet",
+    "noSectionsDesc": "Start with your first policy — a code of conduct, safety procedures, or leave policy.",
+    "editSection": "Edit Section",
+    "newSection": "New Section",
+    "sectionTitle": "Section Title",
+    "sectionTitlePlaceholder": "e.g. Code of Conduct",
+    "sectionContent": "Content",
+    "sectionContentPlaceholder": "Write the policy or procedure here. Leave a blank line between paragraphs.",
+    "contentHint": "Plain text — leave a blank line between paragraphs to start a new one in the PDF.",
+    "cancel": "Cancel",
+    "saving": "Saving…",
+    "save": "Save",
+    "sectionCreated": "Section added",
+    "sectionUpdated": "Section updated",
+    "sectionDeleted": "Section deleted",
+    "confirmDelete": "Delete \"{title}\"? This can't be undone."
   }
 }

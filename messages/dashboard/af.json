@@ -19,6 +19,7 @@
       "costToCompany": "Koste tot Maatskappy",
       "shifts": "Skofte",
       "leave": "Verlof",
+      "handbook": "Handleiding",
       "roomOverview": "Kameroorsig",
       "rooms": "Kamers",
       "availability": "Beskikbaarheid",
@@ -1128,5 +1129,29 @@
     "discountNote": "Enterprise afslag toegepas — {price}/mnd vir hierdie ligging.",
     "billingEmail": "Faktuur E-pos",
     "phone": "Foon"
+  },
+  "Handbook": {
+    "title": "Maatskappy Handleiding",
+    "subtitle": "Skryf jou reëls, prosedures en beleide neer, en voer hulle enige tyd uit as 'n gebrandmerkte PDF.",
+    "downloadPdf": "Laai PDF Af",
+    "generating": "Genereer tans…",
+    "noSectionsYet": "Voeg eers 'n afdeling by",
+    "addSection": "Voeg Afdeling By",
+    "noSectionsTitle": "Nog geen afdelings nie",
+    "noSectionsDesc": "Begin met jou eerste beleid — 'n gedragskode, veiligheidsprosedures, of verloftoekenningsbeleid.",
+    "editSection": "Wysig Afdeling",
+    "newSection": "Nuwe Afdeling",
+    "sectionTitle": "Afdeling Titel",
+    "sectionTitlePlaceholder": "bv. Gedragskode",
+    "sectionContent": "Inhoud",
+    "sectionContentPlaceholder": "Skryf die beleid of prosedure hier. Los 'n leë reël tussen paragrawe.",
+    "contentHint": "Gewone teks — los 'n leë reël tussen paragrawe om 'n nuwe een in die PDF te begin.",
+    "cancel": "Kanselleer",
+    "saving": "Stoor tans…",
+    "save": "Stoor",
+    "sectionCreated": "Afdeling bygevoeg",
+    "sectionUpdated": "Afdeling opgedateer",
+    "sectionDeleted": "Afdeling verwyder",
+    "confirmDelete": "Verwyder \"{title}\"? Dit kan nie ontdoen word nie."
   }
 }
