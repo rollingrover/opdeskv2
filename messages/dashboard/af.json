@@ -186,7 +186,9 @@
     "bookingUpdated": "Bespreking opgedateer",
     "needsCompanyDesc": "Besprekings het 'n maatskappy nodig om aan te behoort.",
     "clickToEdit": "Klik om te wysig",
-    "lockedInvoiced": "Reeds gefaktureer — kan nie gewysig word nie"
+    "lockedInvoiced": "Reeds gefaktureer — kan nie gewysig word nie",
+    "unitSellPrice": "Eenheid Verkoopprys",
+    "totalCalc": "{guests} gas(te) × {unitPrice}"
   },
   "Calendar": {
     "title": "Kalender",

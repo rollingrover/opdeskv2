@@ -186,7 +186,9 @@
     "bookingUpdated": "Reserva atualizada",
     "needsCompanyDesc": "As reservas precisam de estar associadas a uma empresa.",
     "clickToEdit": "Clique para editar",
-    "lockedInvoiced": "Já faturada — edição bloqueada"
+    "lockedInvoiced": "Já faturada — edição bloqueada",
+    "unitSellPrice": "Preço de Venda Unitário",
+    "totalCalc": "{guests} hóspede(s) × {unitPrice}"
   },
   "Calendar": {
     "title": "Calendário",

@@ -186,7 +186,9 @@
     "bookingUpdated": "Booking updated",
     "needsCompanyDesc": "Bookings need a company to belong to.",
     "clickToEdit": "Click to edit",
-    "lockedInvoiced": "Already invoiced — locked from editing"
+    "lockedInvoiced": "Already invoiced — locked from editing",
+    "unitSellPrice": "Unit Sell Price",
+    "totalCalc": "{guests} guest(s) × {unitPrice}"
   },
   "Calendar": {
     "title": "Calendar",

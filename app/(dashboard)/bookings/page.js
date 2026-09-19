@@ -20,7 +20,7 @@ import Link from 'next/link'
 const emptyForm = {
   guest_name: '', guest_email: '', guest_phone: '', guest_count: 1,
   start_date: '', end_date: '', booking_type: 'tour', status: 'pending',
-  amount_total: 0, amount_paid: 0, notes: '',
+  unit_price: 0, amount_paid: 0, notes: '',
   guide_id: '', driver_id: '', vehicle_id: '', vessel_id: '', room_id: '',
 }
 
@@ -104,7 +104,8 @@ function BookingsContent() {
       guest_name: booking.guest_name || '', guest_email: booking.guest_email || '', guest_phone: booking.guest_phone || '',
       guest_count: booking.guest_count || 1, start_date: booking.start_date || '', end_date: booking.end_date || '',
       booking_type: booking.booking_type || bookingTypes[0]?.slug || '', status: booking.status || 'pending',
-      amount_total: booking.amount_total || 0, amount_paid: booking.amount_paid || 0, notes: booking.notes || '',
+      unit_price: booking.unit_price ?? (booking.amount_total ? booking.amount_total / (booking.guest_count || 1) : 0),
+      amount_paid: booking.amount_paid || 0, notes: booking.notes || '',
       guide_id: booking.guide_id || '', driver_id: booking.driver_id || '', vehicle_id: booking.vehicle_id || '',
       vessel_id: booking.vessel_id || '', room_id: booking.room_id || '',
     })
@@ -124,21 +125,25 @@ function BookingsContent() {
   }, [searchParams, bookings]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Picking a duration on a duration-priced type (Safari, Boat Cruise, etc.)
-  // fills the total from that type's rate card — still just a starting
-  // point, amount_total stays a normal editable field afterward.
+  // fills the per-guest unit price from that type's rate card — still just
+  // a starting point, unit_price stays a normal editable field afterward.
+  // The rate card is treated as a per-guest rate; total is guests × unit price.
   function applyDuration(durationKey) {
     const rate = selectedType()?.durations?.[durationKey]
-    if (rate !== undefined) setForm(f => ({ ...f, amount_total: rate }))
+    if (rate !== undefined) setForm(f => ({ ...f, unit_price: rate }))
   }
 
   async function handleSave(e) {
     e.preventDefault()
     if (!company) return
     setSaving(true)
+    const guestCount = Number(form.guest_count) || 1
+    const unitPrice = Number(form.unit_price) || 0
     const payload = {
       ...form,
-      guest_count: Number(form.guest_count) || 1,
-      amount_total: Number(form.amount_total) || 0,
+      guest_count: guestCount,
+      unit_price: unitPrice,
+      amount_total: guestCount * unitPrice,
       amount_paid: Number(form.amount_paid) || 0,
       end_date: form.end_date || form.start_date,
       guide_id: form.guide_id || null,
@@ -270,8 +275,17 @@ function BookingsContent() {
                 ))}
               </Select>
             )}
-            <Input label={t('totalAmount')} type="number" step="0.01" value={form.amount_total} onChange={e => setForm({ ...form, amount_total: e.target.value })} />
+            <Input label={t('unitSellPrice')} type="number" step="0.01" value={form.unit_price} onChange={e => setForm({ ...form, unit_price: e.target.value })} />
             <Input label={t('amountPaid')} type="number" step="0.01" value={form.amount_paid} onChange={e => setForm({ ...form, amount_paid: e.target.value })} />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--cream)', borderRadius: '0.5rem', padding: '0.625rem 0.875rem', margin: '0.25rem 0 0.75rem' }}>
+            <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-500)' }}>
+              {t('totalCalc', { guests: Number(form.guest_count) || 1, unitPrice: `${company.currency}${(Number(form.unit_price) || 0).toLocaleString()}` })}
+            </span>
+            <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)' }}>
+              {company.currency} {((Number(form.guest_count) || 1) * (Number(form.unit_price) || 0)).toLocaleString()}
+            </span>
           </div>
 
           {bookingTypes.length === 0 && (

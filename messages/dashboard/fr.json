@@ -186,7 +186,9 @@
     "bookingUpdated": "Réservation mise à jour",
     "needsCompanyDesc": "Les réservations doivent être associées à une entreprise.",
     "clickToEdit": "Cliquer pour modifier",
-    "lockedInvoiced": "Déjà facturée — modification verrouillée"
+    "lockedInvoiced": "Déjà facturée — modification verrouillée",
+    "unitSellPrice": "Prix de Vente Unitaire",
+    "totalCalc": "{guests} client(s) × {unitPrice}"
   },
   "Calendar": {
     "title": "Calendrier",

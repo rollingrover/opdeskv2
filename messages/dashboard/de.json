@@ -186,7 +186,9 @@
     "bookingUpdated": "Buchung aktualisiert",
     "needsCompanyDesc": "Buchungen müssen einem Unternehmen zugeordnet sein.",
     "clickToEdit": "Zum Bearbeiten klicken",
-    "lockedInvoiced": "Bereits in Rechnung gestellt — Bearbeitung gesperrt"
+    "lockedInvoiced": "Bereits in Rechnung gestellt — Bearbeitung gesperrt",
+    "unitSellPrice": "Verkaufspreis pro Einheit",
+    "totalCalc": "{guests} Gast/Gäste × {unitPrice}"
   },
   "Calendar": {
     "title": "Kalender",
