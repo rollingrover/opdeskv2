@@ -41,6 +41,7 @@
       "reports": "Reports",
       "settings": "Settings",
       "team": "Team",
+      "locations": "Locations",
       "addons": "Add-ons",
       "publicProfile": "Public Profile",
       "support": "Support"
@@ -76,11 +77,13 @@
     "manage": "Manage",
     "allCertsUpToDate": "All certifications are up to date",
     "guide": "Guide: {name}",
+    "clickToOpen": "Click to open",
     "quickActions": {
       "newBooking": "New Booking",
       "addStaff": "Add Staff",
       "newInvoice": "New Invoice",
-      "settings": "Settings"
+      "settings": "Settings",
+      "newSite": "New Site/Location"
     },
     "profileErrorTitle": "We couldn't load your profile",
     "profileErrorDesc": "Your account exists, but no profile record was found for it. Please contact support or try signing out and back in.",
@@ -835,6 +838,11 @@
   "MainReports": {
     "title": "Reports",
     "subtitle": "Revenue, bookings, and outstanding balances",
+    "scopeThisLocation": "This Location",
+    "scopeAllLocations": "All Locations",
+    "mixedCurrencyNote": "Your locations use different currencies — combined totals below add raw amounts across currencies and should be read as a rough indicator, not an exact figure.",
+    "byLocation": "By Location",
+    "colLocation": "Location",
     "totalRevenueReceived": "Total Revenue Received",
     "outstandingBalance": "Outstanding Balance",
     "totalBookings": "Total Bookings",
@@ -1096,5 +1104,27 @@
     "inviteSent": "Invite sent to {email}",
     "memberRemoved": "That person's access has been removed",
     "confirmRemove": "Remove {name} from your team? They'll lose access immediately."
+  },
+  "Locations": {
+    "title": "Locations",
+    "subtitle": "Manage every location under your account and switch between them.",
+    "addLocation": "Add Location",
+    "needsEnterprise": "Managing multiple locations under one login is an Enterprise plan feature. Each location still has its own subscription, discounted 20% once linked.",
+    "colName": "Location",
+    "colType": "Type",
+    "current": "current",
+    "switchTo": "Switch to",
+    "switching": "Switching…",
+    "cancel": "Cancel",
+    "adding": "Adding…",
+    "locationAdded": "Location added",
+    "locationName": "Location Name",
+    "locationNamePlaceholder": "e.g. Ethlathini North Camp",
+    "operatorType": "Business Type",
+    "currency": "Currency",
+    "planForThisLocation": "Plan for This Location",
+    "discountNote": "Enterprise discount applied — {price}/mo for this location.",
+    "billingEmail": "Billing Email",
+    "phone": "Phone"
   }
 }

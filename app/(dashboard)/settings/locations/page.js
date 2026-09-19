@@ -1,7 +1,7 @@
 'use client'
 import { BrandIcon } from '@/components/ui/BrandIcon'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
@@ -15,13 +15,14 @@ import { Plus, MapPin } from 'lucide-react'
 
 const emptyForm = { name: '', operator_type: 'safari', currency: 'ZAR', package_slug: 'basic', billing_email: '', phone: '' }
 
-export default function LocationsPage() {
+function LocationsContent() {
   const t = useTranslations('Locations')
   const tCommon = useTranslations('Common')
   const { company, profile, needsCompany, isOwner, reload } = useAuth()
   const supabase = createClient()
   const toast = useToast()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [locations, setLocations] = useState([])
   const [packages, setPackages] = useState([])
   const [loading, setLoading] = useState(true)
@@ -44,6 +45,10 @@ export default function LocationsPage() {
     setLoading(false)
   }
   useEffect(() => { load() }, [company])
+
+  useEffect(() => {
+    if (searchParams.get('add') === '1' && company?.package?.slug === 'enterprise' && isOwner) setModalOpen(true)
+  }, [searchParams, company, isOwner])
 
   if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
@@ -154,6 +159,14 @@ export default function LocationsPage() {
         </form>
       </Modal>
     </div>
+  )
+}
+
+export default function LocationsPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <LocationsContent />
+    </Suspense>
   )
 }
 

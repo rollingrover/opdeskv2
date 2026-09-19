@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
@@ -9,7 +10,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { BrandIcon } from '@/components/ui/BrandIcon'
 import {
   BookOpen, Users, DollarSign, TrendingUp, Calendar,
-  AlertTriangle, CheckCircle, Clock, ArrowRight, Hotel
+  AlertTriangle, CheckCircle, Clock, ArrowRight, Hotel, MapPin, Plus
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -54,12 +55,36 @@ const LOCALE_MAP = { en: 'en-ZA', af: 'af-ZA', fr: 'fr-FR', pt: 'pt-PT', de: 'de
 export default function DashboardPage() {
   const t = useTranslations('DashboardHome')
   const locale = useLocale()
-  const { company, profileError, needsCompany } = useAuth()
+  const router = useRouter()
+  const { company, profileError, needsCompany, reload } = useAuth()
   const supabase = createClient()
   const [stats, setStats]     = useState({ totalBookings:0, confirmedToday:0, totalStaff:0, occupiedRooms:0, totalRooms:0 })
   const [bookings, setBookings] = useState([])
   const [certAlerts, setCertAlerts] = useState([])
+  const [locations, setLocations] = useState([])
+  const [switching, setSwitching] = useState(false)
   const [loading, setLoading] = useState(true)
+
+  // Sibling locations under the same Enterprise org, same idea as the
+  // sidebar switcher — surfaced here too since this is where an owner
+  // juggling several sites is most likely to want to jump between them.
+  useEffect(() => {
+    if (!company?.organization_id) { setLocations([]); return }
+    let cancelled = false
+    supabase.from('companies').select('id, name, operator_type').eq('organization_id', company.organization_id).order('name')
+      .then(({ data }) => { if (!cancelled) setLocations(data || []) })
+    return () => { cancelled = true }
+  }, [company?.organization_id])
+
+  async function switchLocation(id) {
+    if (id === company.id || switching) return
+    setSwitching(true)
+    const { error } = await supabase.rpc('switch_active_company', { p_company_id: id })
+    setSwitching(false)
+    if (error) { alert(error.message); return }
+    await reload()
+    router.refresh()
+  }
 
   useEffect(() => {
     if (!company) { setLoading(false); return }
@@ -132,6 +157,22 @@ export default function DashboardPage() {
         <p style={{ margin:'0.25rem 0 0', color:'var(--gray-400)', fontSize:'0.875rem' }}>
           {t('subtitle', { date: new Date().toLocaleDateString(dateLocale, { weekday:'long', day:'numeric', month:'long' }) })}
         </p>
+        {locations.length > 1 && (
+          <div style={{ display:'flex', gap:'0.5rem', marginTop:'0.75rem', flexWrap:'wrap' }}>
+            {locations.map(loc => (
+              <button key={loc.id} onClick={() => switchLocation(loc.id)} disabled={switching}
+                style={{
+                  display:'flex', alignItems:'center', gap:'0.375rem', padding:'0.375rem 0.75rem', borderRadius:'999px',
+                  border: loc.id === company.id ? '1px solid var(--gold)' : '1px solid var(--gray-200)',
+                  background: loc.id === company.id ? 'var(--gold)15' : 'white',
+                  color: loc.id === company.id ? 'var(--navy)' : 'var(--gray-500)',
+                  fontSize:'0.8125rem', fontWeight:600, cursor: switching ? 'default' : 'pointer',
+                }}>
+                <MapPin size={13} /> {loc.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Stats */}
@@ -166,7 +207,7 @@ export default function DashboardPage() {
                 </thead>
                 <tbody>
                   {bookings.map(b => (
-                    <tr key={b.id}>
+                    <tr key={b.id} onClick={() => router.push(`/bookings?edit=${b.id}`)} style={{ cursor: 'pointer' }} title={t('clickToOpen')}>
                       <td><span style={{ fontFamily:'monospace', fontSize:'0.8rem', color:'var(--navy)', fontWeight:600 }}>{b.booking_ref}</span></td>
                       <td>
                         <p style={{ margin:0, fontWeight:600, fontSize:'0.875rem', color:'var(--navy)' }}>{b.guest_name || '—'}</p>
@@ -212,6 +253,9 @@ export default function DashboardPage() {
           { href:'/staff',    key:'addStaff',   icon:'addStaff', color:'var(--navy)' },
           { href:'/invoices', key:'newInvoice', icon:'newInvoice', color:'var(--gold)' },
           { href:'/settings', key:'settings',    icon:'settingsIcon', color:'var(--gray-500)' },
+          ...(company.package?.slug === 'enterprise' || company.organization_id
+            ? [{ href:'/settings/locations?add=1', key:'newSite', icon:null, color:'var(--gold)' }]
+            : []),
         ].map(a => (
           <Link key={a.href} href={a.href} style={{
             background:'white', border:'1px solid var(--gray-200)', borderRadius:'0.75rem',
@@ -220,7 +264,7 @@ export default function DashboardPage() {
           }}
           onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)' }}
           onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--gray-200)'; e.currentTarget.style.boxShadow = 'none' }}>
-            <BrandIcon name={a.icon} size={28} />
+            {a.icon ? <BrandIcon name={a.icon} size={28} /> : <MapPin size={28} color="var(--gold)" />}
             <span style={{ fontSize:'0.875rem', fontWeight:600, color:'var(--navy)' }}>{t(`quickActions.${a.key}`)}</span>
           </Link>
         ))}

@@ -1,6 +1,7 @@
 'use client'
 import { BrandIcon } from '@/components/ui/BrandIcon'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
@@ -23,10 +24,11 @@ const emptyForm = {
   guide_id: '', driver_id: '', vehicle_id: '', vessel_id: '', room_id: '',
 }
 
-export default function BookingsPage() {
+function BookingsContent() {
   const t = useTranslations('Bookings')
   const tStatus = useTranslations('StatusBadge')
   const tCommon = useTranslations('Common')
+  const searchParams = useSearchParams()
   const { company, profile, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
@@ -108,6 +110,18 @@ export default function BookingsPage() {
     })
     setModalOpen(true)
   }
+
+  // Supports deep-linking straight into a booking's edit view, e.g.
+  // /bookings?edit=<id> from the dashboard's recent bookings list — a plain
+  // link to /bookings would otherwise land on the list with no way to tell
+  // which booking the person actually wanted to open.
+  const autoOpenedRef = useRef(false)
+  useEffect(() => {
+    const editId = searchParams.get('edit')
+    if (!editId || autoOpenedRef.current || bookings.length === 0) return
+    const target = bookings.find(b => b.id === editId)
+    if (target) { autoOpenedRef.current = true; openForEdit(target) }
+  }, [searchParams, bookings]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Picking a duration on a duration-priced type (Safari, Boat Cruise, etc.)
   // fills the total from that type's rate card — still just a starting
@@ -298,6 +312,14 @@ export default function BookingsPage() {
         </form>
       </Modal>
     </div>
+  )
+}
+
+export default function BookingsPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <BookingsContent />
+    </Suspense>
   )
 }
 

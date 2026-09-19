@@ -41,6 +41,7 @@
       "reports": "Relatórios",
       "settings": "Definições",
       "team": "Equipa",
+      "locations": "Localizações",
       "addons": "Extras",
       "publicProfile": "Perfil Público",
       "support": "Suporte"
@@ -76,11 +77,13 @@
     "manage": "Gerir",
     "allCertsUpToDate": "Todas as certificações estão atualizadas",
     "guide": "Guia: {name}",
+    "clickToOpen": "Clique para abrir",
     "quickActions": {
       "newBooking": "Nova Reserva",
       "addStaff": "Adicionar Equipa",
       "newInvoice": "Nova Fatura",
-      "settings": "Definições"
+      "settings": "Definições",
+      "newSite": "Nova Localização"
     },
     "profileErrorTitle": "Não foi possível carregar o seu perfil",
     "profileErrorDesc": "A sua conta existe, mas não foi encontrado nenhum registo de perfil para ela. Contacte o suporte ou tente sair e entrar novamente.",
@@ -835,6 +838,11 @@
   "MainReports": {
     "title": "Relatórios",
     "subtitle": "Receita, reservas e saldos em aberto",
+    "scopeThisLocation": "Esta Localização",
+    "scopeAllLocations": "Todas as Localizações",
+    "mixedCurrencyNote": "As suas localizações usam moedas diferentes — os totais combinados abaixo somam valores brutos entre moedas e devem ser lidos como uma indicação aproximada, não um valor exato.",
+    "byLocation": "Por Localização",
+    "colLocation": "Localização",
     "totalRevenueReceived": "Receita Total Recebida",
     "outstandingBalance": "Saldo em Aberto",
     "totalBookings": "Total de Reservas",
@@ -1096,5 +1104,27 @@
     "inviteSent": "Convite enviado para {email}",
     "memberRemoved": "O acesso dessa pessoa foi removido",
     "confirmRemove": "Remover {name} da sua equipa? O acesso será perdido imediatamente."
+  },
+  "Locations": {
+    "title": "Localizações",
+    "subtitle": "Faça a gestão de cada localização na sua conta e alterne entre elas.",
+    "addLocation": "Adicionar Localização",
+    "needsEnterprise": "Gerir várias localizações com um único login é uma funcionalidade do plano Enterprise. Cada localização mantém a sua própria subscrição, com 20% de desconto após ligada.",
+    "colName": "Localização",
+    "colType": "Tipo",
+    "current": "atual",
+    "switchTo": "Mudar para",
+    "switching": "A mudar…",
+    "cancel": "Cancelar",
+    "adding": "A adicionar…",
+    "locationAdded": "Localização adicionada",
+    "locationName": "Nome da Localização",
+    "locationNamePlaceholder": "ex. Ethlathini Acampamento Norte",
+    "operatorType": "Tipo de Negócio",
+    "currency": "Moeda",
+    "planForThisLocation": "Plano para Esta Localização",
+    "discountNote": "Desconto Enterprise aplicado — {price}/mês para esta localização.",
+    "billingEmail": "Email de Faturação",
+    "phone": "Telefone"
   }
 }

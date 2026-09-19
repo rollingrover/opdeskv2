@@ -41,6 +41,7 @@
       "reports": "Rapports",
       "settings": "Paramètres",
       "team": "Équipe",
+      "locations": "Établissements",
       "addons": "Modules Complémentaires",
       "publicProfile": "Profil Public",
       "support": "Assistance"
@@ -76,11 +77,13 @@
     "manage": "Gérer",
     "allCertsUpToDate": "Toutes les certifications sont à jour",
     "guide": "Guide : {name}",
+    "clickToOpen": "Cliquer pour ouvrir",
     "quickActions": {
       "newBooking": "Nouvelle Réservation",
       "addStaff": "Ajouter du Personnel",
       "newInvoice": "Nouvelle Facture",
-      "settings": "Paramètres"
+      "settings": "Paramètres",
+      "newSite": "Nouvel Établissement"
     },
     "profileErrorTitle": "Nous n'avons pas pu charger votre profil",
     "profileErrorDesc": "Votre compte existe, mais aucun profil n'a été trouvé pour celui-ci. Veuillez contacter l'assistance ou essayer de vous déconnecter puis reconnecter.",
@@ -835,6 +838,11 @@
   "MainReports": {
     "title": "Rapports",
     "subtitle": "Revenus, réservations et soldes en attente",
+    "scopeThisLocation": "Cet Établissement",
+    "scopeAllLocations": "Tous les Établissements",
+    "mixedCurrencyNote": "Vos établissements utilisent des devises différentes — les totaux combinés ci-dessous additionnent des montants bruts entre devises et doivent être lus comme une indication approximative, pas un chiffre exact.",
+    "byLocation": "Par Établissement",
+    "colLocation": "Établissement",
     "totalRevenueReceived": "Revenu Total Reçu",
     "outstandingBalance": "Solde en Attente",
     "totalBookings": "Total des Réservations",
@@ -1096,5 +1104,27 @@
     "inviteSent": "Invitation envoyée à {email}",
     "memberRemoved": "L'accès de cette personne a été retiré",
     "confirmRemove": "Retirer {name} de votre équipe ? Son accès sera perdu immédiatement."
+  },
+  "Locations": {
+    "title": "Établissements",
+    "subtitle": "Gérez chaque établissement de votre compte et basculez entre eux.",
+    "addLocation": "Ajouter un Établissement",
+    "needsEnterprise": "Gérer plusieurs établissements sous une seule connexion est une fonctionnalité du forfait Enterprise. Chaque établissement conserve son propre abonnement, avec 20 % de réduction une fois lié.",
+    "colName": "Établissement",
+    "colType": "Type",
+    "current": "actuel",
+    "switchTo": "Basculer vers",
+    "switching": "Changement…",
+    "cancel": "Annuler",
+    "adding": "Ajout…",
+    "locationAdded": "Établissement ajouté",
+    "locationName": "Nom de l'Établissement",
+    "locationNamePlaceholder": "ex. Camp Nord Ethlathini",
+    "operatorType": "Type d'Activité",
+    "currency": "Devise",
+    "planForThisLocation": "Forfait pour cet Établissement",
+    "discountNote": "Réduction Enterprise appliquée — {price}/mois pour cet établissement.",
+    "billingEmail": "E-mail de Facturation",
+    "phone": "Téléphone"
   }
 }

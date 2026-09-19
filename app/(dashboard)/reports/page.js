@@ -20,27 +20,58 @@ export default function ReportsPage() {
   const [bookings, setBookings] = useState([])
   const [rooms, setRooms] = useState([])
   const [roomBookings, setRoomBookings] = useState([])
+  const [locations, setLocations] = useState([])
+  const [scope, setScope] = useState('mine') // 'mine' | 'all'
+  const [byLocation, setByLocation] = useState([])
   const [loading, setLoading] = useState(true)
 
   const dateLocale = LOCALE_MAP[locale] || 'en-ZA'
 
+  useEffect(() => {
+    if (!company?.organization_id) { setLocations([]); return }
+    supabase.from('companies').select('id, name, currency').eq('organization_id', company.organization_id).order('name')
+      .then(({ data }) => setLocations(data || []))
+  }, [company?.organization_id])
+
   async function load() {
     if (!company) { setLoading(false); return }
     setLoading(true)
+    // 'all' scope pulls every sibling location's data together — only
+    // reachable when this company actually has siblings (see the toggle
+    // below, which only renders in that case). Rooms/room_bookings are
+    // fetched regardless of operator_type in that scope, since a combined
+    // org can mix lodging and non-lodging sites; a site with no rooms just
+    // contributes nothing to occupancy.
+    const scopedIds = scope === 'all' && locations.length > 0 ? locations.map(l => l.id) : [company.id]
     const isLodging = company.operator_type === 'lodge'
+    const includeRooms = scope === 'all' ? true : isLodging
     const [inv, bk, rm, rb] = await Promise.all([
-      supabase.from('invoices').select('total, amount_paid, status, created_at').eq('company_id', company.id),
-      supabase.from('bookings').select('start_date, status, amount_total').eq('company_id', company.id),
-      isLodging ? supabase.from('rooms').select('id').eq('company_id', company.id).eq('active', true).neq('status', 'maintenance') : Promise.resolve({ data: [] }),
-      isLodging ? supabase.from('room_bookings').select('check_in, check_out, bookings!inner(status)').eq('company_id', company.id) : Promise.resolve({ data: [] }),
+      supabase.from('invoices').select('total, amount_paid, status, created_at, company_id').in('company_id', scopedIds),
+      supabase.from('bookings').select('start_date, status, amount_total, company_id').in('company_id', scopedIds),
+      includeRooms ? supabase.from('rooms').select('id, company_id').in('company_id', scopedIds).eq('active', true).neq('status', 'maintenance') : Promise.resolve({ data: [] }),
+      includeRooms ? supabase.from('room_bookings').select('check_in, check_out, company_id, bookings!inner(status)').in('company_id', scopedIds) : Promise.resolve({ data: [] }),
     ])
     setInvoices(inv.data || [])
     setBookings(bk.data || [])
     setRooms(rm.data || [])
     setRoomBookings(rb.data || [])
+
+    if (scope === 'all' && locations.length > 0) {
+      setByLocation(locations.map(loc => {
+        const locInvoices = (inv.data || []).filter(i => i.company_id === loc.id)
+        const locBookings = (bk.data || []).filter(b => b.company_id === loc.id)
+        return {
+          ...loc,
+          paid: locInvoices.reduce((s, i) => s + Number(i.amount_paid || 0), 0),
+          bookingsCount: locBookings.length,
+        }
+      }))
+    } else {
+      setByLocation([])
+    }
     setLoading(false)
   }
-  useEffect(() => { load() }, [company])
+  useEffect(() => { load() }, [company, scope, locations])
 
   if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
@@ -63,6 +94,11 @@ export default function ReportsPage() {
   const totalInvoiced = invoices.reduce((s, i) => s + Number(i.total), 0)
   const totalPaid = invoices.reduce((s, i) => s + Number(i.amount_paid || 0), 0)
   const outstanding = totalInvoiced - totalPaid
+
+  // Sibling locations can each be set up in their own currency — summing
+  // raw totals across currencies would be meaningless, so this flags it
+  // rather than silently presenting a misleading combined number.
+  const mixedCurrencies = scope === 'all' && new Set(locations.map(l => l.currency)).size > 1
 
   const statusCounts = {}
   bookings.forEach(b => { statusCounts[b.status] = (statusCounts[b.status] || 0) + 1 })
@@ -111,7 +147,26 @@ export default function ReportsPage() {
           <h1 className="page-title">{t('title')}</h1>
           <p className="page-subtitle">{t('subtitle')}</p>
         </div>
+        {locations.length > 1 && (
+          <div style={{ display: 'inline-flex', background: 'var(--gray-50)', borderRadius: '999px', padding: '0.25rem' }}>
+            {[['mine', t('scopeThisLocation')], ['all', t('scopeAllLocations')]].map(([val, label]) => (
+              <button key={val} onClick={() => setScope(val)}
+                style={{
+                  border: 'none', borderRadius: '999px', padding: '0.5rem 1rem', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer',
+                  background: scope === val ? 'var(--gold)' : 'transparent', color: scope === val ? 'var(--navy)' : 'var(--gray-500)',
+                }}>
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+
+      {mixedCurrencies && (
+        <p style={{ fontSize: '0.75rem', color: 'var(--gray-500)', marginTop: '-0.75rem', marginBottom: '1rem' }}>
+          {t('mixedCurrencyNote')}
+        </p>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: `repeat(${occupancyPct !== null ? 4 : 3}, 1fr)`, gap: '1rem', marginBottom: '1.5rem' }}>
         <div className="card card-shadow">
@@ -206,6 +261,26 @@ export default function ReportsPage() {
           {Object.keys(statusCounts).length === 0 && <p style={{ color: 'var(--gray-400)', margin: 0 }}>{t('noBookingsYet')}</p>}
         </div>
       </div>
+
+      {scope === 'all' && byLocation.length > 0 && (
+        <div className="card card-shadow" style={{ marginTop: '1.25rem', padding: 0, overflow: 'hidden' }}>
+          <div style={{ padding: '0.875rem 1.25rem', borderBottom: '1px solid var(--gray-100)' }}>
+            <h3 style={{ margin: 0, fontSize: '0.9375rem', color: 'var(--navy)' }}>{t('byLocation')}</h3>
+          </div>
+          <table className="table">
+            <thead><tr><th>{t('colLocation')}</th><th style={{ textAlign: 'right' }}>{t('colReceived')}</th><th style={{ textAlign: 'right' }}>{t('colBookings')}</th></tr></thead>
+            <tbody>
+              {byLocation.map(loc => (
+                <tr key={loc.id}>
+                  <td style={{ fontWeight: 600, color: 'var(--navy)' }}>{loc.name}</td>
+                  <td style={{ textAlign: 'right', color: 'var(--teal)', fontWeight: 600 }}>{loc.currency} {loc.paid.toLocaleString()}</td>
+                  <td style={{ textAlign: 'right', color: 'var(--navy)', fontWeight: 600 }}>{loc.bookingsCount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

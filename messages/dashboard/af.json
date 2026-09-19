@@ -41,6 +41,7 @@
       "reports": "Verslae",
       "settings": "Instellings",
       "team": "Span",
+      "locations": "Liggings",
       "addons": "Byvoegings",
       "publicProfile": "Openbare Profiel",
       "support": "Ondersteuning"
@@ -76,11 +77,13 @@
     "manage": "Bestuur",
     "allCertsUpToDate": "Alle sertifisering is op datum",
     "guide": "Gids: {name}",
+    "clickToOpen": "Klik om oop te maak",
     "quickActions": {
       "newBooking": "Nuwe Bespreking",
       "addStaff": "Voeg Personeel By",
       "newInvoice": "Nuwe Faktuur",
-      "settings": "Instellings"
+      "settings": "Instellings",
+      "newSite": "Nuwe Terrein/Ligging"
     },
     "profileErrorTitle": "Ons kon nie jou profiel laai nie",
     "profileErrorDesc": "Jou rekening bestaan, maar geen profielrekord is daarvoor gevind nie. Kontak asseblief ondersteuning of probeer om af te meld en weer aan te meld.",
@@ -835,6 +838,11 @@
   "MainReports": {
     "title": "Verslae",
     "subtitle": "Inkomste, besprekings en uitstaande balanse",
+    "scopeThisLocation": "Hierdie Ligging",
+    "scopeAllLocations": "Alle Liggings",
+    "mixedCurrencyNote": "Jou liggings gebruik verskillende geldeenhede — gekombineerde totale hieronder tel rou bedrae oor geldeenhede bymekaar en moet as 'n growwe aanduiding gelees word, nie 'n presiese syfer nie.",
+    "byLocation": "Volgens Ligging",
+    "colLocation": "Ligging",
     "totalRevenueReceived": "Totale Inkomste Ontvang",
     "outstandingBalance": "Uitstaande Balans",
     "totalBookings": "Totale Besprekings",
@@ -1096,5 +1104,27 @@
     "inviteSent": "Uitnodiging gestuur na {email}",
     "memberRemoved": "Daardie persoon se toegang is verwyder",
     "confirmRemove": "Verwyder {name} van jou span? Hulle sal onmiddellik toegang verloor."
+  },
+  "Locations": {
+    "title": "Liggings",
+    "subtitle": "Bestuur elke ligging onder jou rekening en wissel tussen hulle.",
+    "addLocation": "Voeg Ligging By",
+    "needsEnterprise": "Om verskeie liggings onder een aanmelding te bestuur is 'n Enterprise-plan kenmerk. Elke ligging het steeds sy eie subskripsie, 20% afslag sodra dit gekoppel is.",
+    "colName": "Ligging",
+    "colType": "Tipe",
+    "current": "huidig",
+    "switchTo": "Wissel na",
+    "switching": "Wissel tans…",
+    "cancel": "Kanselleer",
+    "adding": "Voeg tans by…",
+    "locationAdded": "Ligging bygevoeg",
+    "locationName": "Ligging Naam",
+    "locationNamePlaceholder": "bv. Ethlathini Noord Kamp",
+    "operatorType": "Besigheidstipe",
+    "currency": "Geldeenheid",
+    "planForThisLocation": "Plan vir Hierdie Ligging",
+    "discountNote": "Enterprise afslag toegepas — {price}/mnd vir hierdie ligging.",
+    "billingEmail": "Faktuur E-pos",
+    "phone": "Foon"
   }
 }
