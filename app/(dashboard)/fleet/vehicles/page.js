@@ -26,6 +26,7 @@ export default function VehiclesPage() {
   const toast = useToast()
   const [rows, setRows] = useState([])
   const [addons, setAddons] = useState([])
+  const [roomCount, setRoomCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
@@ -34,13 +35,18 @@ export default function VehiclesPage() {
   async function load() {
     if (!company) { setLoading(false); return }
     setLoading(true)
-    const [v, a] = await Promise.all([
+    // Rooms count is fetched too — vehicles and rooms now draw from one
+    // shared capacity pool (see lib/limits.js), so "am I at my limit" for
+    // vehicles depends on how many rooms this company already has as well.
+    const [v, a, r] = await Promise.all([
       supabase.from('vehicles').select('*').eq('company_id', company.id).order('name'),
       supabase.from('company_addons').select('addon_key, quantity, active').eq('company_id', company.id).eq('active', true),
+      supabase.from('rooms').select('id', { count: 'exact', head: true }).eq('company_id', company.id),
     ])
     if (v.error) toast.error(v.error.message)
     setRows(v.data || [])
     setAddons(a.data || [])
+    setRoomCount(r.count || 0)
     setLoading(false)
   }
   useEffect(() => { load() }, [company])
@@ -63,7 +69,7 @@ export default function VehiclesPage() {
   if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
-  const vehiclesLimit = checkLimit('vehicles', rows.length, { profile, company, companyAddons: addons })
+  const vehiclesLimit = checkLimit('vehicles', rows.length, { profile, company, companyAddons: addons, poolUsage: rows.length + roomCount })
 
   return (
     <div>

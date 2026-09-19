@@ -2,9 +2,12 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { createClient } from '@/lib/supabase/client'
 import { OpDeskLogo } from './OpDeskLogo'
 import { OPERATOR_MODULES } from '@/lib/constants'
+import { hasModuleAccess } from '@/lib/moduleAccess'
 import {
   LayoutDashboard, CalendarDays, BookOpen, Users, Hotel,
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
@@ -26,10 +29,10 @@ const ALL_NAV = [
     sectionKey: 'staffHr',
     items: [
       { href:'/staff',              icon: Users,       key:'staffMembers',    module:'staff' },
-      { href:'/staff/certifications', icon: UserCheck, key:'certifications',  module:'certs' },
-      { href:'/staff/costs',        icon: DollarSign,  key:'costToCompany',  module:'costs' },
-      { href:'/staff/shifts',       icon: Clock,       key:'shifts',           module:'shifts' },
-      { href:'/staff/leave',        icon: Plane,       key:'leave',            module:'leave' },
+      { href:'/staff/certifications', icon: UserCheck, key:'certifications',  module:'certs', gate:'certifications' },
+      { href:'/staff/costs',        icon: DollarSign,  key:'costToCompany',  module:'costs', gate:'costs' },
+      { href:'/staff/shifts',       icon: Clock,       key:'shifts',           module:'shifts', gate:'shifts' },
+      { href:'/staff/leave',        icon: Plane,       key:'leave',            module:'leave', gate:'leave' },
     ]
   },
   {
@@ -40,16 +43,21 @@ const ALL_NAV = [
       { href:'/lodging/calendar',    icon: CalendarDays,key:'availability',     module:'rooms' },
       { href:'/lodging/housekeeping',icon: ClipboardList,key:'housekeeping',    module:'housekeeping' },
       { href:'/lodging/guests',      icon: Users,       key:'guests',           module:'rooms' },
-      { href:'/lodging/channel-sync',icon: RefreshCw,   key:'channelSync',     module:'rooms' },
+      { href:'/lodging/channel-sync',icon: RefreshCw,   key:'channelSync',     module:'rooms', gate:'ical_sync' },
     ]
   },
   {
+    // Logistics/delivery is a purchasable add-on (or Professional+/Enterprise
+    // tier perk) available to ANY operator type now, not just companies whose
+    // operator_type happens to be 'delivery' — so these items are gated
+    // purely by hasModuleAccess('delivery_management', ...) below, with no
+    // dependency on OPERATOR_MODULES at all.
     sectionKey: 'logistics',
     items: [
-      { href:'/delivery/clients',    icon: Users,       key:'clients',          module:'delivery_clients' },
-      { href:'/delivery/price-list', icon: DollarSign,  key:'priceList',       module:'delivery_clients' },
-      { href:'/delivery/orders',     icon: Package,     key:'orders',           module:'delivery_orders' },
-      { href:'/delivery/statements', icon: FileText,    key:'deliveryStatements', module:'delivery_orders' },
+      { href:'/delivery/clients',    icon: Users,       key:'clients',          module:'delivery_clients', gate:'delivery_management' },
+      { href:'/delivery/price-list', icon: DollarSign,  key:'priceList',       module:'delivery_clients', gate:'delivery_management' },
+      { href:'/delivery/orders',     icon: Package,     key:'orders',           module:'delivery_orders', gate:'delivery_management' },
+      { href:'/delivery/statements', icon: FileText,    key:'deliveryStatements', module:'delivery_orders', gate:'delivery_management' },
     ]
   },
   {
@@ -67,8 +75,8 @@ const ALL_NAV = [
       { href:'/firearm-register', icon: Crosshair,   key:'firearmRegister', module:'firearm' },
       { href:'/invoices',         icon: FileText,    key:'invoices',         module:'invoices' },
       { href:'/invoices/statements', icon: FileText, key:'clientStatements', module:'invoices' },
-      { href:'/quotations',       icon: FileText,    key:'quotations',       module:'quotations' },
-      { href:'/checklists',       icon: ClipboardCheck, key:'checklists',     module:'checklists' },
+      { href:'/quotations',       icon: FileText,    key:'quotations',       module:'quotations', gate:'quotations' },
+      { href:'/checklists',       icon: ClipboardCheck, key:'checklists',     module:'checklists', gate:'checklists' },
       { href:'/reports',          icon: BarChart3,   key:'reports',          module:'reports' },
     ]
   },
@@ -89,6 +97,34 @@ export function Sidebar({ mobileOpen, onClose }) {
   const { company, profile, signOut } = useAuth()
   const operatorType = company?.operator_type || 'safari'
   const allowed = OPERATOR_MODULES[operatorType] || []
+
+  // Needed to evaluate hasModuleAccess() below — without this the sidebar
+  // has no way to know about tier upgrades or purchased add-ons at all,
+  // which was the root cause of both "approved addon doesn't show" and
+  // "enterprise upgrade doesn't show" bugs. Company-scoped RLS means this
+  // is cheap and always reflects whatever the DB currently says, regardless
+  // of when this browser session originally logged in.
+  const [companyAddons, setCompanyAddons] = useState([])
+  useEffect(() => {
+    if (!company?.id) { setCompanyAddons([]); return }
+    let cancelled = false
+    createClient()
+      .from('company_addons').select('addon_key, active')
+      .eq('company_id', company.id).eq('active', true)
+      .then(({ data }) => { if (!cancelled) setCompanyAddons(data || []) })
+    return () => { cancelled = true }
+  }, [company?.id])
+
+  // An item shows if it's always visible, if it's a genuinely tier/add-on
+  // gated feature the company is actually entitled to (checked via the same
+  // hasModuleAccess() every page already uses for its own access check —
+  // this is the piece the sidebar was previously skipping entirely), or
+  // otherwise if the company's operator type includes that base module.
+  function isVisible(item) {
+    if (item.module === 'always') return true
+    if (item.gate) return hasModuleAccess(item.gate, { profile, company, companyAddons })
+    return allowed.includes(item.module)
+  }
 
   return (
     <>
@@ -112,9 +148,7 @@ export function Sidebar({ mobileOpen, onClose }) {
         {/* Nav */}
         <nav className="sidebar-nav">
           {ALL_NAV.map(group => {
-            const visibleItems = group.items.filter(item =>
-              item.module === 'always' || allowed.includes(item.module)
-            )
+            const visibleItems = group.items.filter(isVisible)
             if (!visibleItems.length) return null
             return (
               <div key={group.sectionKey}>
