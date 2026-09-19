@@ -9,50 +9,25 @@ import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 import { Check, Globe } from 'lucide-react'
 import { MODULE_LABELS, GATED_MODULES, CURRENCIES } from '@/lib/constants'
 
-const VERTICAL_ICON = {
-  safari: 'safari', shuttle: 'shuttle', fishing: 'fishing', yacht: 'yacht',
-  trail: 'trailGuide', lodge: 'gameLodge', eastafrica: 'eastAfrica', transfer: 'islandTransfer', delivery: 'delivery',
-}
-const VERTICAL_NAME = {
-  safari: 'Safari', shuttle: 'Shuttle', fishing: 'Fishing', yacht: 'Yacht',
-  trail: 'Trail Guide', lodge: 'Lodging', eastafrica: 'East Africa Tours', transfer: 'Island Transfers', delivery: 'Logistics & Support',
-}
-
-// Rows for the feature comparison table below the cards — different limit
-// dimensions matter for different verticals (rooms for Lodging, clients/
-// orders for Logistics), so this is built per-vertical rather than one
-// fixed list that would show blank cells for whichever vertical isn't Tours.
-function getComparisonRows(vertical) {
-  const limitRows = vertical === 'delivery'
-    ? [
-        { key: 'clients', label: 'Clients', type: 'limit' },
-        { key: 'orders_per_month', label: 'Orders / month', type: 'limit' },
-        { key: 'vehicle_cost_suggestions', label: 'Vehicle Cost Suggestions', type: 'flag' },
-        { key: 'recurring_orders', label: 'Recurring Order Templates', type: 'flag' },
-        { key: 'advanced_reporting', label: 'Advanced Reporting', type: 'flag' },
-        { key: 'quoted_vs_actual', label: 'Quoted vs. Actual Cost', type: 'flag' },
-        { key: 'cost_breakdown_analytics', label: 'Cost Breakdown & Export', type: 'flag' },
-      ]
-    : [
-        { key: 'vehicles', label: 'Vehicles', type: 'limit' },
-        { key: 'guides', label: 'Guides', type: 'limit' },
-        { key: 'rooms', label: 'Rooms', type: 'limit' },
-        { key: 'bookings_per_month', label: 'Bookings / month', type: 'limit' },
-      ]
-  return [...limitRows, ...GATED_MODULES.map(m => ({ key: m, label: MODULE_LABELS[m], type: 'module' }))]
+// Packages are now one universal pooled-tier ladder (no more separate
+// Tours/Lodging/Logistics package sets), so there's one fixed set of
+// comparison rows rather than a per-vertical branch.
+function getComparisonRows() {
+  return [
+    { key: 'capacity', label: 'Vehicle + Room Capacity', type: 'limit' },
+    { key: 'guides', label: 'Staff', type: 'limit' },
+    { key: 'bookings_per_month', label: 'Bookings / month', type: 'limit' },
+    ...GATED_MODULES.map(m => ({ key: m, label: MODULE_LABELS[m], type: 'module' })),
+  ]
 }
 
 const ADDON_LABELS = {
-  vehicles: 'Extra Vehicle Slot', guides: 'Extra Guide Slot', drivers: 'Extra Driver Slot',
-  shuttles: 'Extra Shuttle Slot', safaris: 'Extra Safari Listing', tours: 'Extra Tour Listing',
-  charters: 'Extra Charter Listing', trails: 'Extra Trail Listing', seats: 'Extra User Seat',
-  firearm_register: 'Firearm Register', schedules_module: 'Schedules & Shifts Module',
-  white_label: 'White-Label Branding', no_watermark: 'Remove Watermark',
-  storage_10gb: 'Storage +10 GB', storage_50gb: 'Storage +50 GB', storage_200gb: 'Storage +200 GB',
-  bandwidth_50gb: 'Bandwidth +50 GB', bandwidth_200gb: 'Bandwidth +200 GB', bandwidth_1tb: 'Bandwidth +1 TB',
-  client_list: 'Client List & Billing', certifications: 'Certifications Module',
+  vehicles: 'Extra Capacity Slot (vehicle or room)', guides: 'Extra Staff Slot', rooms: 'Extra Capacity Slot (vehicle or room)',
+  schedules_module: 'Schedules & Shifts Module',
+  certifications: 'Certifications Module',
   cost_to_company: 'Cost to Company Module', leave: 'Leave Module',
-  hr_bundle: 'HR Bundle — Certifications, Shifts, Cost to Company & Leave',
+  hr_bundle: 'HR Package — Certifications, Shifts, Cost to Company & Leave',
+  logistics_bundle: 'Logistics Package — Client List, Price List, Orders & Statements',
   quotations: 'Quotations Module', ical_sync: 'Channel Sync (Airbnb/Booking.com)',
   delivery_management: 'Logistics & Support Management',
   checklists: 'Checklists & Inventory Lists',
@@ -61,16 +36,9 @@ const ADDON_LABELS = {
 function buildHighlights(pkg) {
   const lines = []
   const limits = pkg.limits || {}
-  if (limits.vehicles !== undefined) lines.push(limits.vehicles === null ? 'Unlimited vehicles' : `${limits.vehicles} vehicle${limits.vehicles === 1 ? '' : 's'}`)
-  if (limits.guides !== undefined) lines.push(limits.guides === null ? 'Unlimited guides' : `${limits.guides} guide${limits.guides === 1 ? '' : 's'}`)
-  if (limits.rooms !== undefined) lines.push(limits.rooms === null ? 'Unlimited rooms' : `${limits.rooms} room${limits.rooms === 1 ? '' : 's'}`)
+  if (limits.capacity !== undefined) lines.push(limits.capacity === null ? 'Unlimited vehicles & rooms' : `${limits.capacity} vehicle/room capacity`)
+  if (limits.guides !== undefined) lines.push(limits.guides === null ? 'Unlimited staff' : `${limits.guides} staff`)
   if (limits.bookings_per_month !== undefined) lines.push(limits.bookings_per_month === null ? 'Unlimited bookings' : `${limits.bookings_per_month} bookings/mo`)
-  if (limits.clients !== undefined) lines.push(limits.clients === null ? 'Unlimited clients' : `${limits.clients} client${limits.clients === 1 ? '' : 's'}`)
-  if (limits.orders_per_month !== undefined) lines.push(limits.orders_per_month === null ? 'Unlimited orders' : `${limits.orders_per_month} orders/mo`)
-  if (limits.vehicle_cost_suggestions) lines.push('Vehicle cost suggestions')
-  if (limits.recurring_orders) lines.push('Recurring order templates')
-  if (limits.advanced_reporting) lines.push('Advanced reporting')
-  if (limits.quoted_vs_actual) lines.push('Quoted vs. actual cost tracking')
   const modules = pkg.modules || {}
   const included = Object.entries(modules).filter(([, v]) => v === true).map(([k]) => MODULE_LABELS[k] || k)
   if (included.length) lines.push(`${included.join(', ')} included`)
@@ -84,7 +52,6 @@ export default function PricingPage() {
   const [annual, setAnnual] = useState(false)
   const [currency] = useState('ZAR')
   const [loading, setLoading] = useState(true)
-  const [vertical, setVertical] = useState('operators')
   const [detectedCurrency, setDetectedCurrency] = useState(null)
 
   useEffect(() => {
@@ -107,12 +74,11 @@ export default function PricingPage() {
     }).catch(() => {})
   }, [])
 
-  const visiblePackages = packages.filter(p => {
-    const tags = p.recommended_for || []
-    if (vertical === 'lodge') return tags.includes('lodge')
-    if (vertical === 'delivery') return tags.includes('delivery')
-    return !tags.includes('lodge') && !tags.includes('delivery')
-  })
+  // Packages are one universal pooled-tier ladder now — every package
+  // applies to every vertical, so there's no longer a per-vertical subset
+  // to filter down to (this used to filter on recommended_for tags, which
+  // now include all verticals on every package and would show zero rows).
+  const visiblePackages = packages
 
   const detectedCurrencyInfo = CURRENCIES.find(c => c.code === detectedCurrency)
 
@@ -134,19 +100,6 @@ export default function PricingPage() {
                 border: 'none', borderRadius: '999px', padding: '0.5rem 1.25rem', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer',
                 background: annual === val ? 'var(--gold)' : 'transparent',
                 color: annual === val ? 'var(--navy)' : 'rgba(255,255,255,0.7)',
-              }}>
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,0.1)', borderRadius: '999px', padding: '0.25rem', marginTop: '1rem' }}>
-          {[[t('operatorsTab'), 'operators'], [t('lodgingTab'), 'lodge'], [t('logisticsTab'), 'delivery']].map(([label, val]) => (
-            <button key={val} onClick={() => setVertical(val)}
-              style={{
-                border: 'none', borderRadius: '999px', padding: '0.5rem 1.25rem', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer',
-                background: vertical === val ? 'var(--gold)' : 'transparent',
-                color: vertical === val ? 'var(--navy)' : 'rgba(255,255,255,0.7)',
               }}>
               {label}
             </button>
@@ -179,15 +132,6 @@ export default function PricingPage() {
                   )}
                   <h3 style={{ margin: '0.5rem 0 0.25rem', fontSize: '1.125rem', color: 'var(--navy)' }}>{p.name}</h3>
                   <p style={{ margin: '0 0 0.5rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{p.tagline}</p>
-                  {p.recommended_for && p.recommended_for.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem', marginBottom: '1rem' }}>
-                      {p.recommended_for.map(tag => (
-                        <span key={tag} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', background: 'var(--cream)', borderRadius: '999px', padding: '0.125rem 0.5rem 0.125rem 0.25rem', fontSize: '0.6875rem', fontWeight: 600, color: 'var(--navy)' }}>
-                          <BrandIcon name={VERTICAL_ICON[tag]} size={14} /> {VERTICAL_NAME[tag] || tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                   <div style={{ marginBottom: '1.25rem' }}>
                     <span style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--navy)' }}>
                       {p.monthly_price === 0 ? t('free') : `${p.currency || currency} ${Number(annual ? Math.round(p.annual_price / 12) : p.monthly_price).toLocaleString()}`}
@@ -201,8 +145,10 @@ export default function PricingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link href={p.monthly_price === 0 ? '/auth/signup' : `/auth/signup?package=${p.slug}`} className={popular ? 'btn btn-primary' : 'btn btn-outline'} style={{ width: '100%', justifyContent: 'center' }}>
-                    {p.monthly_price === 0 ? t('startFree') : t('choosePlan')}
+                  <Link
+                    href={p.slug === 'enterprise' ? 'mailto:central@opdesk.app?subject=Enterprise%20plan%20enquiry' : p.monthly_price === 0 ? '/auth/signup' : `/auth/signup?package=${p.slug}`}
+                    className={popular ? 'btn btn-primary' : 'btn btn-outline'} style={{ width: '100%', justifyContent: 'center' }}>
+                    {p.slug === 'enterprise' ? t('contactUs') : p.monthly_price === 0 ? t('startFree') : t('choosePlan')}
                   </Link>
                 </div>
               )
@@ -225,7 +171,7 @@ export default function PricingPage() {
                 </tr>
               </thead>
               <tbody>
-                {getComparisonRows(vertical).map(row => (
+                {getComparisonRows().map(row => (
                   <tr key={row.key}>
                     <td style={{ fontWeight: 600, color: 'var(--navy)' }}>{row.label}</td>
                     {visiblePackages.map(p => (

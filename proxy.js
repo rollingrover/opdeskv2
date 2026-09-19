@@ -5,7 +5,7 @@ import { routing } from './i18n/routing'
 
 const intlMiddleware = createIntlMiddleware(routing)
 
-const PROTECTED_PREFIXES = ['/dashboard', '/bookings', '/staff', '/lodging', '/fleet', '/invoices', '/settings', '/reports', '/guides', '/trails', '/firearm-register', '/calendar', '/support', '/admin']
+const PROTECTED_PREFIXES = ['/dashboard', '/bookings', '/staff', '/lodging', '/fleet', '/invoices', '/settings', '/reports', '/guides', '/trails', '/firearm-register', '/calendar', '/support', '/admin', '/delivery', '/quotations', '/checklists']
 
 // Pages that deliberately live outside app/[locale]/ entirely — legal
 // documents kept English-only on purpose (see app/privacy/page.js). Passing

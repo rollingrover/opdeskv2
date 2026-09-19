@@ -8,8 +8,11 @@ import { Plus, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react'
 const emptyForm = {
   name: '', slug: '', tagline: '', description: '', monthly_price: 0, annual_price: 0,
   currency: 'ZAR', badge: '', sort_order: 0, recommended_for: [],
-  limits: { vehicles: 1, guides: 1, rooms: 1, bookings_per_month: 20, clients: 1, orders_per_month: 20,
-    vehicle_cost_suggestions: false, recurring_orders: false, advanced_reporting: false, quoted_vs_actual: false, cost_breakdown_analytics: false },
+  // 'capacity' is the shared vehicles+rooms pool — a company allocates it
+  // however fits their business (all vehicles, all rooms, or a mix), rather
+  // than getting a fixed number of each. 'guides' is staff count, tracked
+  // separately since staff headcount has no relationship to fleet/room size.
+  limits: { capacity: 1, guides: 1, bookings_per_month: 20 },
   modules: { certifications: false, shifts: false, costs: false, leave: false },
 }
 
@@ -19,15 +22,6 @@ const VERTICAL_TAGS = [
   { key: 'trail', label: 'Trail Guide' }, { key: 'lodge', label: 'Hotel / Guesthouse / Lodging' },
   { key: 'eastafrica', label: 'East Africa Tours' }, { key: 'transfer', label: 'Island Transfers' },
   { key: 'delivery', label: 'Logistics & Support Services' },
-]
-
-const LOGISTICS_LIMIT_KEYS = ['clients', 'orders_per_month']
-const LOGISTICS_FEATURE_KEYS = [
-  { key: 'vehicle_cost_suggestions', label: 'Vehicle Cost Suggestions' },
-  { key: 'recurring_orders', label: 'Recurring Order Templates' },
-  { key: 'advanced_reporting', label: 'Advanced Reporting' },
-  { key: 'quoted_vs_actual', label: 'Quoted vs. Actual Cost Tracking' },
-  { key: 'cost_breakdown_analytics', label: 'Cost Breakdown & Export' },
 ]
 
 function slugify(name) {
@@ -69,9 +63,7 @@ function SAMarketingPackages() {
       name: p.name, slug: p.slug, tagline: p.tagline || '', description: p.description || '',
       monthly_price: p.monthly_price, annual_price: p.annual_price, currency: p.currency || 'ZAR',
       badge: p.badge || '', sort_order: p.sort_order, recommended_for: p.recommended_for || [],
-      limits: { vehicles: 1, guides: 1, rooms: 1, bookings_per_month: null, clients: 1, orders_per_month: null,
-        vehicle_cost_suggestions: false, recurring_orders: false, advanced_reporting: false, quoted_vs_actual: false, cost_breakdown_analytics: false,
-        ...(p.limits || {}) },
+      limits: { capacity: 1, guides: 1, bookings_per_month: null, ...(p.limits || {}) },
       modules: { certifications: false, shifts: false, costs: false, leave: false, ...(p.modules || {}) },
     })
     setEditing(p)
@@ -157,7 +149,11 @@ function SAMarketingPackages() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       <span style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>{p.name}</span>
                       {p.badge && <span style={{ background: '#D4A85322', color: '#D4A853', borderRadius: 999, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>{p.badge}</span>}
-                      {(p.recommended_for || []).map(tag => (
+                      {/* Vertical tags are only worth showing when a package is actually
+                          restricted to a subset — every universal pooled-tier package
+                          recommends all verticals now, so showing all 9 badges here would
+                          just be noise. */}
+                      {(p.recommended_for || []).length < VERTICAL_TAGS.length && (p.recommended_for || []).map(tag => (
                         <span key={tag} style={{ background: '#3b82f622', color: '#3b82f6', borderRadius: 999, padding: '1px 8px', fontSize: 10, fontWeight: 700, textTransform: 'capitalize' }}>{tag}</span>
                       ))}
                       {!p.active && <span style={{ background: '#37415122', color: '#6b7280', borderRadius: 999, padding: '1px 8px', fontSize: 10, fontWeight: 700 }}>HIDDEN</span>}
@@ -226,11 +222,19 @@ function SAMarketingPackages() {
 
             <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 16 }}>
               <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Resource Limits</h3>
-              <p style={{ color: '#6b7280', fontSize: 11, marginBottom: 12 }}>Leave blank for unlimited.</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 14 }}>
-                {(form.recommended_for.includes('delivery') ? LOGISTICS_LIMIT_KEYS : ['vehicles', 'guides', 'rooms', 'bookings_per_month']).map(key => (
+              <p style={{ color: '#6b7280', fontSize: 11, marginBottom: 12 }}>
+                Leave blank for unlimited. <strong>Capacity Pool</strong> is shared between vehicles and rooms —
+                an operator with only vehicles or only rooms uses the whole number on one resource; a combined
+                operator splits it however they like. Staff is tracked separately.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+                {[
+                  { key: 'capacity', label: 'Capacity Pool (vehicles + rooms)' },
+                  { key: 'guides', label: 'Staff' },
+                  { key: 'bookings_per_month', label: 'Bookings per month' },
+                ].map(({ key, label }) => (
                   <div key={key}>
-                    <label style={labelStyle}>{key.replace(/_/g, ' ')}</label>
+                    <label style={labelStyle}>{label}</label>
                     <input type="number" min="0" style={inputStyle} placeholder="Unlimited"
                       value={form.limits[key] ?? ''}
                       onChange={e => setForm({ ...form, limits: { ...form.limits, [key]: e.target.value === '' ? null : Number(e.target.value) } })} />
@@ -238,21 +242,6 @@ function SAMarketingPackages() {
                 ))}
               </div>
             </div>
-
-            {form.recommended_for.includes('delivery') && (
-              <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 16 }}>
-                <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Logistics Features</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  {LOGISTICS_FEATURE_KEYS.map(f => (
-                    <label key={f.key} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#9ca3af', fontSize: 13, cursor: 'pointer' }}>
-                      <input type="checkbox" checked={!!form.limits[f.key]} style={{ accentColor: '#D4A853' }}
-                        onChange={e => setForm({ ...form, limits: { ...form.limits, [f.key]: e.target.checked } })} />
-                      {f.label}
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 16 }}>
               <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Included Modules</h3>
