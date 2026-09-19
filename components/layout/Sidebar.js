@@ -13,7 +13,7 @@ import {
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
   Shield, MapPin, Crosshair, LogOut, ChevronRight, Bed,
   ClipboardList, UserCheck, DollarSign, Clock, Plane,
-  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck
+  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag
 } from 'lucide-react'
 
 const ALL_NAV = [
@@ -23,6 +23,7 @@ const ALL_NAV = [
       { href:'/dashboard',   icon: LayoutDashboard, key:'dashboard',        module:'always' },
       { href:'/bookings',    icon: BookOpen,         key:'bookings',         module:'bookings' },
       { href:'/calendar',    icon: CalendarDays,     key:'calendar',         module:'bookings' },
+      { href:'/settings/booking-types', icon: Tag,   key:'bookingTypes',     module:'always' },
     ]
   },
   {

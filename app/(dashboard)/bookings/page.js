@@ -14,6 +14,7 @@ import { LimitBanner } from '@/components/ui/LimitBanner'
 import { checkLimit } from '@/lib/limits'
 import { BOOKING_STATUSES } from '@/lib/constants'
 import { Plus, Lock } from 'lucide-react'
+import Link from 'next/link'
 
 const emptyForm = {
   guest_name: '', guest_email: '', guest_phone: '', guest_count: 1,
@@ -31,6 +32,7 @@ export default function BookingsPage() {
   const toast = useToast()
   const [bookings, setBookings] = useState([])
   const [invoicedBookingIds, setInvoicedBookingIds] = useState(new Set())
+  const [bookingTypes, setBookingTypes] = useState([])
   const [staff, setStaff] = useState([])
   const [vehicles, setVehicles] = useState([])
   const [vessels, setVessels] = useState([])
@@ -48,13 +50,14 @@ export default function BookingsPage() {
     // invoiced out — those become read-only (see isEditable below), since
     // editing a booking after its invoice exists would leave the invoice
     // describing something that no longer matches.
-    const [b, s, v, ve, r, inv] = await Promise.all([
+    const [b, s, v, ve, r, inv, bt] = await Promise.all([
       supabase.from('bookings').select('*').eq('company_id', company.id).order('start_date', { ascending: false }).limit(200),
       supabase.from('staff').select('id, full_name, staff_type').eq('company_id', company.id).eq('status', 'active'),
       supabase.from('vehicles').select('id, name, status').eq('company_id', company.id),
       supabase.from('vessels').select('id, name, status').eq('company_id', company.id),
       supabase.from('rooms').select('id, name, status').eq('company_id', company.id),
       supabase.from('invoices').select('booking_id').eq('company_id', company.id).not('booking_id', 'is', null),
+      supabase.from('booking_types').select('*').eq('company_id', company.id).eq('active', true).order('sort_order').order('name'),
     ])
     if (b.error) toast.error(b.error.message)
     setBookings(b.data || [])
@@ -63,6 +66,7 @@ export default function BookingsPage() {
     setVessels(ve.data || [])
     setRooms(r.data || [])
     setInvoicedBookingIds(new Set((inv.data || []).map(i => i.booking_id)))
+    setBookingTypes(bt.data || [])
     setLoading(false)
   }
 
@@ -71,13 +75,23 @@ export default function BookingsPage() {
   const guides = staff.filter(s => s.staff_type === 'guide')
   const drivers = staff.filter(s => s.staff_type === 'driver')
 
+  // Legacy fallback for the 4 hardcoded values older bookings may still
+  // have stored before booking types became per-company and dynamic.
+  const LEGACY_TYPE_LABELS = { tour: t('typeTour'), transfer: t('typeTransfer'), charter: t('typeCharter'), accommodation: t('typeAccommodation') }
+  function typeLabel(slug) {
+    return bookingTypes.find(bt => bt.slug === slug)?.name || LEGACY_TYPE_LABELS[slug] || slug
+  }
+  function selectedType() {
+    return bookingTypes.find(bt => bt.slug === form.booking_type)
+  }
+
   function isEditable(booking) {
     return !invoicedBookingIds.has(booking.id)
   }
 
   function openForCreate() {
     setEditingId(null)
-    setForm(emptyForm)
+    setForm({ ...emptyForm, booking_type: bookingTypes[0]?.slug || '' })
     setModalOpen(true)
   }
 
@@ -87,12 +101,20 @@ export default function BookingsPage() {
     setForm({
       guest_name: booking.guest_name || '', guest_email: booking.guest_email || '', guest_phone: booking.guest_phone || '',
       guest_count: booking.guest_count || 1, start_date: booking.start_date || '', end_date: booking.end_date || '',
-      booking_type: booking.booking_type || 'tour', status: booking.status || 'pending',
+      booking_type: booking.booking_type || bookingTypes[0]?.slug || '', status: booking.status || 'pending',
       amount_total: booking.amount_total || 0, amount_paid: booking.amount_paid || 0, notes: booking.notes || '',
       guide_id: booking.guide_id || '', driver_id: booking.driver_id || '', vehicle_id: booking.vehicle_id || '',
       vessel_id: booking.vessel_id || '', room_id: booking.room_id || '',
     })
     setModalOpen(true)
+  }
+
+  // Picking a duration on a duration-priced type (Safari, Boat Cruise, etc.)
+  // fills the total from that type's rate card — still just a starting
+  // point, amount_total stays a normal editable field afterward.
+  function applyDuration(durationKey) {
+    const rate = selectedType()?.durations?.[durationKey]
+    if (rate !== undefined) setForm(f => ({ ...f, amount_total: rate }))
   }
 
   async function handleSave(e) {
@@ -174,7 +196,7 @@ export default function BookingsPage() {
                       <p style={{ margin: 0, fontWeight: 600, fontSize: '0.875rem', color: 'var(--navy)' }}>{b.guest_name || '—'}</p>
                       {b.guest_email && <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--gray-400)' }}>{b.guest_email}</p>}
                     </td>
-                    <td style={{ textTransform: 'capitalize' }}>{{tour:t('typeTour'),transfer:t('typeTransfer'),charter:t('typeCharter'),accommodation:t('typeAccommodation')}[b.booking_type] || b.booking_type}</td>
+                    <td style={{ textTransform: 'capitalize' }}>{typeLabel(b.booking_type)}</td>
                     <td style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
                       {b.start_date ? new Date(b.start_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' }) : '—'}
                       {b.end_date && b.end_date !== b.start_date ? ` – ${new Date(b.end_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })}` : ''}
@@ -220,14 +242,29 @@ export default function BookingsPage() {
               {BOOKING_STATUSES.map(s => <option key={s.value} value={s.value}>{tStatus(s.value)}</option>)}
             </Select>
             <Select label={t('type')} value={form.booking_type} onChange={e => setForm({ ...form, booking_type: e.target.value })}>
-              <option value="tour">{t('typeTour')}</option>
-              <option value="transfer">{t('typeTransfer')}</option>
-              <option value="charter">{t('typeCharter')}</option>
-              <option value="accommodation">{t('typeAccommodation')}</option>
+              {bookingTypes.length === 0
+                ? <option value="">{t('noTypesYet')}</option>
+                : bookingTypes.map(bt => <option key={bt.slug} value={bt.slug}>{bt.name}</option>)}
             </Select>
+            {selectedType()?.durations && (
+              <Select label={t('duration')} defaultValue="" onChange={e => applyDuration(e.target.value)}>
+                <option value="" disabled>{t('selectDuration')}</option>
+                {Object.entries(selectedType().durations).map(([key, price]) => (
+                  <option key={key} value={key}>
+                    {{ '3hr': t('duration3hr'), '6hr': t('duration6hr'), full_day: t('durationFullDay') }[key] || key} — {company.currency}{price}
+                  </option>
+                ))}
+              </Select>
+            )}
             <Input label={t('totalAmount')} type="number" step="0.01" value={form.amount_total} onChange={e => setForm({ ...form, amount_total: e.target.value })} />
             <Input label={t('amountPaid')} type="number" step="0.01" value={form.amount_paid} onChange={e => setForm({ ...form, amount_paid: e.target.value })} />
           </div>
+
+          {bookingTypes.length === 0 && (
+            <p style={{ fontSize: '0.75rem', color: 'var(--gray-500)', marginTop: '-0.5rem', marginBottom: '0.75rem' }}>
+              {t('noTypesHint')} <Link href="/settings/booking-types" style={{ color: 'var(--gold)' }}>{t('manageTypes')}</Link>
+            </p>
+          )}
 
           <div style={{ marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid var(--gray-100)' }}>
             <p style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.5rem' }}>

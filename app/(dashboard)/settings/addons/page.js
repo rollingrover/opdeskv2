@@ -43,8 +43,17 @@ export default function AddonsMarketplacePage() {
     const { error } = await supabase.from('addon_requests').insert([{
       company_id: company.id, requested_by: profile.id, addon_key: addonKey, quantity: 1,
     }])
+    if (error) { setRequesting(null); toast.error(error.message); return }
+    // Also raised as a support ticket — addon_requests lives on its own
+    // approval queue (see admin/companies/[id]), but a support ticket is
+    // what actually shows up in the Support Queue admins check day to day,
+    // so this makes sure a new request doesn't go unnoticed there.
+    await supabase.from('support_tickets').insert([{
+      company_id: company.id, submitted_by: profile.id, category: 'addon_request', priority: 'normal',
+      subject: `Add-on request: ${addonLabel(addonKey)}`,
+      description: `${profile.email || profile.full_name || 'A user'} requested the "${addonLabel(addonKey)}" add-on for ${company.name}. Approve or decline from Companies → ${company.name} → Add-on Requests.`,
+    }])
     setRequesting(null)
-    if (error) { toast.error(error.message); return }
     notify('addon_request_created', { companyName: company.name, requesterEmail: profile.email, addonKey, quantity: 1 })
     toast.success(t('requestSent'))
     load()
