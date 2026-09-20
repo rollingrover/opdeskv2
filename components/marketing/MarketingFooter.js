@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation'
 import PlainLink from 'next/link'
 import { useTranslations } from 'next-intl'
 import { OpDeskLogo } from '@/components/layout/OpDeskLogo'
+import { Facebook } from 'lucide-react'
 
 export function MarketingFooter() {
   const t = useTranslations('Footer')
@@ -11,6 +12,14 @@ export function MarketingFooter() {
     <footer style={{ background:'#0a1929', color:'rgba(255,255,255,0.4)', padding:'2rem', textAlign:'center', fontSize:'0.8125rem' }}>
       <div style={{ marginBottom:'1rem' }}>
         <OpDeskLogo size={28} white />
+      </div>
+      <div style={{ display:'flex', justifyContent:'center', marginBottom:'1.25rem' }}>
+        <a href="https://www.facebook.com/opdeskapp" target="_blank" rel="noopener noreferrer" aria-label="OpDesk on Facebook"
+          style={{ color:'rgba(255,255,255,0.4)', display:'inline-flex', padding:'0.375rem' }}
+          onMouseOver={e => e.currentTarget.style.color='rgba(255,255,255,0.7)'}
+          onMouseOut={e => e.currentTarget.style.color='rgba(255,255,255,0.4)'}>
+          <Facebook size={18} />
+        </a>
       </div>
       <div style={{ display:'flex', gap:'1.5rem', justifyContent:'center', marginBottom:'1.25rem', flexWrap:'wrap' }}>
         {[['/features', nav('features')], ['/pricing', nav('pricing')], ['/about', nav('about')], ['/auth/login', nav('signIn')], ['/auth/signup', nav('startFree')]].map(([href, label]) => (

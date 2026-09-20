@@ -1,4 +1,5 @@
 import './globals.css'
+import { Analytics } from '@vercel/analytics/next'
 
 export const metadata = {
   metadataBase: new URL('https://opdesk.app'),
@@ -42,7 +43,10 @@ export default async function RootLayout({ children, params }) {
             that doesn't exist in /public, which was causing a 404. */}
         <meta name="theme-color" content="#0F2540" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }
