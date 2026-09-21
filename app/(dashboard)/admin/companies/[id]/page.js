@@ -64,6 +64,9 @@ function SACompanyDetail({ companyId }) {
   const [adminNotes, setAdminNotes] = useState('')
   const [accountStatus, setAccountStatus] = useState('active')
   const [expiresAt, setExpiresAt] = useState('')
+  const [comped, setComped] = useState(false)
+  const [compReason, setCompReason] = useState('Community development contribution')
+  const [compedSince, setCompedSince] = useState('')
 
   async function load() {
     setLoading(true)
@@ -99,6 +102,9 @@ function SACompanyDetail({ companyId }) {
       setPendingRequests(reqs.data || [])
       setAdminNotes(company.admin_notes || '')
       setAccountStatus(company.account_status || 'active')
+      setComped(company.comped || false)
+      setCompReason(company.comp_reason || 'Community development contribution')
+      setCompedSince(company.comped_since || '')
     } catch (error) {
       // error can be a PostgrestError (plain object, not an Error instance)
       // or occasionally something with no .message at all — stringify the
@@ -153,6 +159,24 @@ function SACompanyDetail({ companyId }) {
     if (error) { toast.error(error.message); return }
     setCo(data)
     toast.success('Settings saved')
+  }
+
+  async function saveComp(nextComped) {
+    setSaving(true)
+    // comped_since is set once, the first time an account is comped, and
+    // left alone after that — re-toggling comped off and on later
+    // shouldn't reset the clock on how long this has been a community
+    // contribution for BBBEE reporting purposes.
+    const since = nextComped ? (compedSince || new Date().toISOString().slice(0, 10)) : compedSince
+    const { data, error } = await supabase.rpc('sa_update_company', {
+      p_company_id: companyId, p_comped: nextComped, p_comp_reason: compReason, p_comped_since: since,
+    })
+    setSaving(false)
+    if (error) { toast.error(error.message); return }
+    setCo(data)
+    setComped(nextComped)
+    setCompedSince(since)
+    toast.success(nextComped ? 'Marked as a comped community contribution' : 'Comped status removed — this account can be billed normally again')
   }
 
   async function toggleSuspend() {
@@ -545,6 +569,35 @@ function SACompanyDetail({ companyId }) {
                 Deactivates and suspends the account rather than hard-deleting — their bookings, staff and invoice records are kept intact in case this needs to be reversed.
               </p>
             </div>
+          </div>
+
+          <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222' }}>
+            <h3 style={{ color: 'white', fontWeight: 700, marginBottom: 4, fontSize: 15 }}>Community Contribution</h3>
+            <p style={{ color: '#6b7280', fontSize: 12, marginBottom: 14 }}>
+              Mark this account as a comped (free) community contribution — it won't be billed, and its value is tracked for reporting on the{' '}
+              <a href="/admin/community-contributions" style={{ color: '#D4A853' }}>Community Contributions</a> page.
+            </p>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14, cursor: 'pointer' }}>
+              <input type="checkbox" checked={comped} onChange={e => setComped(e.target.checked)} />
+              <span style={{ color: 'white', fontSize: 14, fontWeight: 600 }}>This account is comped</span>
+            </label>
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ color: '#6b7280', fontSize: 12, display: 'block', marginBottom: 6 }}>Reason</label>
+              <input value={compReason} onChange={e => setCompReason(e.target.value)} placeholder="Community development contribution"
+                style={{ width: '100%', background: '#111', border: '1px solid #333', color: 'white', borderRadius: 8, padding: '9px 12px', fontSize: 14, boxSizing: 'border-box' }} />
+            </div>
+            {compedSince && (
+              <p style={{ color: '#6b7280', fontSize: 12, marginBottom: 14 }}>Comped since {new Date(compedSince).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            )}
+            {co.package?.monthly_price > 0 && (
+              <p style={{ color: '#6b7280', fontSize: 12, marginBottom: 14 }}>
+                Current plan value: <strong style={{ color: '#D4A853' }}>R{Number(co.package.monthly_price).toLocaleString()}/mo</strong> — this is what gets counted as the contribution value while comped.
+              </p>
+            )}
+            <button onClick={() => saveComp(comped)} disabled={saving}
+              style={{ width: '100%', background: comped ? '#D4A853' : '#222', color: comped ? '#0F2540' : '#9ca3af', fontWeight: 700, border: '1px solid #333', borderRadius: 8, padding: '10px 0', cursor: 'pointer', fontSize: 14 }}>
+              {saving ? 'Saving…' : comped ? 'Save as Comped' : 'Save (Not Comped)'}
+            </button>
           </div>
         </div>
       )}

@@ -15,8 +15,17 @@ export async function POST(request) {
     if (!companyId) return NextResponse.json({ error: 'companyId is required' }, { status: 400 })
 
     const { data: company, error: companyErr } = await supabase
-      .from('companies').select('id, package_id, payfast_token, location_discount_pct').eq('id', companyId).maybeSingle()
+      .from('companies').select('id, package_id, payfast_token, location_discount_pct, comped').eq('id', companyId).maybeSingle()
     if (companyErr || !company) return NextResponse.json({ error: 'Company not found' }, { status: 404 })
+
+    // Comped accounts are never billed, regardless of package — if this
+    // company somehow still has a live payfast_token from before it was
+    // comped, that subscription needs cancelling directly in PayFast by a
+    // superadmin; this route only stops it from being kept in sync going
+    // forward, it doesn't cancel an existing recurring charge.
+    if (company.comped) {
+      return NextResponse.json({ synced: false, reason: 'This account is comped — not billed' })
+    }
 
     // No PayFast token means this company never went through PayFast
     // checkout (still on a free tier, or set up manually by a superadmin
