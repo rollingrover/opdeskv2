@@ -47,9 +47,7 @@ function Toast({ toast }) {
 function SAPricingEditor() {
   const supabase = createClient();
   const { toast, showToast } = useToast();
-  const [tiers, setTiers] = useState([]);
   const [pricing, setPricing] = useState([]);
-  const [tierEdits, setTierEdits] = useState({});
   const [addonEdits, setAddonEdits] = useState({});
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -58,42 +56,23 @@ function SAPricingEditor() {
   async function load() {
     setLoading(true);
     try {
-      const [p, t] = await Promise.all([
-        supabase.from('addon_pricing').select('*').order('addon_key'),
-        supabase.from('tier_pricing').select('*').order('tier'),
-      ]);
-      
-      if (t.error) throw t.error;
-      if (p.error) throw p.error;
-      
-      const tdata = t.data || [];
-      const pdata = p.data || [];
-      
-      setTiers(tdata);
+      const { data, error } = await supabase.from('addon_pricing').select('*').order('addon_key');
+      if (error) throw error;
+
+      const pdata = data || [];
       setPricing(pdata);
-      
-      // Seed edits with current DB values
-      const te = {};
-      tdata.forEach(t => { 
-        te[t.id] = { 
-          label: t.label, 
-          monthly_price: t.monthly_price, 
-          annual_price: t.annual_price 
-        }; 
-      });
-      
+
       const ae = {};
-      pdata.forEach(p => { 
-        ae[p.id] = { 
-          monthly_price: p.monthly_price, 
-          annual_price: p.annual_price 
-        }; 
+      pdata.forEach(p => {
+        ae[p.id] = {
+          monthly_price: p.monthly_price,
+          annual_price: p.annual_price
+        };
       });
-      
-      setTierEdits(te);
+
       setAddonEdits(ae);
       setDirty(false);
-      
+
     } catch (error) {
       console.error('Error loading pricing:', error);
       showToast('Failed to load pricing data', 'error');
@@ -104,11 +83,6 @@ function SAPricingEditor() {
 
   useEffect(() => { load(); }, []);
 
-  function onTierChange(id, field, val) {
-    setTierEdits(prev => ({ ...prev, [id]: { ...prev[id], [field]: val } }));
-    setDirty(true);
-  }
-
   function onAddonChange(id, field, val) {
     setAddonEdits(prev => ({ ...prev, [id]: { ...prev[id], [field]: val } }));
     setDirty(true);
@@ -116,22 +90,8 @@ function SAPricingEditor() {
 
   async function applyAll() {
     setSaving(true);
-    
+
     try {
-      // Save all tier rows
-      const tierUpdates = tiers.map(t => {
-        const e = tierEdits[t.id] || {};
-        return supabase
-          .from('tier_pricing')
-          .update({
-            label: e.label ?? t.label,
-            monthly_price: parseFloat(e.monthly_price) || 0,
-            annual_price: parseFloat(e.annual_price) || 0,
-          })
-          .eq('id', t.id);
-      });
-      
-      // Save all addon rows
       const addonUpdates = pricing.map(p => {
         const e = addonEdits[p.id] || {};
         return supabase
@@ -142,19 +102,18 @@ function SAPricingEditor() {
           })
           .eq('id', p.id);
       });
-      
-      const results = await Promise.all([...tierUpdates, ...addonUpdates]);
-      
-      // Check for errors
+
+      const results = await Promise.all(addonUpdates);
+
       const errors = results.filter(r => r.error);
       if (errors.length > 0) {
         console.error('Update errors:', errors);
         throw new Error(`Failed to update ${errors.length} items`);
       }
-      
+
       showToast('All pricing updated — landing page will reflect changes on next load', 'success');
       await load();
-      
+
     } catch (error) {
       console.error('Error saving pricing:', error);
       showToast('Error saving pricing: ' + error.message, 'error');
@@ -164,55 +123,38 @@ function SAPricingEditor() {
   }
 
   async function resetToDefaults() {
-    if (!confirm('Reset all prices to default values? This will overwrite any unsaved changes.')) return;
-    
+    if (!confirm('Reset all add-on prices to default values? This will overwrite any unsaved changes.')) return;
+
     setSaving(true);
-    
+
     try {
-      // Default tier prices
-      const defaultTiers = [
-        { tier: 'free', label: 'Free', monthly: 0, annual: 0 },
-        { tier: 'basic', label: 'Basic', monthly: 349, annual: 3490 },
-        { tier: 'standard', label: 'Standard', monthly: 1099, annual: 10990 },
-        { tier: 'professional', label: 'Professional', monthly: 2499, annual: 24990 },
-        { tier: 'enterprise', label: 'Enterprise', monthly: 4999, annual: 49990 },
-      ];
-      
-      const tierUpdates = defaultTiers.map(t => 
-        supabase
-          .from('tier_pricing')
-          .update({ 
-            label: t.label,
-            monthly_price: t.monthly, 
-            annual_price: t.annual 
-          })
-          .eq('tier', t.tier)
-      );
-      
-      // Default addon prices
+      // Kept in sync with what's actually agreed and live — this list
+      // previously had stale values (e.g. hr_bundle at R499 instead of
+      // the current R250) left over from before the pooled-tier pricing
+      // redesign, and clicking this button silently overwrote the real,
+      // correct live prices with those old numbers. Only add-on keys that
+      // still exist in the catalog are listed; the old per-vertical/
+      // storage/bandwidth add-ons removed during the catalog cleanup are
+      // deliberately not included here.
       const defaultAddons = {
-        vehicles: 99, guides: 99, drivers: 99, shuttles: 99,
-        safaris: 99, tours: 99, charters: 99, trails: 149,
-        seats: 79, schedules_module: 199, firearm_register: 299, 
-        white_label: 499, no_watermark: 49,
-        storage_10gb: 199, storage_50gb: 499, storage_200gb: 999,
-        bandwidth_50gb: 99, bandwidth_200gb: 199, bandwidth_1tb: 499,
-        client_list: 199,
-        certifications: 149, cost_to_company: 249, leave: 99, hr_bundle: 499, quotations: 99, ical_sync: 149, delivery_management: 199, checklists: 99,
+        vehicles: 99, vessels: 99, rooms: 79, guides: 99, seats: 79,
+        schedules_module: 199, certifications: 149, cost_to_company: 249, leave: 99,
+        hr_bundle: 250, logistics_bundle: 250,
+        quotations: 99, ical_sync: 149, delivery_management: 199, checklists: 99,
       };
-      
+
       const addonUpdates = Object.entries(defaultAddons).map(([key, price]) =>
         supabase
           .from('addon_pricing')
           .update({ monthly_price: price, annual_price: price * 10 })
           .eq('addon_key', key)
       );
-      
-      await Promise.all([...tierUpdates, ...addonUpdates]);
-      
+
+      await Promise.all(addonUpdates);
+
       showToast('Prices reset to defaults', 'success');
       await load();
-      
+
     } catch (error) {
       console.error('Error resetting prices:', error);
       showToast('Failed to reset prices', 'error');
@@ -284,7 +226,7 @@ function SAPricingEditor() {
       <div style={{ background: '#1a1a00', border: '1px solid #ca8a04', borderRadius: 10, padding: '12px 16px', marginBottom: 20, fontSize: 13, color: '#fde047', display: 'flex', alignItems: 'center', gap: 10 }}>
         <Icon name="alert" size={16} />
         <span>
-          The public pricing page now reads from <strong>Marketing Packages</strong>, not the tier table below — go there to add, edit, or remove what customers see. The tier table here is kept only for legacy reference and no longer affects the live site.
+          For package/tier prices (what customers pick on the public pricing page), use <a href="/admin/packages" style={{ color: '#D4A853' }}>Marketing Packages</a>. This page is only for add-on unit prices.
         </span>
       </div>
       
@@ -315,63 +257,6 @@ function SAPricingEditor() {
       </div>
 
       <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 20 }}>
-        <h3 style={{ color: 'white', fontWeight: 700, marginBottom: 14, fontSize: 16 }}>Subscription Tier Pricing <span style={{ color: '#6b7280', fontWeight: 400, fontSize: 12 }}>(legacy — not shown on the live site)</span></h3>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 500 }}>
-            <thead>
-              <tr style={{ background: '#0d0d0d' }}>
-                {['Tier', 'Label', 'Monthly (R)', 'Annual (R)'].map(h => (
-                  <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: '#6b7280', fontSize: 11, textTransform: 'uppercase', borderBottom: '1px solid #222' }}>
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {tiers.map(t => {
-                const e = tierEdits[t.id] || {};
-                return (
-                  <tr key={t.id} style={{ borderBottom: '1px solid #1a1a1a' }}>
-                    <td style={{ padding: '10px 12px', color: '#D4A853', fontWeight: 700, textTransform: 'capitalize' }}>
-                      {t.tier}
-                    </td>
-                    <td style={{ padding: '10px 12px' }}>
-                      <input
-                        value={e.label ?? t.label}
-                        onChange={ev => onTierChange(t.id, 'label', ev.target.value)}
-                        style={inputStyle}
-                      />
-                    </td>
-                    <td style={{ padding: '10px 12px' }}>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={e.monthly_price ?? t.monthly_price}
-                        onChange={ev => onTierChange(t.id, 'monthly_price', ev.target.value)}
-                        style={numInputStyle}
-                      />
-                    </td>
-                    <td style={{ padding: '10px 12px' }}>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={e.annual_price ?? t.annual_price}
-                        onChange={ev => onTierChange(t.id, 'annual_price', ev.target.value)}
-                        style={numInputStyle}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 20 }}>
-        <h3 style={{ color: 'white', fontWeight: 700, marginBottom: 14, fontSize: 16 }}>Add-on Unit Pricing</h3>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 500 }}>
             <thead>
