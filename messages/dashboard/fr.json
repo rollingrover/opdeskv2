@@ -86,7 +86,8 @@
       "addStaff": "Ajouter du Personnel",
       "newInvoice": "Nouvelle Facture",
       "settings": "Paramètres",
-      "newSite": "Nouvel Établissement"
+      "newSite": "Nouvel Établissement",
+      "newClient": "Nouveau Client"
     },
     "profileErrorTitle": "Nous n'avons pas pu charger votre profil",
     "profileErrorDesc": "Votre compte existe, mais aucun profil n'a été trouvé pour celui-ci. Veuillez contacter l'assistance ou essayer de vous déconnecter puis reconnecter.",
@@ -1152,7 +1153,11 @@
     "planForThisLocation": "Forfait pour cet Établissement",
     "discountNote": "Réduction appliquée — {price}/mois pour cet établissement.",
     "billingEmail": "E-mail de Facturation",
-    "phone": "Téléphone"
+    "phone": "Téléphone",
+    "titleClients": "Clients",
+    "subtitleClients": "Gérez chaque client de votre Forfait RH et basculez entre eux.",
+    "addClient": "Ajouter un Client",
+    "clientCapReached": "Vous avez utilisé les {count} places client incluses/achetées — achetez une place client supplémentaire pour en ajouter d'autres."
   },
   "Handbook": {
     "title": "Guide de l'Entreprise",

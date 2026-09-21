@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
-import { GATED_MODULES, MODULE_LABELS } from '@/lib/constants'
+import { GATED_MODULES, MODULE_LABELS, ALL_MODULE_INFO } from '@/lib/constants'
 import { Plus, Trash2, Eye, EyeOff, GripVertical } from 'lucide-react'
 
 const emptyForm = {
@@ -23,6 +23,7 @@ const VERTICAL_TAGS = [
   { key: 'eastafrica', label: 'East Africa Tours' }, { key: 'transfer', label: 'Island Transfers' },
   { key: 'delivery', label: 'Logistics & Support Services' },
   { key: 'river_cruise', label: 'Boat Cruises / River, Estuary & Dam' },
+  { key: 'hr_bureau', label: 'HR Services Bureau' },
 ]
 
 function slugify(name) {
@@ -246,15 +247,32 @@ function SAMarketingPackages() {
             </div>
 
             <div style={{ background: '#1a1a1a', borderRadius: 12, padding: 20, border: '1px solid #222', marginBottom: 16 }}>
-              <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 12 }}>Included Modules</h3>
+              <h3 style={{ color: 'white', fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Included Modules</h3>
+              <p style={{ color: '#6b7280', fontSize: 11, marginBottom: 12 }}>
+                Every module in the app. <strong>Base</strong> modules are normally available to any operator type unless unticked here;{' '}
+                <strong>Gated</strong> modules are normally tier/add-on-locked unless ticked here. Unticking a base module hides it for this
+                package regardless of operator type.
+              </p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {GATED_MODULES.map(m => (
-                  <label key={m} style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#9ca3af', fontSize: 13, cursor: 'pointer' }}>
-                    <input type="checkbox" checked={!!form.modules[m]} style={{ accentColor: '#D4A853' }}
-                      onChange={e => setForm({ ...form, modules: { ...form.modules, [m]: e.target.checked } })} />
-                    {MODULE_LABELS[m]}
-                  </label>
-                ))}
+                {Object.entries(ALL_MODULE_INFO).map(([m, info]) => {
+                  // Missing key defaults to the module's normal real-world
+                  // behavior today: base modules are on by default, gated
+                  // modules are off by default — so an existing package's
+                  // modules JSON (which never had base module keys before
+                  // this matrix existed) doesn't silently appear to hide
+                  // everything the moment you open it.
+                  const checked = form.modules[m] !== undefined ? !!form.modules[m] : !!info.base
+                  return (
+                    <label key={m} title={info.description} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, color: '#9ca3af', fontSize: 13, cursor: 'pointer' }}>
+                      <input type="checkbox" checked={checked} style={{ accentColor: '#D4A853', marginTop: 2 }}
+                        onChange={e => setForm({ ...form, modules: { ...form.modules, [m]: e.target.checked } })} />
+                      <span>
+                        <span style={{ display: 'block' }}>{info.label} <span style={{ color: info.base ? '#3b82f6' : '#D4A853', fontSize: 10, fontWeight: 700 }}>{info.base ? 'BASE' : 'GATED'}</span></span>
+                        <span style={{ display: 'block', color: '#4b5563', fontSize: 11 }}>{info.description}</span>
+                      </span>
+                    </label>
+                  )
+                })}
               </div>
             </div>
 

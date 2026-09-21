@@ -86,7 +86,8 @@
       "addStaff": "Voeg Personeel By",
       "newInvoice": "Nuwe Faktuur",
       "settings": "Instellings",
-      "newSite": "Nuwe Terrein/Ligging"
+      "newSite": "Nuwe Terrein/Ligging",
+      "newClient": "Nuwe Kliënt"
     },
     "profileErrorTitle": "Ons kon nie jou profiel laai nie",
     "profileErrorDesc": "Jou rekening bestaan, maar geen profielrekord is daarvoor gevind nie. Kontak asseblief ondersteuning of probeer om af te meld en weer aan te meld.",
@@ -1152,7 +1153,11 @@
     "planForThisLocation": "Plan vir Hierdie Ligging",
     "discountNote": "Afslag toegepas — {price}/mnd vir hierdie ligging.",
     "billingEmail": "Faktuur E-pos",
-    "phone": "Foon"
+    "phone": "Foon",
+    "titleClients": "Kliënte",
+    "subtitleClients": "Bestuur elke kliënt onder jou HR-pakket en wissel tussen hulle.",
+    "addClient": "Voeg Kliënt By",
+    "clientCapReached": "Jy het al {count} van jou ingesluite/gekoopte kliëntplekke gebruik — koop 'n ekstra kliëntplek om meer by te voeg."
   },
   "Handbook": {
     "title": "Maatskappy Handleiding",

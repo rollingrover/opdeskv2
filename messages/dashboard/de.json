@@ -86,7 +86,8 @@
       "addStaff": "Mitarbeiter Hinzufügen",
       "newInvoice": "Neue Rechnung",
       "settings": "Einstellungen",
-      "newSite": "Neuer Standort"
+      "newSite": "Neuer Standort",
+      "newClient": "Neuer Kunde"
     },
     "profileErrorTitle": "Ihr Profil konnte nicht geladen werden",
     "profileErrorDesc": "Ihr Konto existiert, aber es wurde kein Profildatensatz dafür gefunden. Bitte kontaktieren Sie den Support oder melden Sie sich ab und wieder an.",
@@ -1152,7 +1153,11 @@
     "planForThisLocation": "Tarif für diesen Standort",
     "discountNote": "Rabatt angewendet — {price}/Monat für diesen Standort.",
     "billingEmail": "Rechnungs-E-Mail",
-    "phone": "Telefon"
+    "phone": "Telefon",
+    "titleClients": "Kunden",
+    "subtitleClients": "Verwalten Sie jeden Kunden unter Ihrem HR-Paket und wechseln Sie zwischen ihnen.",
+    "addClient": "Kunde hinzufügen",
+    "clientCapReached": "Sie haben alle {count} enthaltenen/gekauften Kundenplätze verwendet — kaufen Sie einen zusätzlichen Kundenplatz, um mehr hinzuzufügen."
   },
   "Handbook": {
     "title": "Firmenhandbuch",

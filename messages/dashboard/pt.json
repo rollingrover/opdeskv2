@@ -86,7 +86,8 @@
       "addStaff": "Adicionar Equipa",
       "newInvoice": "Nova Fatura",
       "settings": "Definições",
-      "newSite": "Nova Localização"
+      "newSite": "Nova Localização",
+      "newClient": "Novo Cliente"
     },
     "profileErrorTitle": "Não foi possível carregar o seu perfil",
     "profileErrorDesc": "A sua conta existe, mas não foi encontrado nenhum registo de perfil para ela. Contacte o suporte ou tente sair e entrar novamente.",
@@ -1152,7 +1153,11 @@
     "planForThisLocation": "Plano para Esta Localização",
     "discountNote": "Desconto aplicado — {price}/mês para esta localização.",
     "billingEmail": "Email de Faturação",
-    "phone": "Telefone"
+    "phone": "Telefone",
+    "titleClients": "Clientes",
+    "subtitleClients": "Faça a gestão de cada cliente no seu Pacote de RH e alterne entre eles.",
+    "addClient": "Adicionar Cliente",
+    "clientCapReached": "Já usou todos os {count} lugares de cliente incluídos/comprados — compre um lugar de cliente extra para adicionar mais."
   },
   "Handbook": {
     "title": "Manual da Empresa",

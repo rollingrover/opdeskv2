@@ -86,7 +86,8 @@
       "addStaff": "Add Staff",
       "newInvoice": "New Invoice",
       "settings": "Settings",
-      "newSite": "New Site/Location"
+      "newSite": "New Site/Location",
+      "newClient": "New Client"
     },
     "profileErrorTitle": "We couldn't load your profile",
     "profileErrorDesc": "Your account exists, but no profile record was found for it. Please contact support or try signing out and back in.",
@@ -1152,7 +1153,11 @@
     "planForThisLocation": "Plan for This Location",
     "discountNote": "Discount applied — {price}/mo for this location.",
     "billingEmail": "Billing Email",
-    "phone": "Phone"
+    "phone": "Phone",
+    "titleClients": "Clients",
+    "subtitleClients": "Manage every client under your HR Package and switch between them.",
+    "addClient": "Add Client",
+    "clientCapReached": "You've used all {count} of your included/purchased client slots — buy an extra client slot to add more."
   },
   "Handbook": {
     "title": "Company Handbook",

@@ -153,12 +153,18 @@ export function Sidebar({ mobileOpen, onClose }) {
   // otherwise if the company's operator type includes that base module.
   function isVisible(item) {
     if (item.module === 'always' && item.special === 'enterpriseLocations') {
-      return ['professional', 'enterprise'].includes(company?.package?.slug) || !!company?.organization_id
+      return ['professional', 'enterprise', 'hr_bureau'].includes(company?.package?.slug) || !!company?.organization_id
     }
     if (item.module === 'always' && item.special === 'professionalPlus') {
       return ['professional', 'enterprise'].includes(company?.package?.slug)
     }
     if (item.module === 'always') return true
+    // A package's modules JSON can explicitly hide a base module (e.g. the
+    // HR Package hiding Bookings/Fleet entirely) by setting it to false —
+    // only takes effect when explicitly false; undefined/missing means
+    // "not overridden" so every existing package keeps behaving exactly
+    // as before until it's deliberately set.
+    if (company?.package?.modules?.[item.module] === false) return false
     if (item.gate) return hasModuleAccess(item.gate, { profile, company, companyAddons })
     return allowed.includes(item.module)
   }
@@ -212,7 +218,7 @@ export function Sidebar({ mobileOpen, onClose }) {
                   return (
                     <Link key={item.href} href={item.href} className={`nav-item${active ? ' active' : ''}`} onClick={onClose}>
                       <Icon size={16} />
-                      <span style={{ flex:1 }}>{t(`items.${item.key}`)}</span>
+                      <span style={{ flex:1 }}>{item.key === 'locations' && company?.package?.slug === 'hr_bureau' ? t('items.clients') : t(`items.${item.key}`)}</span>
                       {active && <ChevronRight size={14} />}
                     </Link>
                   )

@@ -25,6 +25,7 @@ function LocationsContent() {
   const searchParams = useSearchParams()
   const [locations, setLocations] = useState([])
   const [packages, setPackages] = useState([])
+  const [addons, setAddons] = useState([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
@@ -34,20 +35,22 @@ function LocationsContent() {
   async function load() {
     if (!company) { setLoading(false); return }
     setLoading(true)
-    const [locs, pkgs] = await Promise.all([
+    const [locs, pkgs, adns] = await Promise.all([
       company.organization_id
         ? supabase.from('companies').select('id, name, operator_type, package_id, location_discount_pct').eq('organization_id', company.organization_id).order('name')
         : Promise.resolve({ data: [company] }),
       supabase.from('marketing_packages').select('slug, name, monthly_price').eq('active', true).order('sort_order'),
+      supabase.from('company_addons').select('addon_key, quantity, active').eq('company_id', company.id).eq('active', true),
     ])
     setLocations(locs.data || [])
     setPackages(pkgs.data || [])
+    setAddons(adns.data || [])
     setLoading(false)
   }
   useEffect(() => { load() }, [company])
 
   useEffect(() => {
-    if (searchParams.get('add') === '1' && ['professional', 'enterprise'].includes(company?.package?.slug) && isOwner) setModalOpen(true)
+    if (searchParams.get('add') === '1' && ['professional', 'enterprise', 'hr_bureau'].includes(company?.package?.slug) && isOwner) setModalOpen(true)
   }, [searchParams, company, isOwner])
 
   if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
@@ -56,8 +59,12 @@ function LocationsContent() {
   const tierSlug = company?.package?.slug
   const isEnterprise = tierSlug === 'enterprise'
   const isProfessional = tierSlug === 'professional'
-  const canAddLocations = isEnterprise || isProfessional
+  const isHrBureau = tierSlug === 'hr_bureau'
+  const canAddLocations = isEnterprise || isProfessional || isHrBureau
   const atProfessionalCap = isProfessional && locations.length >= 3
+  const extraClientsPurchased = addons.filter(a => a.addon_key === 'hr_extra_client').reduce((sum, a) => sum + (a.quantity || 1), 0)
+  const clientCap = 1 + extraClientsPurchased
+  const atClientCap = isHrBureau && locations.length >= clientCap
 
   async function handleAdd(e) {
     e.preventDefault()
@@ -95,13 +102,13 @@ function LocationsContent() {
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
       <div className="page-header">
         <div>
-          <h1 className="page-title">{t('title')}</h1>
-          <p className="page-subtitle">{t('subtitle')}</p>
+          <h1 className="page-title">{isHrBureau ? t('titleClients') : t('title')}</h1>
+          <p className="page-subtitle">{isHrBureau ? t('subtitleClients') : t('subtitle')}</p>
         </div>
         {isOwner && canAddLocations && (
-          <button className="btn btn-primary" onClick={() => setModalOpen(true)} disabled={atProfessionalCap}
-            title={atProfessionalCap ? t('professionalCapReached') : ''}>
-            <Plus size={16} /> {t('addLocation')}
+          <button className="btn btn-primary" onClick={() => setModalOpen(true)} disabled={atProfessionalCap || atClientCap}
+            title={atProfessionalCap ? t('professionalCapReached') : atClientCap ? t('clientCapReached') : ''}>
+            <Plus size={16} /> {isHrBureau ? t('addClient') : t('addLocation')}
           </button>
         )}
       </div>
@@ -114,6 +121,11 @@ function LocationsContent() {
       {atProfessionalCap && (
         <div style={{ background: 'var(--cream)', border: '1px solid var(--gray-100)', borderRadius: '0.75rem', padding: '0.875rem 1.25rem', marginBottom: '1.25rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
           {t('professionalCapReached')}
+        </div>
+      )}
+      {atClientCap && (
+        <div style={{ background: 'var(--cream)', border: '1px solid var(--gray-100)', borderRadius: '0.75rem', padding: '0.875rem 1.25rem', marginBottom: '1.25rem', fontSize: '0.8125rem', color: 'var(--gray-500)' }}>
+          {t('clientCapReached', { count: clientCap })}
         </div>
       )}
 
@@ -142,10 +154,10 @@ function LocationsContent() {
         </table>
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('addLocation')}
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={isHrBureau ? t('addClient') : t('addLocation')}
         footer={<>
           <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{t('cancel')}</button>
-          <button className="btn btn-primary" disabled={saving} onClick={handleAdd}>{saving ? t('adding') : t('addLocation')}</button>
+          <button className="btn btn-primary" disabled={saving} onClick={handleAdd}>{saving ? t('adding') : isHrBureau ? t('addClient') : t('addLocation')}</button>
         </>}>
         <form onSubmit={handleAdd}>
           <Input label={t('locationName')} required placeholder={t('locationNamePlaceholder')} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />

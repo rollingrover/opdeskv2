@@ -253,8 +253,8 @@ export default function DashboardPage() {
           { href:'/staff',    key:'addStaff',   icon:'addStaff', color:'var(--navy)' },
           { href:'/invoices', key:'newInvoice', icon:'newInvoice', color:'var(--gold)' },
           { href:'/settings', key:'settings',    icon:'settingsIcon', color:'var(--gray-500)' },
-          ...(['professional', 'enterprise'].includes(company.package?.slug) || company.organization_id
-            ? [{ href:'/settings/locations?add=1', key:'newSite', icon:null, color:'var(--gold)' }]
+          ...(['professional', 'enterprise', 'hr_bureau'].includes(company.package?.slug) || company.organization_id
+            ? [{ href:'/settings/locations?add=1', key: company.package?.slug === 'hr_bureau' ? 'newClient' : 'newSite', icon:null, color:'var(--gold)' }]
             : []),
         ].map(a => (
           <Link key={a.href} href={a.href} style={{
