@@ -12,7 +12,7 @@ const PROTECTED_PREFIXES = ['/dashboard', '/bookings', '/staff', '/lodging', '/f
 // these through next-intl's middleware produces a 404: next-intl only knows
 // how to route paths that correspond to a real [locale]/... segment, and
 // silently fails on anything else that its broad matcher still catches.
-const NON_LOCALIZED_PATHS = ['/privacy', '/paia-manual', '/operators']
+const NON_LOCALIZED_PATHS = ['/privacy', '/paia-manual', '/operators', '/book']
 
 // Dashboard/API routes never have a locale prefix (they're a completely
 // separate, non-localized route tree by design — see i18n/routing.js) so a

@@ -43,6 +43,7 @@
       "settings": "Instellings",
       "team": "Span",
       "locations": "Liggings",
+      "bookingWidget": "Besprekingwidget",
       "addons": "Byvoegings",
       "publicProfile": "Openbare Profiel",
       "support": "Ondersteuning"
@@ -1102,7 +1103,11 @@
     "typeCreated": "Bespreking tipe geskep",
     "typeUpdated": "Bespreking tipe opgedateer",
     "typeDeleted": "Bespreking tipe verwyder",
-    "confirmDelete": "Verwyder \"{name}\"? Bestaande besprekings behou hul aangetekende tipe — dit verwyder dit slegs van die lys vir nuwe besprekings."
+    "confirmDelete": "Verwyder \"{name}\"? Bestaande besprekings behou hul aangetekende tipe — dit verwyder dit slegs van die lys vir nuwe besprekings.",
+    "colPublic": "Publiek",
+    "public": "Publiek",
+    "privateType": "Privaat",
+    "publicHint": "Of hierdie tipe op jou publieke besprekingwidget verskyn"
   },
   "Team": {
     "title": "Span",
@@ -1172,5 +1177,27 @@
     "sectionUpdated": "Afdeling opgedateer",
     "sectionDeleted": "Afdeling verwyder",
     "confirmDelete": "Verwyder \"{title}\"? Dit kan nie ontdoen word nie."
+  },
+  "BookingWidget": {
+    "title": "Besprekingwidget",
+    "subtitle": "'n Direkte besprekingvorm wat jou gaste op jou eie webwerf kan gebruik.",
+    "infoBanner": "Versoeke wat deur die widget ingedien word, land in jou Besprekings-lys as hangende — jy bevestig en finaliseer hulle op dieselfde manier as enige ander bespreking.",
+    "enableWidget": "Aktiveer Besprekingwidget",
+    "enableWidgetDesc": "Skakel die publieke besprekingvorm by jou widget-URL hieronder aan.",
+    "widgetUrl": "Widget URL",
+    "saving": "Stoor tans…",
+    "save": "Stoor",
+    "saved": "Besprekingwidget-instellings gestoor",
+    "urlTaken": "Daardie URL is reeds geneem — probeer 'n ander een.",
+    "previewWidget": "Voorskou",
+    "embedHeading": "Inbedkode",
+    "embedDesc": "Plak dit in jou webwerf se HTML waar jy wil hê die besprekingvorm moet verskyn.",
+    "copy": "Kopieer",
+    "copied": "Inbedkode gekopieer",
+    "embedHint": "Slegs bespreking tipes gemerk \"Publiek\" verskyn hier —",
+    "manageTypes": "bestuur bespreking tipes",
+    "lockedTitle": "Besprekingwidget is 'n Professional-kenmerk",
+    "lockedDesc": "Gradeer op na Professional of Enterprise om gaste toe te laat om direk van jou eie webwerf af te bespreek.",
+    "viewPlans": "Bekyk Planne"
   }
 }

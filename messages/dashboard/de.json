@@ -43,6 +43,7 @@
       "settings": "Einstellungen",
       "team": "Team",
       "locations": "Standorte",
+      "bookingWidget": "Buchungs-Widget",
       "addons": "Add-ons",
       "publicProfile": "Öffentliches Profil",
       "support": "Support"
@@ -1102,7 +1103,11 @@
     "typeCreated": "Buchungsart erstellt",
     "typeUpdated": "Buchungsart aktualisiert",
     "typeDeleted": "Buchungsart gelöscht",
-    "confirmDelete": "\"{name}\" löschen? Bestehende Buchungen behalten ihre erfasste Art — dies entfernt sie nur aus der Liste für neue Buchungen."
+    "confirmDelete": "\"{name}\" löschen? Bestehende Buchungen behalten ihre erfasste Art — dies entfernt sie nur aus der Liste für neue Buchungen.",
+    "colPublic": "Öffentlich",
+    "public": "Öffentlich",
+    "privateType": "Privat",
+    "publicHint": "Ob diese Art in Ihrem öffentlichen Buchungs-Widget erscheint"
   },
   "Team": {
     "title": "Team",
@@ -1172,5 +1177,27 @@
     "sectionUpdated": "Abschnitt aktualisiert",
     "sectionDeleted": "Abschnitt gelöscht",
     "confirmDelete": "\"{title}\" löschen? Dies kann nicht rückgängig gemacht werden."
+  },
+  "BookingWidget": {
+    "title": "Buchungs-Widget",
+    "subtitle": "Ein direktes Buchungsformular, das Ihre Gäste genau auf Ihrer eigenen Website nutzen können.",
+    "infoBanner": "Über das Widget eingereichte Anfragen landen als ausstehend in Ihrer Buchungsliste — Sie bestätigen und finalisieren sie wie jede andere Buchung.",
+    "enableWidget": "Buchungs-Widget aktivieren",
+    "enableWidgetDesc": "Schaltet das öffentliche Buchungsformular unter Ihrer unten stehenden Widget-URL ein.",
+    "widgetUrl": "Widget-URL",
+    "saving": "Wird gespeichert…",
+    "save": "Speichern",
+    "saved": "Buchungs-Widget-Einstellungen gespeichert",
+    "urlTaken": "Diese URL ist bereits vergeben — versuchen Sie eine andere.",
+    "previewWidget": "Vorschau",
+    "embedHeading": "Einbettungscode",
+    "embedDesc": "Fügen Sie dies in das HTML Ihrer Website ein, wo das Buchungsformular erscheinen soll.",
+    "copy": "Kopieren",
+    "copied": "Einbettungscode kopiert",
+    "embedHint": "Nur als \"Öffentlich\" markierte Buchungsarten erscheinen hier —",
+    "manageTypes": "Buchungsarten verwalten",
+    "lockedTitle": "Buchungs-Widget ist eine Professional-Funktion",
+    "lockedDesc": "Upgraden Sie auf Professional oder Enterprise, damit Gäste direkt über Ihre eigene Website buchen können.",
+    "viewPlans": "Tarife ansehen"
   }
 }

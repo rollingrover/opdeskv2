@@ -88,6 +88,7 @@ const ALL_NAV = [
       { href:'/settings',        icon: Settings,    key:'settings',  module:'always' },
       { href:'/settings/team',   icon: Users,       key:'team',      module:'always' },
       { href:'/settings/locations', icon: MapPin,  key:'locations', module:'always', special: 'enterpriseLocations' },
+      { href:'/settings/booking-widget', icon: Globe, key:'bookingWidget', module:'always', special: 'professionalPlus' },
       { href:'/settings/addons', icon: Package,     key:'addons',   module:'always' },
       { href:'/settings/public-profile', icon: Globe, key:'publicProfile', module:'always' },
       { href:'/support',         icon: HelpCircle,  key:'support',   module:'always' },
@@ -153,6 +154,9 @@ export function Sidebar({ mobileOpen, onClose }) {
   function isVisible(item) {
     if (item.module === 'always' && item.special === 'enterpriseLocations') {
       return ['professional', 'enterprise'].includes(company?.package?.slug) || !!company?.organization_id
+    }
+    if (item.module === 'always' && item.special === 'professionalPlus') {
+      return ['professional', 'enterprise'].includes(company?.package?.slug)
     }
     if (item.module === 'always') return true
     if (item.gate) return hasModuleAccess(item.gate, { profile, company, companyAddons })

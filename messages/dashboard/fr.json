@@ -43,6 +43,7 @@
       "settings": "Paramètres",
       "team": "Équipe",
       "locations": "Établissements",
+      "bookingWidget": "Widget de Réservation",
       "addons": "Modules Complémentaires",
       "publicProfile": "Profil Public",
       "support": "Assistance"
@@ -1102,7 +1103,11 @@
     "typeCreated": "Type de réservation créé",
     "typeUpdated": "Type de réservation mis à jour",
     "typeDeleted": "Type de réservation supprimé",
-    "confirmDelete": "Supprimer « {name} » ? Les réservations existantes conservent leur type enregistré — cela le retire seulement de la liste pour les nouvelles réservations."
+    "confirmDelete": "Supprimer « {name} » ? Les réservations existantes conservent leur type enregistré — cela le retire seulement de la liste pour les nouvelles réservations.",
+    "colPublic": "Public",
+    "public": "Public",
+    "privateType": "Privé",
+    "publicHint": "Si ce type apparaît sur votre widget de réservation public"
   },
   "Team": {
     "title": "Équipe",
@@ -1172,5 +1177,27 @@
     "sectionUpdated": "Section mise à jour",
     "sectionDeleted": "Section supprimée",
     "confirmDelete": "Supprimer « {title} » ? Cette action est irréversible."
+  },
+  "BookingWidget": {
+    "title": "Widget de Réservation",
+    "subtitle": "Un formulaire de réservation direct que vos clients peuvent utiliser sur votre propre site web.",
+    "infoBanner": "Les demandes soumises via le widget arrivent dans votre liste de réservations comme en attente — vous les confirmez et finalisez comme toute autre réservation.",
+    "enableWidget": "Activer le Widget de Réservation",
+    "enableWidgetDesc": "Active le formulaire de réservation public à l'URL de votre widget ci-dessous.",
+    "widgetUrl": "URL du Widget",
+    "saving": "Enregistrement…",
+    "save": "Enregistrer",
+    "saved": "Paramètres du widget de réservation enregistrés",
+    "urlTaken": "Cette URL est déjà prise — essayez-en une autre.",
+    "previewWidget": "Aperçu",
+    "embedHeading": "Code d'Intégration",
+    "embedDesc": "Collez ceci dans le HTML de votre site web à l'endroit où le formulaire de réservation doit apparaître.",
+    "copy": "Copier",
+    "copied": "Code d'intégration copié",
+    "embedHint": "Seuls les types de réservation marqués « Public » apparaissent ici —",
+    "manageTypes": "gérer les types de réservation",
+    "lockedTitle": "Le Widget de Réservation est une fonctionnalité Professional",
+    "lockedDesc": "Passez à Professional ou Enterprise pour permettre à vos clients de réserver directement depuis votre propre site web.",
+    "viewPlans": "Voir les Forfaits"
   }
 }

@@ -34,6 +34,18 @@ const nextConfig = {
           },
         ],
       },
+      // The booking widget is designed to be embedded on each operator's
+      // own website — an unknown, unpredictable domain we can't allow-list
+      // in advance the way rollingrover.co.za is above. This entry is
+      // defined after the general one so Next.js applies it last (and
+      // therefore wins) specifically for /book/* paths; every other path
+      // keeps the strict default.
+      {
+        source: '/book/:path*',
+        headers: [
+          { key: 'Content-Security-Policy', value: 'frame-ancestors *;' },
+        ],
+      },
     ]
   },
 }

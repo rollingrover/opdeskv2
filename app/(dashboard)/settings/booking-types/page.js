@@ -116,6 +116,12 @@ export default function BookingTypesPage() {
     load()
   }
 
+  async function togglePublic(bt) {
+    const { error } = await supabase.from('booking_types').update({ public_bookable: !bt.public_bookable }).eq('id', bt.id)
+    if (error) { toast.error(error.message); return }
+    load()
+  }
+
   return (
     <div>
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
@@ -148,6 +154,7 @@ export default function BookingTypesPage() {
               <th>{t('colName')}</th>
               <th>{t('colRates')}</th>
               <th style={{ textAlign: 'right' }}>{t('colStatus')}</th>
+              <th style={{ textAlign: 'right' }}>{t('colPublic')}</th>
               <th></th>
             </tr>
           </thead>
@@ -166,6 +173,11 @@ export default function BookingTypesPage() {
                 <td style={{ textAlign: 'right' }}>
                   <button className="btn btn-outline btn-sm" onClick={() => toggleActive(bt)}>
                     {bt.active ? t('active') : t('hidden')}
+                  </button>
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  <button className="btn btn-outline btn-sm" onClick={() => togglePublic(bt)} title={t('publicHint')}>
+                    {bt.public_bookable ? t('public') : t('privateType')}
                   </button>
                 </td>
                 <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>

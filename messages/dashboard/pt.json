@@ -43,6 +43,7 @@
       "settings": "Definições",
       "team": "Equipa",
       "locations": "Localizações",
+      "bookingWidget": "Widget de Reservas",
       "addons": "Extras",
       "publicProfile": "Perfil Público",
       "support": "Suporte"
@@ -1102,7 +1103,11 @@
     "typeCreated": "Tipo de reserva criado",
     "typeUpdated": "Tipo de reserva atualizado",
     "typeDeleted": "Tipo de reserva eliminado",
-    "confirmDelete": "Eliminar \"{name}\"? As reservas existentes mantêm o tipo registado — isto apenas o remove da lista para novas reservas."
+    "confirmDelete": "Eliminar \"{name}\"? As reservas existentes mantêm o tipo registado — isto apenas o remove da lista para novas reservas.",
+    "colPublic": "Público",
+    "public": "Público",
+    "privateType": "Privado",
+    "publicHint": "Se este tipo aparece no seu widget de reservas público"
   },
   "Team": {
     "title": "Equipa",
@@ -1172,5 +1177,27 @@
     "sectionUpdated": "Secção atualizada",
     "sectionDeleted": "Secção eliminada",
     "confirmDelete": "Eliminar \"{title}\"? Esta ação não pode ser desfeita."
+  },
+  "BookingWidget": {
+    "title": "Widget de Reservas",
+    "subtitle": "Um formulário de reserva direto que os seus hóspedes podem usar no seu próprio website.",
+    "infoBanner": "Os pedidos submetidos através do widget chegam à sua lista de Reservas como pendentes — confirma e finaliza-os da mesma forma que qualquer outra reserva.",
+    "enableWidget": "Ativar Widget de Reservas",
+    "enableWidgetDesc": "Ativa o formulário de reservas público no URL do widget abaixo.",
+    "widgetUrl": "URL do Widget",
+    "saving": "A guardar…",
+    "save": "Guardar",
+    "saved": "Definições do widget de reservas guardadas",
+    "urlTaken": "Esse URL já está a ser usado — tente outro.",
+    "previewWidget": "Pré-visualizar",
+    "embedHeading": "Código de Incorporação",
+    "embedDesc": "Cole isto no HTML do seu website onde quer que o formulário de reservas apareça.",
+    "copy": "Copiar",
+    "copied": "Código de incorporação copiado",
+    "embedHint": "Apenas os tipos de reserva marcados como \"Público\" aparecem aqui —",
+    "manageTypes": "gerir tipos de reserva",
+    "lockedTitle": "O Widget de Reservas é uma funcionalidade Professional",
+    "lockedDesc": "Atualize para Professional ou Enterprise para permitir que os hóspedes reservem diretamente a partir do seu próprio website.",
+    "viewPlans": "Ver Planos"
   }
 }

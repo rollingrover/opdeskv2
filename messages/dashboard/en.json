@@ -43,6 +43,7 @@
       "settings": "Settings",
       "team": "Team",
       "locations": "Locations",
+      "bookingWidget": "Booking Widget",
       "addons": "Add-ons",
       "publicProfile": "Public Profile",
       "support": "Support"
@@ -1102,7 +1103,11 @@
     "typeCreated": "Booking type created",
     "typeUpdated": "Booking type updated",
     "typeDeleted": "Booking type deleted",
-    "confirmDelete": "Delete \"{name}\"? Existing bookings keep their recorded type — this only removes it from the list for new bookings."
+    "confirmDelete": "Delete \"{name}\"? Existing bookings keep their recorded type — this only removes it from the list for new bookings.",
+    "colPublic": "Public",
+    "public": "Public",
+    "privateType": "Private",
+    "publicHint": "Whether this type appears on your public booking widget"
   },
   "Team": {
     "title": "Team",
@@ -1172,5 +1177,27 @@
     "sectionUpdated": "Section updated",
     "sectionDeleted": "Section deleted",
     "confirmDelete": "Delete \"{title}\"? This can't be undone."
+  },
+  "BookingWidget": {
+    "title": "Booking Widget",
+    "subtitle": "A direct booking form your guests can use right on your own website.",
+    "infoBanner": "Requests submitted through the widget land in your Bookings list as pending — you confirm and finalise them the same way as any other booking.",
+    "enableWidget": "Enable Booking Widget",
+    "enableWidgetDesc": "Turns on the public booking form at your widget URL below.",
+    "widgetUrl": "Widget URL",
+    "saving": "Saving…",
+    "save": "Save",
+    "saved": "Booking widget settings saved",
+    "urlTaken": "That URL is already taken — try a different one.",
+    "previewWidget": "Preview",
+    "embedHeading": "Embed Code",
+    "embedDesc": "Paste this into your website's HTML where you want the booking form to appear.",
+    "copy": "Copy",
+    "copied": "Embed code copied",
+    "embedHint": "Only booking types marked \"Public\" show up here —",
+    "manageTypes": "manage booking types",
+    "lockedTitle": "Booking Widget is a Professional feature",
+    "lockedDesc": "Upgrade to Professional or Enterprise to let guests book directly from your own website.",
+    "viewPlans": "View Plans"
   }
 }
