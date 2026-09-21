@@ -75,7 +75,10 @@
         "title": "Logistique & Calculateur de Coûts",
         "desc": "Comptes clients, listes de prix avec historique complet, et un véritable calculateur de coûts et de profits pour les livraisons, l'entretien et les courses."
       }
-    }
+    },
+    "metaTitle": "OpDesk — Exploiter. Explorer. Grandir.",
+    "metaDescription": "Gestion complète des opérations pour les opérateurs safari, hôtels, charters, navettes et entreprises de voyage à travers l'Afrique. Réservations, personnel, hébergement, flotte, certifications et factures.",
+    "metaOgDescription": "Le centre de commande pour les opérateurs touristiques et hôteliers d'Afrique."
   },
   "Auth": {
     "Login": {
@@ -162,7 +165,9 @@
     "save": "Économisez",
     "stillDecidingHeading": "Vous hésitez encore ?",
     "stillDecidingSub": "Commencez avec le forfait Gratuit — sans carte bancaire, sans limite de temps.",
-    "logisticsTab": "Logistique & Services de Soutien"
+    "logisticsTab": "Logistique & Services de Soutien",
+    "metaTitle": "Tarifs — OpDesk",
+    "metaDescription": "Tarification simple et forfaitaire pour les opérateurs safari, lodges, hôtels, navettes, charters et entreprises de logistique à travers l'Afrique. Jamais de commission sur les réservations."
   },
   "About": {
     "eyebrow": "Notre histoire",
@@ -187,7 +192,9 @@
       "eastAfrica": "Circuits Afrique de l'Est",
       "islandTransfer": "Transferts vers les Îles",
       "logistics": "Logistique & Services de Soutien"
-    }
+    },
+    "metaTitle": "À Propos — OpDesk",
+    "metaDescription": "OpDesk est conçu pour les opérateurs touristiques et hôteliers d'Afrique — par une équipe qui comprend les devises, langues et exigences de conformité du continent."
   },
   "Features": {
     "hero": {
@@ -279,7 +286,9 @@
     },
     "ctaHeading": "Voyez-le gérer votre entreprise",
     "ctaSubheading": "Essai gratuit — aucune carte bancaire requise.",
-    "startFree": "Essai gratuit"
+    "startFree": "Essai gratuit",
+    "metaTitle": "Fonctionnalités — OpDesk",
+    "metaDescription": "Réservations, personnel & RH, gestion de flotte, facturation, rapports et logistique — toutes les fonctionnalités dont les opérateurs touristiques africains ont besoin, sur une seule plateforme."
   },
   "WebDesign": {
     "eyebrow": "RollingRover Productions",
@@ -336,7 +345,9 @@
     "detailsLabel": "Parlez-nous en plus de votre projet",
     "errorMessage": "Un problème est survenu — veuillez réessayer ou nous envoyer un e-mail directement.",
     "sending": "Envoi en cours…",
-    "submit": "Demander mon devis"
+    "submit": "Demander mon devis",
+    "metaTitle": "Conception de Sites Web pour Opérateurs Touristiques — RollingRover Productions",
+    "metaDescription": "Besoin d'un site web aussi ? RollingRover Productions crée des sites web pour les opérateurs touristiques africains, intégrés à OpDesk."
   },
   "WebDesignThankYou": {
     "title": "Paiement reçu",

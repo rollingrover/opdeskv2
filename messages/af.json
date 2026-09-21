@@ -75,7 +75,10 @@
         "title": "Logistiek & Kosteberekenaar",
         "desc": "Kliëntrekeninge, prysslyste met volledige geskiedenis, en 'n regte koste-/winsberekenaar vir aflewering, instandhouding en dwaaltogte."
       }
-    }
+    },
+    "metaTitle": "OpDesk — Bedryf. Verken. Groei.",
+    "metaDescription": "Alles-in-een bedryfsbestuur vir wildsafari-operateurs, hotelle, huurbote, pendeldienste en reisbesighede regoor Afrika. Besprekings, personeel, verblyf, vloot, sertifisering en fakture.",
+    "metaOgDescription": "Die beheersentrum vir Afrika se reis- en gasvryheidoperateurs."
   },
   "Auth": {
     "Login": {
@@ -162,7 +165,9 @@
     "save": "Bespaar",
     "stillDecidingHeading": "Steeds besluiteloos?",
     "stillDecidingSub": "Begin op die Gratis-plan — geen kredietkaart, geen tydsbeperking nie.",
-    "logisticsTab": "Logistiek & Ondersteuningsdienste"
+    "logisticsTab": "Logistiek & Ondersteuningsdienste",
+    "metaTitle": "Pryse — OpDesk",
+    "metaDescription": "Eenvoudige, plat-tarief pryse vir wildsafari-operateurs, lodges, hotelle, pendeldienste, huurbote en logistiekbesighede regoor Afrika. Nooit besprekingskommissie nie."
   },
   "About": {
     "eyebrow": "Ons storie",
@@ -187,7 +192,9 @@
       "eastAfrica": "Oos-Afrika Toere",
       "islandTransfer": "Eiland-vervoer",
       "logistics": "Logistiek & Ondersteuningsdienste"
-    }
+    },
+    "metaTitle": "Oor Ons — OpDesk",
+    "metaDescription": "OpDesk is gebou vir Afrika se reis- en gasvryheidoperateurs — deur 'n span wat die vasteland se geldeenhede, tale en voldoeningsbehoeftes verstaan."
   },
   "Features": {
     "hero": {
@@ -279,7 +286,9 @@
     },
     "ctaHeading": "Sien dit jou besigheid bedryf",
     "ctaSubheading": "Begin gratis — geen kredietkaart nodig nie.",
-    "startFree": "Begin Gratis"
+    "startFree": "Begin Gratis",
+    "metaTitle": "Kenmerke — OpDesk",
+    "metaDescription": "Besprekings, personeel & MH, vlootbestuur, fakturering, verslagdoening en logistiek — elke kenmerk wat Afrika se toerisme- en gasvryheidoperateurs nodig het, in een platform."
   },
   "WebDesign": {
     "eyebrow": "RollingRover Productions",
@@ -336,7 +345,9 @@
     "detailsLabel": "Vertel ons meer van jou projek",
     "errorMessage": "Iets het verkeerd geloop — probeer asseblief weer of e-pos ons direk.",
     "sending": "Stuur tans…",
-    "submit": "Versoek My Kwotasie"
+    "submit": "Versoek My Kwotasie",
+    "metaTitle": "Webontwerp vir Toerisme-operateurs — RollingRover Productions",
+    "metaDescription": "Benodig jy ook 'n webwerf? RollingRover Productions bou webwerwe vir Afrika se toerisme- en gasvryheidoperateurs, geïntegreer met OpDesk."
   },
   "WebDesignThankYou": {
     "title": "Betaling ontvang",

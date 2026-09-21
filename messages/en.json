@@ -75,7 +75,10 @@
         "title": "Logistics & Cost Calculator",
         "desc": "Client accounts, price lists with full history, and a real cost/profit calculator for delivery, maintenance, and errand runs."
       }
-    }
+    },
+    "metaTitle": "OpDesk — Operate. Explore. Grow.",
+    "metaDescription": "All-in-one operations management for safari operators, hotels, charters, shuttles & travel businesses across Africa. Bookings, staff, lodging, fleet, certifications & invoices.",
+    "metaOgDescription": "The command centre for Africa's travel & hospitality operators."
   },
   "Auth": {
     "Login": {
@@ -162,7 +165,9 @@
     "save": "Save",
     "stillDecidingHeading": "Still deciding?",
     "stillDecidingSub": "Start on the Free plan — no credit card, no time limit.",
-    "logisticsTab": "Logistics & Support Services"
+    "logisticsTab": "Logistics & Support Services",
+    "metaTitle": "Pricing — OpDesk",
+    "metaDescription": "Simple, flat-rate pricing for safari operators, lodges, hotels, shuttles, charters and logistics businesses across Africa. No booking commission, ever."
   },
   "About": {
     "eyebrow": "Our story",
@@ -187,7 +192,9 @@
       "eastAfrica": "East Africa Tours",
       "islandTransfer": "Island Transfers",
       "logistics": "Logistics & Support Services"
-    }
+    },
+    "metaTitle": "About — OpDesk",
+    "metaDescription": "OpDesk is built for Africa's travel and hospitality operators — by a team that understands the continent's currencies, languages, and compliance needs."
   },
   "Features": {
     "hero": {
@@ -279,7 +286,9 @@
     },
     "ctaHeading": "See it running your business",
     "ctaSubheading": "Start free — no credit card required.",
-    "startFree": "Start for Free"
+    "startFree": "Start for Free",
+    "metaTitle": "Features — OpDesk",
+    "metaDescription": "Bookings, staff & HR, fleet management, invoicing, reporting and logistics — every feature African tourism and hospitality operators need, in one platform."
   },
   "WebDesign": {
     "eyebrow": "RollingRover Productions",
@@ -336,7 +345,9 @@
     "detailsLabel": "Tell us more about your project",
     "errorMessage": "Something went wrong — please try again or email us directly.",
     "sending": "Sending…",
-    "submit": "Request My Quote"
+    "submit": "Request My Quote",
+    "metaTitle": "Web Design for Tourism Operators — RollingRover Productions",
+    "metaDescription": "Need a website too? RollingRover Productions builds websites for African tourism and hospitality operators, integrated with OpDesk."
   },
   "WebDesignThankYou": {
     "title": "Payment received",

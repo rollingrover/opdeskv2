@@ -75,7 +75,10 @@
         "title": "Logistik & Kostenrechner",
         "desc": "Kundenkonten, Preislisten mit vollständigem Verlauf und ein echter Kosten-/Gewinnrechner für Lieferungen, Wartung und Besorgungen."
       }
-    }
+    },
+    "metaTitle": "OpDesk — Betreiben. Entdecken. Wachsen.",
+    "metaDescription": "Komplette Betriebsverwaltung für Safari-Betreiber, Hotels, Charter, Shuttles und Reiseunternehmen in ganz Afrika. Buchungen, Personal, Unterkünfte, Fuhrpark, Zertifizierungen und Rechnungen.",
+    "metaOgDescription": "Die Kommandozentrale für Afrikas Reise- und Gastgewerbebetreiber."
   },
   "Auth": {
     "Login": {
@@ -162,7 +165,9 @@
     "save": "Sparen",
     "stillDecidingHeading": "Noch unentschlossen?",
     "stillDecidingSub": "Starten Sie mit dem kostenlosen Tarif — keine Kreditkarte, keine Zeitbegrenzung.",
-    "logisticsTab": "Logistik & Support-Dienste"
+    "logisticsTab": "Logistik & Support-Dienste",
+    "metaTitle": "Preise — OpDesk",
+    "metaDescription": "Einfache Festpreise für Safari-Betreiber, Lodges, Hotels, Shuttles, Charter und Logistikunternehmen in ganz Afrika. Niemals Buchungsprovision."
   },
   "About": {
     "eyebrow": "Unsere Geschichte",
@@ -187,7 +192,9 @@
       "eastAfrica": "Ostafrika-Touren",
       "islandTransfer": "Insel-Transfers",
       "logistics": "Logistik & Support-Dienste"
-    }
+    },
+    "metaTitle": "Über Uns — OpDesk",
+    "metaDescription": "OpDesk wurde für Afrikas Reise- und Gastgewerbebetreiber entwickelt — von einem Team, das die Währungen, Sprachen und Compliance-Anforderungen des Kontinents versteht."
   },
   "Features": {
     "hero": {
@@ -279,7 +286,9 @@
     },
     "ctaHeading": "Sehen Sie es Ihr Unternehmen führen",
     "ctaSubheading": "Kostenlos starten — keine Kreditkarte erforderlich.",
-    "startFree": "Kostenlos starten"
+    "startFree": "Kostenlos starten",
+    "metaTitle": "Funktionen — OpDesk",
+    "metaDescription": "Buchungen, Personal & HR, Fuhrparkverwaltung, Rechnungsstellung, Berichte und Logistik — jede Funktion, die afrikanische Tourismus- und Gastgewerbebetreiber brauchen, in einer Plattform."
   },
   "WebDesign": {
     "eyebrow": "RollingRover Productions",
@@ -336,7 +345,9 @@
     "detailsLabel": "Erzählen Sie uns mehr über Ihr Projekt",
     "errorMessage": "Etwas ist schiefgelaufen — bitte versuchen Sie es erneut oder senden Sie uns direkt eine E-Mail.",
     "sending": "Wird gesendet…",
-    "submit": "Angebot Anfordern"
+    "submit": "Angebot Anfordern",
+    "metaTitle": "Webdesign für Tourismusbetreiber — RollingRover Productions",
+    "metaDescription": "Brauchen Sie auch eine Website? RollingRover Productions erstellt Websites für afrikanische Tourismus- und Gastgewerbebetreiber, integriert mit OpDesk."
   },
   "WebDesignThankYou": {
     "title": "Zahlung erhalten",
