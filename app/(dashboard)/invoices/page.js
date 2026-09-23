@@ -10,19 +10,22 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { Modal } from '@/components/ui/Modal'
 import { Input, Select } from '@/components/ui/FormField'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
-import { Plus, FileText, FileDown, Send, CreditCard } from 'lucide-react'
+import { Plus, FileText, FileDown, Send, CreditCard, X } from 'lucide-react'
+import { hasModuleAccess } from '@/lib/moduleAccess'
 
-const emptyForm = { guest_name: '', guest_email: '', guest_address: '', guest_vat_number: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '' }
+const emptyForm = { guest_name: '', guest_email: '', guest_address: '', guest_vat_number: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '', line_items: [] }
 const emptyPayment = { amount: '', payment_date: new Date().toISOString().slice(0, 10), method: 'eft', reference: '' }
 
 export default function InvoicesPage() {
   const t = useTranslations('Invoices')
   const tCommon = useTranslations('Common')
   const tStatus = useTranslations('StatusBadge')
-  const { company, needsCompany } = useAuth()
+  const { company, profile, needsCompany } = useAuth()
   const supabase = createClient()
   const toast = useToast()
   const [rows, setRows] = useState([])
+  const [rateSheetItems, setRateSheetItems] = useState([])
+  const [addons, setAddons] = useState([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
@@ -37,18 +40,27 @@ export default function InvoicesPage() {
   async function load() {
     if (!company) { setLoading(false); return }
     setLoading(true)
-    const { data, error } = await supabase.from('invoices').select('*').eq('company_id', company.id).order('created_at', { ascending: false })
-    if (error) toast.error(error.message)
-    setRows(data || [])
+    const [inv, rs, ad] = await Promise.all([
+      supabase.from('invoices').select('*').eq('company_id', company.id).order('created_at', { ascending: false }),
+      supabase.from('rate_sheet_items').select('*').eq('company_id', company.id).eq('active', true).order('sort_order').order('name'),
+      supabase.from('company_addons').select('addon_key, active').eq('company_id', company.id).eq('active', true),
+    ])
+    if (inv.error) toast.error(inv.error.message)
+    setRows(inv.data || [])
+    setRateSheetItems(rs.data || [])
+    setAddons(ad.data || [])
     setLoading(false)
   }
   useEffect(() => { load() }, [company])
+
+  const canRateSheet = hasModuleAccess('rate_sheet', { profile, company, companyAddons: addons })
+  const lineItemsTotal = form.line_items.reduce((sum, li) => sum + (Number(li.quantity) || 0) * (Number(li.unit_price) || 0), 0)
 
   async function handleSave(e) {
     e.preventDefault()
     if (!company) return
     setSaving(true)
-    const subtotal = Number(form.subtotal) || 0
+    const subtotal = form.line_items.length > 0 ? lineItemsTotal : (Number(form.subtotal) || 0)
     const vatRate = Number(form.vat_rate) || 0
     const vatAmount = +(subtotal * vatRate / 100).toFixed(2)
     const total = +(subtotal + vatAmount).toFixed(2)
@@ -57,11 +69,41 @@ export default function InvoicesPage() {
       ...form, company_id: company.id, currency: company.currency,
       invoice_number: invoiceNumber, subtotal, vat_rate: vatRate,
       vat_amount: vatAmount, total, due_date: form.due_date || null,
+      line_items: form.line_items.map(li => ({
+        description: li.description, quantity: Number(li.quantity) || 1, unit_price: Number(li.unit_price) || 0,
+        total: (Number(li.quantity) || 1) * (Number(li.unit_price) || 0),
+        residency: li.residency || null, guest_category: li.guest_category || null,
+        commission_pct: li.commission_pct || null, rate_sheet_item_id: li.rate_sheet_item_id || null,
+      })),
     }])
     setSaving(false)
     if (error) { toast.error(error.message); return }
     toast.success(t('invoiceCreated'))
     setModalOpen(false); setForm(emptyForm); load()
+  }
+
+  function addLineFromRateSheet(itemId) {
+    const item = rateSheetItems.find(r => r.id === itemId)
+    if (!item) return
+    setForm(f => ({
+      ...f, line_items: [...f.line_items, {
+        description: item.name, quantity: 1, unit_price: item.unit_price,
+        residency: item.residency, guest_category: item.guest_category,
+        commission_pct: item.commission_enabled ? item.commission_pct : null, rate_sheet_item_id: item.id,
+      }],
+    }))
+  }
+
+  function addCustomLine() {
+    setForm(f => ({ ...f, line_items: [...f.line_items, { description: '', quantity: 1, unit_price: 0 }] }))
+  }
+
+  function updateLine(index, field, value) {
+    setForm(f => ({ ...f, line_items: f.line_items.map((li, i) => i === index ? { ...li, [field]: value } : li) }))
+  }
+
+  function removeLine(index) {
+    setForm(f => ({ ...f, line_items: f.line_items.filter((_, i) => i !== index) }))
   }
 
   async function openPaymentModal(invoice) {
@@ -173,7 +215,50 @@ export default function InvoicesPage() {
               <option value="draft">{tStatus('draft')}</option>
               <option value="sent">{tStatus('sent')}</option>
             </Select>
-            <Input label={`${t('subtotal')} (${company.currency})`} type="number" step="0.01" value={form.subtotal} onChange={e => setForm({ ...form, subtotal: e.target.value })} />
+          </div>
+
+          {canRateSheet && (
+            <div style={{ marginTop: '0.5rem', marginBottom: '0.75rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.375rem' }}>
+                <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)' }}>{t('lineItems')}</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {rateSheetItems.length > 0 && (
+                    <select onChange={e => { if (e.target.value) { addLineFromRateSheet(e.target.value); e.target.value = '' } }}
+                      defaultValue="" style={{ fontSize: '0.75rem', padding: '0.3rem 0.5rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem' }}>
+                      <option value="" disabled>{t('addFromRateSheet')}</option>
+                      {rateSheetItems.map(item => <option key={item.id} value={item.id}>{item.name} — {company.currency}{item.unit_price}</option>)}
+                    </select>
+                  )}
+                  <button type="button" className="btn btn-outline btn-sm" onClick={addCustomLine}>+ {t('addCustomLine')}</button>
+                </div>
+              </div>
+              {form.line_items.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '0.5rem' }}>
+                  {form.line_items.map((li, i) => (
+                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '2fr 0.6fr 0.9fr 0.9fr auto', gap: '0.4rem', alignItems: 'center' }}>
+                      <input value={li.description} placeholder={t('lineDescription')} onChange={e => updateLine(i, 'description', e.target.value)}
+                        style={{ padding: '0.35rem 0.5rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
+                      <input type="number" min="1" value={li.quantity} onChange={e => updateLine(i, 'quantity', e.target.value)}
+                        style={{ padding: '0.35rem 0.5rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
+                      <input type="number" min="0" step="0.01" value={li.unit_price} onChange={e => updateLine(i, 'unit_price', e.target.value)}
+                        style={{ padding: '0.35rem 0.5rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
+                      <span style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{company.currency} {((Number(li.quantity) || 0) * (Number(li.unit_price) || 0)).toLocaleString()}</span>
+                      <button type="button" onClick={() => removeLine(i)} style={{ background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer' }}><X size={15} /></button>
+                    </div>
+                  ))}
+                  <p style={{ textAlign: 'right', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--navy)', margin: '0.25rem 0 0' }}>
+                    {t('lineItemsSubtotal')}: {company.currency} {lineItemsTotal.toLocaleString()}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
+            <Input label={`${t('subtotal')} (${company.currency})`} type="number" step="0.01" disabled={form.line_items.length > 0}
+              value={form.line_items.length > 0 ? lineItemsTotal : form.subtotal}
+              onChange={e => setForm({ ...form, subtotal: e.target.value })}
+              hint={form.line_items.length > 0 ? t('subtotalFromLines') : undefined} />
             <Input label={t('vatRate')} type="number" step="0.1" value={form.vat_rate} onChange={e => setForm({ ...form, vat_rate: e.target.value })} />
             <Input label={t('dueDate')} type="date" value={form.due_date} onChange={e => setForm({ ...form, due_date: e.target.value })} />
           </div>

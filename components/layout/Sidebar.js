@@ -79,8 +79,10 @@ const ALL_NAV = [
       { href:'/invoices',         icon: FileText,    key:'invoices',         module:'invoices' },
       { href:'/invoices/statements', icon: FileText, key:'clientStatements', module:'invoices' },
       { href:'/quotations',       icon: FileText,    key:'quotations',       module:'quotations', gate:'quotations' },
+      { href:'/settings/rate-sheet', icon: FileText, key:'rateSheet',       module:'rate_sheet', gate:'rate_sheet' },
       { href:'/checklists',       icon: ClipboardCheck, key:'checklists',     module:'checklists', gate:'checklists' },
       { href:'/reports',          icon: BarChart3,   key:'reports',          module:'reports' },
+      { href:'/reports/commission', icon: BarChart3, key:'commissionReport', module:'commission_report', gate:'commission_reporting' },
     ]
   },
   {
