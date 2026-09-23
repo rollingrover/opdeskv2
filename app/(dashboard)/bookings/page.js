@@ -22,6 +22,7 @@ const emptyForm = {
   start_date: '', end_date: '', booking_type: 'tour', status: 'pending',
   unit_price: 0, amount_paid: 0, notes: '',
   guide_id: '', driver_id: '', vehicle_id: '', vessel_id: '', room_id: '',
+  travelers: [], // optional additional travelers beyond the lead guest — [{full_name, email, phone}]
 }
 
 function BookingsContent() {
@@ -97,9 +98,10 @@ function BookingsContent() {
     setModalOpen(true)
   }
 
-  function openForEdit(booking) {
+  async function openForEdit(booking) {
     if (!isEditable(booking)) return
     setEditingId(booking.id)
+    const { data: travs } = await supabase.from('booking_travelers').select('full_name, email, phone').eq('booking_id', booking.id).eq('is_lead', false)
     setForm({
       guest_name: booking.guest_name || '', guest_email: booking.guest_email || '', guest_phone: booking.guest_phone || '',
       guest_count: booking.guest_count || 1, start_date: booking.start_date || '', end_date: booking.end_date || '',
@@ -108,6 +110,7 @@ function BookingsContent() {
       amount_paid: booking.amount_paid || 0, notes: booking.notes || '',
       guide_id: booking.guide_id || '', driver_id: booking.driver_id || '', vehicle_id: booking.vehicle_id || '',
       vessel_id: booking.vessel_id || '', room_id: booking.room_id || '',
+      travelers: travs || [],
     })
     setModalOpen(true)
   }
@@ -133,14 +136,39 @@ function BookingsContent() {
     if (rate !== undefined) setForm(f => ({ ...f, unit_price: rate }))
   }
 
+  // Matches an existing guest by email first (case-insensitive), falling
+  // back to exact name match if no email is given, so the same person
+  // booking again links to their existing record instead of creating a
+  // duplicate. Creates a new guest only when nothing matches.
+  async function findOrCreateGuest(name, email, phone) {
+    if (!name) return null
+    let existing = null
+    if (email) {
+      const { data } = await supabase.from('guests').select('id, phone').eq('company_id', company.id).ilike('email', email).maybeSingle()
+      existing = data
+    } else {
+      const { data } = await supabase.from('guests').select('id, phone').eq('company_id', company.id).is('email', null).eq('full_name', name).maybeSingle()
+      existing = data
+    }
+    if (existing) {
+      if (phone && !existing.phone) await supabase.from('guests').update({ phone }).eq('id', existing.id)
+      return existing.id
+    }
+    const { data: created } = await supabase.from('guests').insert([{ company_id: company.id, full_name: name, email: email || null, phone: phone || null }]).select('id').maybeSingle()
+    return created?.id || null
+  }
+
   async function handleSave(e) {
     e.preventDefault()
     if (!company) return
     setSaving(true)
     const guestCount = Number(form.guest_count) || 1
     const unitPrice = Number(form.unit_price) || 0
+    const guestId = await findOrCreateGuest(form.guest_name, form.guest_email, form.guest_phone)
+    const { travelers, ...formRest } = form
     const payload = {
-      ...form,
+      ...formRest,
+      guest_id: guestId,
       guest_count: guestCount,
       unit_price: unitPrice,
       amount_total: guestCount * unitPrice,
@@ -152,11 +180,37 @@ function BookingsContent() {
       vessel_id: form.vessel_id || null,
       room_id: form.room_id || null,
     }
-    const { error } = editingId
-      ? await supabase.from('bookings').update(payload).eq('id', editingId)
-      : await supabase.from('bookings').insert([{ ...payload, company_id: company.id, booking_ref: 'BK-' + Date.now().toString(36).toUpperCase() }])
+    let bookingId = editingId
+    let error
+    if (editingId) {
+      ;({ error } = await supabase.from('bookings').update(payload).eq('id', editingId))
+    } else {
+      const ref = 'BK-' + Date.now().toString(36).toUpperCase()
+      const { data: inserted, error: insertErr } = await supabase.from('bookings').insert([{ ...payload, company_id: company.id, booking_ref: ref }]).select('id').maybeSingle()
+      error = insertErr
+      bookingId = inserted?.id
+    }
+    if (error) { setSaving(false); toast.error(error.message); return }
+
+    // Travelers are entirely optional — most bookings have none listed
+    // beyond the lead guest, and that's fine. When editing, the existing
+    // list is replaced wholesale with whatever's currently in the form,
+    // which is simplest and matches how the rest of this form already
+    // works (no partial-diff tracking anywhere else on this page either).
+    if (bookingId) {
+      await supabase.from('booking_travelers').delete().eq('booking_id', bookingId)
+      const rows = [{ full_name: form.guest_name, email: form.guest_email || null, phone: form.guest_phone || null, is_lead: true, guest_id: guestId }]
+      for (const trav of travelers) {
+        if (!trav.full_name) continue
+        const travGuestId = await findOrCreateGuest(trav.full_name, trav.email, trav.phone)
+        rows.push({ full_name: trav.full_name, email: trav.email || null, phone: trav.phone || null, is_lead: false, guest_id: travGuestId })
+      }
+      if (rows.length > 0) {
+        await supabase.from('booking_travelers').insert(rows.map(r => ({ ...r, booking_id: bookingId, company_id: company.id })))
+      }
+    }
+
     setSaving(false)
-    if (error) { toast.error(error.message); return }
     toast.success(editingId ? t('bookingUpdated') : t('bookingCreated'))
     setModalOpen(false)
     setEditingId(null)
@@ -320,6 +374,37 @@ function BookingsContent() {
                 {rooms.map(r => <option key={r.id} value={r.id}>{r.name} {r.status !== 'available' ? `(${tStatus(r.status)})` : ''}</option>)}
               </Select>
             </div>
+          </div>
+
+          <div style={{ marginBottom: '0.875rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.375rem' }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)' }}>{t('travelers')}</label>
+              <button type="button" className="btn btn-outline btn-sm"
+                onClick={() => setForm({ ...form, travelers: [...form.travelers, { full_name: '', email: '', phone: '' }] })}>
+                + {t('addTraveler')}
+              </button>
+            </div>
+            {form.travelers.length === 0 ? (
+              <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{t('travelersHint')}</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {form.travelers.map((trav, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr auto', gap: '0.5rem', alignItems: 'center' }}>
+                    <input placeholder={t('travelerName')} value={trav.full_name}
+                      onChange={e => setForm({ ...form, travelers: form.travelers.map((tv, ti) => ti === i ? { ...tv, full_name: e.target.value } : tv) })}
+                      style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
+                    <input placeholder={t('travelerEmail')} type="email" value={trav.email}
+                      onChange={e => setForm({ ...form, travelers: form.travelers.map((tv, ti) => ti === i ? { ...tv, email: e.target.value } : tv) })}
+                      style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
+                    <input placeholder={t('travelerPhone')} value={trav.phone}
+                      onChange={e => setForm({ ...form, travelers: form.travelers.map((tv, ti) => ti === i ? { ...tv, phone: e.target.value } : tv) })}
+                      style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
+                    <button type="button" onClick={() => setForm({ ...form, travelers: form.travelers.filter((_, ti) => ti !== i) })}
+                      style={{ background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer', fontSize: '1rem' }}>×</button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <Textarea label={t('notes')} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />

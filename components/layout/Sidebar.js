@@ -24,6 +24,7 @@ const ALL_NAV = [
       { href:'/bookings',    icon: BookOpen,         key:'bookings',         module:'bookings' },
       { href:'/calendar',    icon: CalendarDays,     key:'calendar',         module:'bookings' },
       { href:'/settings/booking-types', icon: Tag,   key:'bookingTypes',     module:'always' },
+      { href:'/guests',      icon: Users,           key:'guestsDirectory',  module:'always' },
     ]
   },
   {

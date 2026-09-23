@@ -14,6 +14,7 @@
       "bookings": "Réservations",
       "calendar": "Calendrier",
       "bookingTypes": "Types de Réservation",
+      "guestsDirectory": "Clients",
       "staffMembers": "Personnel",
       "certifications": "Certifications",
       "costToCompany": "Coût Total Employeur",
@@ -190,7 +191,13 @@
     "clickToEdit": "Cliquer pour modifier",
     "lockedInvoiced": "Déjà facturée — modification verrouillée",
     "unitSellPrice": "Prix de Vente Unitaire",
-    "totalCalc": "{guests} client(s) × {unitPrice}"
+    "totalCalc": "{guests} client(s) × {unitPrice}",
+    "travelers": "Voyageurs",
+    "addTraveler": "Ajouter un Voyageur",
+    "travelersHint": "Facultatif — listez les voyageurs supplémentaires sur une réservation de groupe, en plus du client principal ci-dessus.",
+    "travelerName": "Nom complet",
+    "travelerEmail": "E-mail",
+    "travelerPhone": "Téléphone"
   },
   "Calendar": {
     "title": "Calendrier",
@@ -1204,5 +1211,26 @@
     "lockedTitle": "Le Widget de Réservation est une fonctionnalité Professional",
     "lockedDesc": "Passez à Professional ou Enterprise pour permettre à vos clients de réserver directement depuis votre propre site web.",
     "viewPlans": "Voir les Forfaits"
+  },
+  "Guests": {
+    "title": "Clients",
+    "subtitle": "Chaque client ayant réservé chez vous, avec son historique complet de réservations.",
+    "searchPlaceholder": "Rechercher par nom, e-mail ou téléphone…",
+    "noGuestsTitle": "Aucun client pour le moment",
+    "noGuestsDesc": "Les clients apparaissent ici automatiquement dès que vous créez des réservations.",
+    "colName": "Nom",
+    "colContact": "Contact",
+    "colBookings": "Réservations",
+    "colLastBooking": "Dernière Réservation",
+    "viewHistory": "Voir l'historique",
+    "repeatGuest": "Client fidèle",
+    "close": "Fermer",
+    "saveNotes": "Enregistrer les Notes",
+    "saving": "Enregistrement…",
+    "notesSaved": "Notes enregistrées",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Exigences alimentaires, préférences, tout ce qui vaut la peine d'être retenu…",
+    "bookingHistory": "Historique des Réservations",
+    "noBookingsYet": "Aucune réservation enregistrée pour le moment."
   }
 }

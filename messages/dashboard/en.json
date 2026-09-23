@@ -14,6 +14,7 @@
       "bookings": "Bookings",
       "calendar": "Calendar",
       "bookingTypes": "Booking Types",
+      "guestsDirectory": "Guests",
       "staffMembers": "Staff Members",
       "certifications": "Certifications",
       "costToCompany": "Cost to Company",
@@ -190,7 +191,13 @@
     "clickToEdit": "Click to edit",
     "lockedInvoiced": "Already invoiced — locked from editing",
     "unitSellPrice": "Unit Sell Price",
-    "totalCalc": "{guests} guest(s) × {unitPrice}"
+    "totalCalc": "{guests} guest(s) × {unitPrice}",
+    "travelers": "Travelers",
+    "addTraveler": "Add Traveler",
+    "travelersHint": "Optional — list additional travelers on a group booking beyond the lead guest above.",
+    "travelerName": "Full name",
+    "travelerEmail": "Email",
+    "travelerPhone": "Phone"
   },
   "Calendar": {
     "title": "Calendar",
@@ -1204,5 +1211,26 @@
     "lockedTitle": "Booking Widget is a Professional feature",
     "lockedDesc": "Upgrade to Professional or Enterprise to let guests book directly from your own website.",
     "viewPlans": "View Plans"
+  },
+  "Guests": {
+    "title": "Guests",
+    "subtitle": "Every guest who has booked with you, with their full booking history.",
+    "searchPlaceholder": "Search by name, email or phone…",
+    "noGuestsTitle": "No guests yet",
+    "noGuestsDesc": "Guests appear here automatically once you create bookings.",
+    "colName": "Name",
+    "colContact": "Contact",
+    "colBookings": "Bookings",
+    "colLastBooking": "Last Booking",
+    "viewHistory": "View history",
+    "repeatGuest": "Repeat guest",
+    "close": "Close",
+    "saveNotes": "Save Notes",
+    "saving": "Saving…",
+    "notesSaved": "Notes saved",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Dietary requirements, preferences, anything worth remembering…",
+    "bookingHistory": "Booking History",
+    "noBookingsYet": "No bookings recorded yet."
   }
 }

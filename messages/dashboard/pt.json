@@ -14,6 +14,7 @@
       "bookings": "Reservas",
       "calendar": "Calendário",
       "bookingTypes": "Tipos de Reserva",
+      "guestsDirectory": "Hóspedes",
       "staffMembers": "Membros da Equipa",
       "certifications": "Certificações",
       "costToCompany": "Custo para a Empresa",
@@ -190,7 +191,13 @@
     "clickToEdit": "Clique para editar",
     "lockedInvoiced": "Já faturada — edição bloqueada",
     "unitSellPrice": "Preço de Venda Unitário",
-    "totalCalc": "{guests} hóspede(s) × {unitPrice}"
+    "totalCalc": "{guests} hóspede(s) × {unitPrice}",
+    "travelers": "Viajantes",
+    "addTraveler": "Adicionar Viajante",
+    "travelersHint": "Opcional — liste viajantes adicionais numa reserva de grupo, além do hóspede principal acima.",
+    "travelerName": "Nome completo",
+    "travelerEmail": "Email",
+    "travelerPhone": "Telefone"
   },
   "Calendar": {
     "title": "Calendário",
@@ -1204,5 +1211,26 @@
     "lockedTitle": "O Widget de Reservas é uma funcionalidade Professional",
     "lockedDesc": "Atualize para Professional ou Enterprise para permitir que os hóspedes reservem diretamente a partir do seu próprio website.",
     "viewPlans": "Ver Planos"
+  },
+  "Guests": {
+    "title": "Hóspedes",
+    "subtitle": "Todos os hóspedes que já reservaram consigo, com o seu histórico completo de reservas.",
+    "searchPlaceholder": "Pesquisar por nome, email ou telefone…",
+    "noGuestsTitle": "Ainda não há hóspedes",
+    "noGuestsDesc": "Os hóspedes aparecem aqui automaticamente assim que criar reservas.",
+    "colName": "Nome",
+    "colContact": "Contacto",
+    "colBookings": "Reservas",
+    "colLastBooking": "Última Reserva",
+    "viewHistory": "Ver histórico",
+    "repeatGuest": "Hóspede recorrente",
+    "close": "Fechar",
+    "saveNotes": "Guardar Notas",
+    "saving": "A guardar…",
+    "notesSaved": "Notas guardadas",
+    "notesLabel": "Notas",
+    "notesPlaceholder": "Requisitos alimentares, preferências, algo que valha a pena lembrar…",
+    "bookingHistory": "Histórico de Reservas",
+    "noBookingsYet": "Ainda não há reservas registadas."
   }
 }

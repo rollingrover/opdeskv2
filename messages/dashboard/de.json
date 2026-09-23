@@ -14,6 +14,7 @@
       "bookings": "Buchungen",
       "calendar": "Kalender",
       "bookingTypes": "Buchungsarten",
+      "guestsDirectory": "Gäste",
       "staffMembers": "Mitarbeiter",
       "certifications": "Zertifizierungen",
       "costToCompany": "Lohnkosten",
@@ -190,7 +191,13 @@
     "clickToEdit": "Zum Bearbeiten klicken",
     "lockedInvoiced": "Bereits in Rechnung gestellt — Bearbeitung gesperrt",
     "unitSellPrice": "Verkaufspreis pro Einheit",
-    "totalCalc": "{guests} Gast/Gäste × {unitPrice}"
+    "totalCalc": "{guests} Gast/Gäste × {unitPrice}",
+    "travelers": "Reisende",
+    "addTraveler": "Reisenden hinzufügen",
+    "travelersHint": "Optional — weitere Reisende bei einer Gruppenbuchung zusätzlich zum Hauptgast oben.",
+    "travelerName": "Vollständiger Name",
+    "travelerEmail": "E-Mail",
+    "travelerPhone": "Telefon"
   },
   "Calendar": {
     "title": "Kalender",
@@ -1204,5 +1211,26 @@
     "lockedTitle": "Buchungs-Widget ist eine Professional-Funktion",
     "lockedDesc": "Upgraden Sie auf Professional oder Enterprise, damit Gäste direkt über Ihre eigene Website buchen können.",
     "viewPlans": "Tarife ansehen"
+  },
+  "Guests": {
+    "title": "Gäste",
+    "subtitle": "Jeder Gast, der bei Ihnen gebucht hat, mit vollständiger Buchungshistorie.",
+    "searchPlaceholder": "Nach Name, E-Mail oder Telefon suchen…",
+    "noGuestsTitle": "Noch keine Gäste",
+    "noGuestsDesc": "Gäste erscheinen hier automatisch, sobald Sie Buchungen erstellen.",
+    "colName": "Name",
+    "colContact": "Kontakt",
+    "colBookings": "Buchungen",
+    "colLastBooking": "Letzte Buchung",
+    "viewHistory": "Verlauf ansehen",
+    "repeatGuest": "Wiederkehrender Gast",
+    "close": "Schließen",
+    "saveNotes": "Notizen speichern",
+    "saving": "Wird gespeichert…",
+    "notesSaved": "Notizen gespeichert",
+    "notesLabel": "Notizen",
+    "notesPlaceholder": "Ernährungsbedürfnisse, Vorlieben, alles Merkenswerte…",
+    "bookingHistory": "Buchungshistorie",
+    "noBookingsYet": "Noch keine Buchungen erfasst."
   }
 }

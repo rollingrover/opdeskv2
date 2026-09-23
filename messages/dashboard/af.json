@@ -14,6 +14,7 @@
       "bookings": "Besprekings",
       "calendar": "Kalender",
       "bookingTypes": "Bespreking Tipes",
+      "guestsDirectory": "Gaste",
       "staffMembers": "Personeellede",
       "certifications": "Sertifisering",
       "costToCompany": "Koste tot Maatskappy",
@@ -190,7 +191,13 @@
     "clickToEdit": "Klik om te wysig",
     "lockedInvoiced": "Reeds gefaktureer — kan nie gewysig word nie",
     "unitSellPrice": "Eenheid Verkoopprys",
-    "totalCalc": "{guests} gas(te) × {unitPrice}"
+    "totalCalc": "{guests} gas(te) × {unitPrice}",
+    "travelers": "Reisigers",
+    "addTraveler": "Voeg Reisiger By",
+    "travelersHint": "Opsioneel — lys addisionele reisigers op 'n groepbespreking benewens die hoofgas hierbo.",
+    "travelerName": "Volle naam",
+    "travelerEmail": "E-pos",
+    "travelerPhone": "Foon"
   },
   "Calendar": {
     "title": "Kalender",
@@ -1204,5 +1211,26 @@
     "lockedTitle": "Besprekingwidget is 'n Professional-kenmerk",
     "lockedDesc": "Gradeer op na Professional of Enterprise om gaste toe te laat om direk van jou eie webwerf af te bespreek.",
     "viewPlans": "Bekyk Planne"
+  },
+  "Guests": {
+    "title": "Gaste",
+    "subtitle": "Elke gas wat by jou bespreek het, met hul volledige besprekingsgeskiedenis.",
+    "searchPlaceholder": "Soek volgens naam, e-pos of foon…",
+    "noGuestsTitle": "Nog geen gaste nie",
+    "noGuestsDesc": "Gaste verskyn hier outomaties sodra jy besprekings skep.",
+    "colName": "Naam",
+    "colContact": "Kontak",
+    "colBookings": "Besprekings",
+    "colLastBooking": "Laaste Bespreking",
+    "viewHistory": "Bekyk geskiedenis",
+    "repeatGuest": "Herhaalde gas",
+    "close": "Maak toe",
+    "saveNotes": "Stoor Notas",
+    "saving": "Stoor tans…",
+    "notesSaved": "Notas gestoor",
+    "notesLabel": "Notas",
+    "notesPlaceholder": "Dieetvereistes, voorkeure, enigiets werd om te onthou…",
+    "bookingHistory": "Besprekingsgeskiedenis",
+    "noBookingsYet": "Nog geen besprekings aangeteken nie."
   }
 }
