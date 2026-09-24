@@ -1,0 +1,364 @@
+{
+  "Nav": {
+    "features": "Izici",
+    "pricing": "Amanani",
+    "about": "Mayelana Nathi",
+    "signIn": "Ngena",
+    "startFree": "Qala Mahhala"
+  },
+  "Footer": {
+    "needWebsite": "Nawe udinga iwebhusayithi? I-RollingRover Productions ingakusiza",
+    "copyright": "© {year} OpDesk (Pty) Ltd. Yakhelwe abaqhubi base-Afrika.",
+    "regInfo": "Reg. No. 2026/648649/07 · B-BBEE Level 4 Contributor",
+    "webDesignBy": "Iwebhusayithi yenziwe ngu"
+  },
+  "Home": {
+    "tagline": "Sebenza. Hlola. Khula.",
+    "heroTitle": "Isikhungo esiphethe",
+    "heroTitleHighlight": "abaqhubi base-Afrika",
+    "heroSubtitle": "Amakamu esafari, izindawo zezivakashi, ama-charter, ama-shuttle namaqembu ezindlela — konke kuhlelo lunye. Ukubhukha, abasebenzi, ukuhlala, imoto, izitifiketi, nemibhalo yezimali.",
+    "startForFree": "Qala Mahhala",
+    "seeFeatures": "Bona Izici",
+    "heroFootnote": "Akudingeki ikhadi lasebhange · Khansela noma nini · Isebenza ku-browser yakho",
+    "operatorsHeading": "Yakhelwe wonke umqhubi wase-Afrika",
+    "operatorsSubheading": "Uhlelo olulodwa, zonke izinhlobo zamabhizinisi",
+    "featuresHeading": "Konke okudingayo ukuze uqhube ibhizinisi lakho",
+    "featuresSubheading": "Akukho amaspreadsheet. Akukho ukubhukha nge-WhatsApp. Ideshibhodi eyodwa.",
+    "ctaHeading": "Usukulungele ukuphatha izinto zakho ngokuphelele?",
+    "ctaSubheading": "Joyina abaqhubi abasezweni lonke lase-Afrika abaqhuba amabhizinisi abo nge-OpDesk.",
+    "operatorTypes": {
+      "safari": "Safari / Game Lodges",
+      "shuttle": "Shuttles & Transfers",
+      "fishing": "Fishing Charters",
+      "yacht": "Yacht Charters",
+      "trail": "Trail Guides",
+      "lodge": "Hotels & Guesthouses",
+      "eastAfrica": "East Africa Tours",
+      "islandTransfer": "Island Transfers",
+      "logistics": "Logistics & Support Services",
+      "riverCruise": "Boat Cruises / River, Estuary & Dam"
+    },
+    "features": {
+      "bookings": {
+        "title": "Bookings & Calendar",
+        "desc": "Full booking management with drag-and-drop calendar scheduling for all operator types."
+      },
+      "staff": {
+        "title": "Staff & HR",
+        "desc": "Certifications, cost-to-company tracking, shifts, leave management, and performance notes."
+      },
+      "lodging": {
+        "title": "Lodging & Rooms",
+        "desc": "Room inventory, availability calendar, guest check-in/out, and housekeeping task board."
+      },
+      "fleet": {
+        "title": "Fleet Management",
+        "desc": "Track vehicles and vessels with licence expiry, roadworthy, and insurance reminders."
+      },
+      "invoices": {
+        "title": "Pro Forma Invoices",
+        "desc": "Professional invoices in 15+ currencies with VAT calculations and PDF export."
+      },
+      "reports": {
+        "title": "Reports & Analytics",
+        "desc": "Occupancy rates, revenue, staff costs, and booking trends at a glance."
+      },
+      "firearm": {
+        "title": "Firearm Register",
+        "desc": "Compliant firearm tracking for safari and fishing operators with licence expiry alerts."
+      },
+      "trails": {
+        "title": "Trails Module",
+        "desc": "Manage trail routes, difficulty, capacity, and guide assignments."
+      },
+      "logistics": {
+        "title": "Logistics & Cost Calculator",
+        "desc": "Client accounts, price lists with full history, and a real cost/profit calculator for delivery, maintenance, and errand runs."
+      }
+    },
+    "metaTitle": "OpDesk — Sebenza. Hlola. Khula.",
+    "metaDescription": "Ukuphathwa okuphelele kokusebenza kwabaqhubi be-safari, amahhotela, ama-charter, ama-shuttle namabhizinisi okuhamba nokuvakasha kulo lonke elase-Afrika. Ukubhukha, abasebenzi, ukuhlala, imoto, izitifiketi nemibhalo yezimali.",
+    "metaOgDescription": "Isikhungo esiphethe abaqhubi bokuvakasha nokwamukela izivakashi base-Afrika."
+  },
+  "Auth": {
+    "Login": {
+      "welcomeBack": "Welcome back",
+      "subtitle": "Sign in to your OpDesk account",
+      "email": "Email Address",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "signIn": "Sign In",
+      "signingIn": "Signing in…",
+      "noAccount": "Don't have an account?",
+      "startFree": "Start free"
+    },
+    "Signup": {
+      "createAccount": "Create your account",
+      "subtitle": "Start free — no credit card required",
+      "step1": "Your Details",
+      "step2": "Business Setup",
+      "step3": "Preferences",
+      "fullName": "Full Name *",
+      "email": "Email Address *",
+      "password": "Password *",
+      "passwordHint": "Min. 8 characters",
+      "continue": "Continue",
+      "back": "Back",
+      "businessName": "Business / Company Name *",
+      "operatorTypeQuestion": "What type of operator are you? *",
+      "createAccountButton": "Create Account",
+      "creatingAccount": "Creating account…",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "fillAllFields": "Please fill in all fields (password min 8 chars)",
+      "billingCurrency": "Primary Billing Currency *",
+      "billingCurrencyHint": "This is the currency you'll use on guest invoices (you can change it anytime).",
+      "zarNotice": "OpDesk always charges subscription fees in South African Rand (ZAR).",
+      "enterBusinessName": "Please enter your business name",
+      "alreadyHaveAccount": "Already have an account?"
+    },
+    "ForgotPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a reset link",
+      "checkInbox": "Check your inbox",
+      "sentTo": "We sent a password reset link to {email}. Check your spam folder if it doesn't arrive within a minute.",
+      "backToLogin": "Back to Sign In",
+      "email": "Email Address",
+      "sending": "Sending…",
+      "sendLink": "Send Reset Link"
+    },
+    "ResetPassword": {
+      "title": "Set new password",
+      "subtitle": "Choose a strong password for your account",
+      "updated": "Password updated!",
+      "redirecting": "Redirecting you to the dashboard…",
+      "newPassword": "New Password",
+      "passwordHint": "Min. 8 characters",
+      "confirmPassword": "Confirm Password",
+      "confirmHint": "Repeat your password",
+      "updating": "Updating…",
+      "updateButton": "Update Password",
+      "mismatch": "Passwords do not match",
+      "tooShort": "Password must be at least 8 characters"
+    }
+  },
+  "Pricing": {
+    "heading": "Simple, transparent pricing",
+    "subheading": "Start free. Upgrade only when you need more capacity. Built for safari, shuttle, fishing, yacht, trail and lodging operators alike.",
+    "monthly": "Monthly",
+    "annual": "Annual (save ~17%)",
+    "operatorsTab": "Tour & Transport Operators",
+    "lodgingTab": "Lodging & Hospitality",
+    "loadingPlans": "Loading plans…",
+    "noPlans": "Pricing is being updated — check back shortly.",
+    "free": "Free",
+    "perMonth": "/mo",
+    "billedAnnually": ", billed annually",
+    "startFree": "Start Free",
+    "choosePlan": "Choose Plan",
+    "contactUs": "Contact Us",
+    "compareHeading": "Compare plans in detail",
+    "featureColumn": "Feature",
+    "unlimited": "Unlimited",
+    "needCapacityHeading": "Need more capacity?",
+    "needCapacitySub": "Add extra slots and modules to any paid plan.",
+    "save": "Save",
+    "stillDecidingHeading": "Still deciding?",
+    "stillDecidingSub": "Start on the Free plan — no credit card, no time limit.",
+    "logisticsTab": "Logistics & Support Services",
+    "metaTitle": "Pricing — OpDesk",
+    "metaDescription": "Simple, flat-rate pricing for safari operators, lodges, hotels, shuttles, charters and logistics businesses across Africa. No booking commission, ever."
+  },
+  "About": {
+    "eyebrow": "Our story",
+    "heroTitle": "Built by people who understand Africa's operators",
+    "heroSubtitle": "OpDesk exists because running a safari lodge, a shuttle fleet, or a fishing charter shouldn't mean juggling five different spreadsheets and a WhatsApp group.",
+    "whyHeading": "Why we built this",
+    "why1": "Most operations software is built for hotels in Europe or tour companies in the US — it doesn't understand firearm registers, multi-currency invoicing across a dozen African currencies, or the difference between a game vehicle and a shuttle van.",
+    "why2": "OpDesk is built specifically for the operators who keep Africa's tourism industry running: safari lodges, guesthouses, shuttle and transfer companies, fishing and yacht charters, trail guiding operations, and the logistics and support businesses that keep them supplied. One dashboard for bookings, staff, fleet, lodging, certifications, and invoicing — in the currency and language you actually work in.",
+    "why3": "No credit card required to start. No lock-in. Just a tool that gets out of your way so you can run your business.",
+    "whoHeading": "Who we build for",
+    "whoSubheading": "If this sounds like your business, OpDesk was built for you",
+    "ctaHeading": "Ready to get started?",
+    "ctaSubheading": "Join operators across Africa who run their business with OpDesk.",
+    "startFree": "Start for Free",
+    "operatorTypes": {
+      "safari": "Safari & Game Lodges",
+      "shuttle": "Shuttle Companies",
+      "fishing": "Fishing Charters",
+      "yacht": "Yacht Charters",
+      "trail": "Trail Guides",
+      "lodge": "Hotels & Guesthouses",
+      "eastAfrica": "East Africa Tours",
+      "islandTransfer": "Island Transfers",
+      "logistics": "Logistics & Support Services"
+    },
+    "metaTitle": "About — OpDesk",
+    "metaDescription": "OpDesk is built for Africa's travel and hospitality operators — by a team that understands the continent's currencies, languages, and compliance needs."
+  },
+  "Features": {
+    "hero": {
+      "eyebrow": "Everything, in one place",
+      "title": "Every feature your operation actually needs",
+      "subtitle": "No spreadsheets. No WhatsApp bookings. No missed certifications. One dashboard for bookings, staff, fleet, lodging and finance."
+    },
+    "groups": {
+      "operations": "Operations",
+      "staffHr": "Staff & HR",
+      "guestProperty": "Guest & Property",
+      "finance": "Finance & Reporting",
+      "platform": "Platform",
+      "verticals": "Solutions"
+    },
+    "items": {
+      "bookings-calendar": {
+        "title": "Bookings & Calendar",
+        "desc": "Create and manage bookings across tours, transfers, charters and stays, with guest details, pricing, and status tracking in one place."
+      },
+      "fleet-management": {
+        "title": "Fleet Management",
+        "desc": "Track every vehicle and vessel — registration, capacity, and status — so you always know what's available and what's in for maintenance."
+      },
+      "trails-module": {
+        "title": "Trails Module",
+        "desc": "Manage trail routes, difficulty ratings, distance, duration, and guide assignments for adventure and hiking operators."
+      },
+      "shifts-scheduling": {
+        "title": "Shifts & Scheduling",
+        "desc": "Roster your guides, drivers and support staff against bookings so nothing gets double-booked."
+      },
+      "staff-roles": {
+        "title": "Staff & Roles",
+        "desc": "Keep a full staff directory with employment type, contact details, and role-based access across your team."
+      },
+      "certifications": {
+        "title": "Certifications",
+        "desc": "Track guide and staff certifications with issuing bodies and expiry dates, so nobody is out in the field unqualified."
+      },
+      "firearm-register": {
+        "title": "Firearm Register",
+        "desc": "Compliant firearm tracking for safari and fishing operators — serials, licences, and safe storage locations."
+      },
+      "cost-to-company": {
+        "title": "Cost to Company",
+        "desc": "Full payroll breakdowns — salary, allowances, deductions, and true cost to company — per staff member."
+      },
+      "lodging-rooms": {
+        "title": "Lodging & Rooms",
+        "desc": "Room inventory, nightly rates, and live occupancy status for lodges, guesthouses and hotels."
+      },
+      "housekeeping": {
+        "title": "Housekeeping",
+        "desc": "Assign and track room turnover tasks so every room is guest-ready on schedule."
+      },
+      "guest-directory": {
+        "title": "Guest Directory",
+        "desc": "A single view of every guest across all your stays and bookings."
+      },
+      "invoicing": {
+        "title": "Pro Forma & Tax Invoices",
+        "desc": "Generate professional invoices with automatic VAT calculation in your local currency."
+      },
+      "reports-analytics": {
+        "title": "Reports & Analytics",
+        "desc": "Occupancy, revenue, staff cost and booking trend reports whenever you need them."
+      },
+      "csv-export": {
+        "title": "CSV Data Export",
+        "desc": "Export any of your operational data for accounting, audits, or your own spreadsheets."
+      },
+      "automatic-backups": {
+        "title": "Automatic Backups",
+        "desc": "Your data is automatically backed up, so a lost laptop or a fat-fingered delete never costs you anything."
+      },
+      "multi-currency": {
+        "title": "Multi-Currency & Language",
+        "desc": "Run your business in ZAR, KES, USD, EUR and more, with support for multiple languages across the region."
+      },
+      "white-label-branding": {
+        "title": "White-Label Branding",
+        "desc": "Put your own logo and colours on guest-facing invoices and documents (available on higher tiers)."
+      },
+      "built-for-africa": {
+        "title": "Built for Africa's Operators",
+        "desc": "Designed around how safari lodges, shuttle companies, charters and trail operators actually work day to day."
+      }
+    },
+    "ctaHeading": "See it running your business",
+    "ctaSubheading": "Start free — no credit card required.",
+    "startFree": "Start for Free",
+    "metaTitle": "Features — OpDesk",
+    "metaDescription": "Bookings, staff & HR, fleet management, invoicing, reporting and logistics — every feature African tourism and hospitality operators need, in one platform."
+  },
+  "WebDesign": {
+    "eyebrow": "RollingRover Productions",
+    "heroTitle": "Get a custom quote for your website",
+    "heroSubtitle": "Tell us about your project — we'll come back with a proposal and a secure payment link tailored to what you need.",
+    "thanksTitle": "Thanks — we've got it",
+    "thanksBody": "We'll review your project and send a custom quote to {email} shortly.",
+    "yourName": "Your Name",
+    "email": "Email",
+    "phone": "Phone",
+    "businessName": "Business Name",
+    "projectType": "Project Type",
+    "pageCount": "Approx. Number of Pages",
+    "timeline": "Timeline",
+    "budgetRange": "Budget Range (optional)",
+    "projectTypes": {
+      "new_website": "New Website",
+      "redesign": "Redesign of Existing Site",
+      "ecommerce": "E-commerce Store",
+      "landing_page": "Landing Page",
+      "web_app": "Web Application"
+    },
+    "pageCounts": {
+      "1": "Just 1 page",
+      "1-5": "1–5 pages",
+      "6-10": "6–10 pages",
+      "10+": "10+ pages"
+    },
+    "timelines": {
+      "asap": "As soon as possible",
+      "1_month": "Within a month",
+      "2_3_months": "2–3 months",
+      "flexible": "Flexible"
+    },
+    "budgets": {
+      "none": "Prefer not to say",
+      "under_10k": "Under R10,000",
+      "10k_25k": "R10,000 – R25,000",
+      "25k_50k": "R25,000 – R50,000",
+      "50k_plus": "R50,000+"
+    },
+    "ecommerceCheckbox": "This project needs online payments / e-commerce",
+    "featuresHeading": "Features you're interested in",
+    "features": {
+      "online_booking": "Online booking system",
+      "blog": "Blog",
+      "multi_language": "Multi-language support",
+      "membership": "Membership / login area",
+      "animations": "Custom animations",
+      "seo": "SEO package",
+      "payments": "Payment integration",
+      "gallery": "Photo gallery"
+    },
+    "detailsLabel": "Tell us more about your project",
+    "errorMessage": "Something went wrong — please try again or email us directly.",
+    "sending": "Sending…",
+    "submit": "Request My Quote",
+    "metaTitle": "Web Design for Tourism Operators — RollingRover Productions",
+    "metaDescription": "Need a website too? RollingRover Productions builds websites for African tourism and hospitality operators, integrated with OpDesk."
+  },
+  "WebDesignThankYou": {
+    "title": "Payment received",
+    "body": "Thanks — we've got your payment and will be in touch shortly to kick off your project.",
+    "backHome": "Back to Home"
+  },
+  "FeatureDetail": {
+    "allFeatures": "All Features",
+    "whatYouGet": "What you get",
+    "whoItsFor": "Who it's for",
+    "seeInDashboard": "See {title} in your dashboard",
+    "viewPricing": "View Pricing"
+  }
+}

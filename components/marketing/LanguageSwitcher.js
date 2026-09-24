@@ -7,9 +7,11 @@ import { Globe } from 'lucide-react'
 const LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'af', label: 'Afrikaans' },
+  { code: 'zu', label: 'isiZulu' },
   { code: 'fr', label: 'Français' },
   { code: 'pt', label: 'Português' },
   { code: 'de', label: 'Deutsch' },
+  { code: 'it', label: 'Italiano' },
 ]
 
 export function LanguageSwitcher() {

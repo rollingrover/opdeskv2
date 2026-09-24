@@ -14,7 +14,8 @@ import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { Plus, FileText, FileDown, Send, CreditCard, X } from 'lucide-react'
 import { hasModuleAccess } from '@/lib/moduleAccess'
 
-const emptyForm = { guest_name: '', guest_email: '', guest_address: '', guest_vat_number: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '', line_items: [], booking_id: null }
+const emptyForm = { guest_name: '', guest_email: '', guest_address: '', guest_vat_number: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '', line_items: [], booking_id: null, currency: '' }
+const INVOICE_CURRENCIES = ['ZAR', 'USD', 'EUR']
 const emptyPayment = { amount: '', payment_date: new Date().toISOString().slice(0, 10), method: 'eft', reference: '' }
 
 function InvoicesContent() {
@@ -95,7 +96,7 @@ function InvoicesContent() {
 
       setForm(f => ({
         ...f, guest_name: booking.guest_name || '', guest_email: booking.guest_email || '', guest_phone: booking.guest_phone || '',
-        booking_id: booking.id, line_items: lines,
+        booking_id: booking.id, line_items: lines, currency: company.currency,
       }))
       setModalOpen(true)
     })()
@@ -115,7 +116,7 @@ function InvoicesContent() {
     const total = +(subtotal + vatAmount).toFixed(2)
     const invoiceNumber = 'INV-' + Date.now().toString(36).toUpperCase()
     const { error } = await supabase.from('invoices').insert([{
-      ...form, company_id: company.id, currency: company.currency,
+      ...form, company_id: company.id, currency: form.currency || company.currency,
       invoice_number: invoiceNumber, subtotal, vat_rate: vatRate,
       vat_amount: vatAmount, total, due_date: form.due_date || null,
       line_items: form.line_items.map(li => ({
@@ -208,13 +209,13 @@ function InvoicesContent() {
           <h1 className="page-title">{t('title')}</h1>
           <p className="page-subtitle">{rows.length} {rows.length === 1 ? t('invoiceSingular') : t('invoicePlural')}</p>
         </div>
-        <button className="btn btn-primary" onClick={() => { setForm(emptyForm); setModalOpen(true) }}><Plus size={16} /> {t('newInvoice')}</button>
+        <button className="btn btn-primary" onClick={() => { setForm({ ...emptyForm, currency: company.currency }); setModalOpen(true) }}><Plus size={16} /> {t('newInvoice')}</button>
       </div>
 
       <div className="card card-shadow">
         {rows.length === 0 ? (
           <EmptyState icon={<BrandIcon name="newInvoice" size={48} />} title={t('noInvoicesTitle')} description={t('noInvoicesDesc')}
-            action={<button className="btn btn-primary btn-sm" onClick={() => { setForm(emptyForm); setModalOpen(true) }}>{t('newInvoice')}</button>} />
+            action={<button className="btn btn-primary btn-sm" onClick={() => { setForm({ ...emptyForm, currency: company.currency }); setModalOpen(true) }}>{t('newInvoice')}</button>} />
         ) : (
           <div className="table-wrap">
             <table className="table">
@@ -245,7 +246,7 @@ function InvoicesContent() {
         )}
       </div>
 
-      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setForm(emptyForm) }} title={t('newInvoice')}
+      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setForm({ ...emptyForm, currency: company.currency }) }} title={t('newInvoice')}
         footer={<>
           <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{t('cancel')}</button>
           <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? t('saving') : t('createInvoice')}</button>
@@ -275,7 +276,7 @@ function InvoicesContent() {
                     <select onChange={e => { if (e.target.value) { addLineFromRateSheet(e.target.value); e.target.value = '' } }}
                       defaultValue="" style={{ fontSize: '0.75rem', padding: '0.3rem 0.5rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem' }}>
                       <option value="" disabled>{t('addFromRateSheet')}</option>
-                      {rateSheetItems.map(item => <option key={item.id} value={item.id}>{item.name} — {company.currency}{item.unit_price}</option>)}
+                      {rateSheetItems.map(item => <option key={item.id} value={item.id}>{item.name} — {form.currency || company.currency}{item.unit_price}</option>)}
                     </select>
                   )}
                   <button type="button" className="btn btn-outline btn-sm" onClick={addCustomLine}>+ {t('addCustomLine')}</button>
@@ -291,12 +292,12 @@ function InvoicesContent() {
                         style={{ padding: '0.35rem 0.5rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
                       <input type="number" min="0" step="0.01" value={li.unit_price} onChange={e => updateLine(i, 'unit_price', e.target.value)}
                         style={{ padding: '0.35rem 0.5rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
-                      <span style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{company.currency} {((Number(li.quantity) || 0) * (Number(li.unit_price) || 0)).toLocaleString()}</span>
+                      <span style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{form.currency || company.currency} {((Number(li.quantity) || 0) * (Number(li.unit_price) || 0)).toLocaleString()}</span>
                       <button type="button" onClick={() => removeLine(i)} style={{ background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer' }}><X size={15} /></button>
                     </div>
                   ))}
                   <p style={{ textAlign: 'right', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--navy)', margin: '0.25rem 0 0' }}>
-                    {t('lineItemsSubtotal')}: {company.currency} {lineItemsTotal.toLocaleString()}
+                    {t('lineItemsSubtotal')}: {form.currency || company.currency} {lineItemsTotal.toLocaleString()}
                   </p>
                 </div>
               )}
@@ -304,11 +305,14 @@ function InvoicesContent() {
           )}
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
-            <Input label={`${t('subtotal')} (${company.currency})`} type="number" step="0.01" disabled={form.line_items.length > 0}
+            <Input label={`${t('subtotal')} (${form.currency || company.currency})`} type="number" step="0.01" disabled={form.line_items.length > 0}
               value={form.line_items.length > 0 ? lineItemsTotal : form.subtotal}
               onChange={e => setForm({ ...form, subtotal: e.target.value })}
               hint={form.line_items.length > 0 ? t('subtotalFromLines') : undefined} />
             <Input label={t('vatRate')} type="number" step="0.1" value={form.vat_rate} onChange={e => setForm({ ...form, vat_rate: e.target.value })} />
+            <Select label={t('currency')} value={form.currency || company.currency} onChange={e => setForm({ ...form, currency: e.target.value })} hint={form.currency && form.currency !== company.currency ? t('currencyHint') : undefined}>
+              {INVOICE_CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </Select>
             <Input label={t('dueDate')} type="date" value={form.due_date} onChange={e => setForm({ ...form, due_date: e.target.value })} />
           </div>
         </form>

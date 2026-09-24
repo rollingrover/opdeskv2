@@ -791,7 +791,9 @@
     "addCustomLine": "Eigene Position Hinzufügen",
     "lineDescription": "Beschreibung",
     "lineItemsSubtotal": "Zwischensumme der Positionen",
-    "subtotalFromLines": "Aus obigen Positionen berechnet"
+    "subtotalFromLines": "Aus obigen Positionen berechnet",
+    "currency": "Währung",
+    "currencyHint": "Preistabellen-Preise werden nicht automatisch umgerechnet — Beträge direkt in dieser Währung eingeben."
   },
   "Quotations": {
     "title": "Angebote",

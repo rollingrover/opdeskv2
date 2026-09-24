@@ -791,7 +791,9 @@
     "addCustomLine": "Voeg Pasgemaakte Reël By",
     "lineDescription": "Beskrywing",
     "lineItemsSubtotal": "Subtotaal van reëls",
-    "subtotalFromLines": "Bereken vanaf reëls hierbo"
+    "subtotalFromLines": "Bereken vanaf reëls hierbo",
+    "currency": "Geldeenheid",
+    "currencyHint": "Tarieflys-pryse skakel nie outomaties om nie — voer bedrae direk in hierdie geldeenheid in."
   },
   "Quotations": {
     "title": "Kwotasies",

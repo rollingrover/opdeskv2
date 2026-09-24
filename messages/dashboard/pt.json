@@ -791,7 +791,9 @@
     "addCustomLine": "Adicionar Linha Personalizada",
     "lineDescription": "Descrição",
     "lineItemsSubtotal": "Subtotal das linhas",
-    "subtotalFromLines": "Calculado a partir das linhas acima"
+    "subtotalFromLines": "Calculado a partir das linhas acima",
+    "currency": "Moeda",
+    "currencyHint": "Os preços da tabela de tarifas não se convertem automaticamente — introduza os valores diretamente nesta moeda."
   },
   "Quotations": {
     "title": "Orçamentos",

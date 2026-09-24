@@ -791,7 +791,9 @@
     "addCustomLine": "Ajouter une Ligne Personnalisée",
     "lineDescription": "Description",
     "lineItemsSubtotal": "Sous-total des lignes",
-    "subtotalFromLines": "Calculé à partir des lignes ci-dessus"
+    "subtotalFromLines": "Calculé à partir des lignes ci-dessus",
+    "currency": "Devise",
+    "currencyHint": "Les prix de la grille tarifaire ne se convertissent pas automatiquement — saisissez les montants directement dans cette devise."
   },
   "Quotations": {
     "title": "Devis",

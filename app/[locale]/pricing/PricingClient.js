@@ -12,6 +12,14 @@ import { MODULE_LABELS, GATED_MODULES, CURRENCIES } from '@/lib/constants'
 // Packages are now one universal pooled-tier ladder (no more separate
 // Tours/Lodging/Logistics package sets), so there's one fixed set of
 // comparison rows rather than a per-vertical branch.
+// Approximate, manually-updated reference rate — NOT live. Shown to
+// international visitors purely as a rough "what's that in USD" gut-check
+// alongside the real ZAR price, never as the actual amount charged
+// (billing always happens in ZAR via PayFast). Update this figure
+// periodically; it drifts, and "approx." labeling is what makes that okay.
+const ZAR_TO_USD_RATE = 0.059 // ≈ R17.00 = $1 — approximate as of late Sept 2026
+const APPROX_RATE_NOTE_DATE = 'September 2026'
+
 function getComparisonRows() {
   return [
     { key: 'capacity', label: 'Vehicle + Vessel + Room Capacity', type: 'limit' },
@@ -112,7 +120,7 @@ export default function PricingClient() {
 
         {detectedCurrencyInfo && (
           <p style={{ marginTop: '1.25rem', fontSize: '0.8125rem', color: 'rgba(255,255,255,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.375rem' }}>
-            <Globe size={13} /> Prices below are shown in ZAR — your region's currency looks like {detectedCurrencyInfo.name} ({detectedCurrencyInfo.code}), for reference only.
+            <Globe size={13} /> Prices are billed in ZAR — approximate USD shown below for reference (rate as of {APPROX_RATE_NOTE_DATE}, not live).
           </p>
         )}
       </section>
@@ -141,6 +149,11 @@ export default function PricingClient() {
                       {p.monthly_price === 0 ? t('free') : `${p.currency || currency} ${Number(annual ? Math.round(p.annual_price / 12) : p.monthly_price).toLocaleString()}`}
                     </span>
                     {p.monthly_price > 0 && <span style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{t('perMonth')}{annual ? t('billedAnnually') : ''}</span>}
+                    {detectedCurrencyInfo && p.monthly_price > 0 && (
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '0.125rem' }}>
+                        ≈ ${Math.round((annual ? Math.round(p.annual_price / 12) : p.monthly_price) * ZAR_TO_USD_RATE).toLocaleString()} USD
+                      </div>
+                    )}
                   </div>
                   <ul style={{ listStyle: 'none', margin: '0 0 1.5rem', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     {highlights.map(h => (
