@@ -199,7 +199,15 @@
     "travelersHint": "Optional — list additional travelers on a group booking beyond the lead guest above.",
     "travelerName": "Full name",
     "travelerEmail": "Email",
-    "travelerPhone": "Phone"
+    "travelerPhone": "Phone",
+    "addResidencyBreakdown": "Add residency breakdown (for park/entry fees)",
+    "residencyBreakdown": "Guest Residency Breakdown",
+    "removeBreakdown": "Remove",
+    "residencyLocal": "Local (SA)",
+    "residencySadc": "SADC",
+    "residencyInternational": "International",
+    "residencyMismatch": "Breakdown doesn't add up to {guestCount} guests yet.",
+    "generateInvoice": "Generate Invoice"
   },
   "Calendar": {
     "title": "Calendar",
@@ -1286,7 +1294,9 @@
     "unitPrice": "Unit Price",
     "commissionEnable": "This rate carries a commission",
     "commissionPct": "Commission %",
-    "commissionHint": "Set to 0 if this sale carries no commission but you still want to track it."
+    "commissionHint": "Set to 0 if this sale carries no commission but you still want to track it.",
+    "isParkFee": "This is a park/entry fee",
+    "isParkFeeHint": "Suggested automatically when generating an invoice from a booking with a matching residency count."
   },
   "CommissionReport": {
     "title": "Commission Report",

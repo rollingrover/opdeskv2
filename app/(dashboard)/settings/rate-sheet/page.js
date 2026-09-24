@@ -15,7 +15,7 @@ import Link from 'next/link'
 
 const emptyForm = {
   name: '', booking_type_id: '', residency: 'international', guest_category: 'adult', trade_tier: 'rack',
-  unit_price: '', commission_enabled: false, commission_pct: 10,
+  unit_price: '', commission_enabled: false, commission_pct: 10, is_park_fee: false,
 }
 
 export default function RateSheetPage() {
@@ -77,6 +77,7 @@ export default function RateSheetPage() {
     setForm({
       name: item.name, booking_type_id: item.booking_type_id || '', residency: item.residency, guest_category: item.guest_category,
       trade_tier: item.trade_tier, unit_price: item.unit_price, commission_enabled: item.commission_enabled, commission_pct: item.commission_pct,
+      is_park_fee: item.is_park_fee || false,
     })
     setModalOpen(true)
   }
@@ -90,6 +91,7 @@ export default function RateSheetPage() {
       unit_price: Number(form.unit_price) || 0,
       commission_enabled: canTradeTier ? form.commission_enabled : false,
       commission_pct: Number(form.commission_pct) || 0,
+      is_park_fee: form.is_park_fee,
       updated_at: new Date().toISOString(),
     }
     const { error } = editingId
@@ -203,6 +205,12 @@ export default function RateSheetPage() {
             )}
           </div>
           <Input label={`${t('unitPrice')} (${company.currency})`} type="number" min="0" step="0.01" value={form.unit_price} onChange={e => setForm({ ...form, unit_price: e.target.value })} />
+
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', margin: '0.5rem 0 0.75rem' }}>
+            <input type="checkbox" checked={form.is_park_fee} onChange={e => setForm({ ...form, is_park_fee: e.target.checked })} />
+            <span style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--navy)' }}>{t('isParkFee')}</span>
+          </label>
+          {form.is_park_fee && <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginTop: '-0.5rem', marginBottom: '0.75rem' }}>{t('isParkFeeHint')}</p>}
 
           {canTradeTier && (
             <div style={{ marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px solid var(--gray-100)' }}>

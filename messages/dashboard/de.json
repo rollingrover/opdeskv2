@@ -199,7 +199,15 @@
     "travelersHint": "Optional — weitere Reisende bei einer Gruppenbuchung zusätzlich zum Hauptgast oben.",
     "travelerName": "Vollständiger Name",
     "travelerEmail": "E-Mail",
-    "travelerPhone": "Telefon"
+    "travelerPhone": "Telefon",
+    "addResidencyBreakdown": "Wohnsitz-Aufschlüsselung hinzufügen (für Park-/Eintrittsgebühren)",
+    "residencyBreakdown": "Wohnsitz-Aufschlüsselung der Gäste",
+    "removeBreakdown": "Entfernen",
+    "residencyLocal": "Einheimisch (SA)",
+    "residencySadc": "SADC",
+    "residencyInternational": "International",
+    "residencyMismatch": "Aufschlüsselung ergibt noch nicht {guestCount} Gäste.",
+    "generateInvoice": "Rechnung Erstellen"
   },
   "Calendar": {
     "title": "Kalender",
@@ -1286,7 +1294,9 @@
     "unitPrice": "Einzelpreis",
     "commissionEnable": "Dieser Tarif enthält eine Provision",
     "commissionPct": "Provision %",
-    "commissionHint": "Auf 0 setzen, wenn dieser Verkauf keine Provision enthält, Sie ihn aber dennoch verfolgen möchten."
+    "commissionHint": "Auf 0 setzen, wenn dieser Verkauf keine Provision enthält, Sie ihn aber dennoch verfolgen möchten.",
+    "isParkFee": "Dies ist eine Park-/Eintrittsgebühr",
+    "isParkFeeHint": "Wird automatisch vorgeschlagen, wenn eine Rechnung aus einer Buchung mit passender Wohnsitz-Anzahl erstellt wird."
   },
   "CommissionReport": {
     "title": "Provisionsbericht",

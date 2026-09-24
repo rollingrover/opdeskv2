@@ -24,6 +24,11 @@ const emptyForm = {
   unit_price: 0, amount_paid: 0, notes: '',
   guide_id: '', driver_id: '', vehicle_id: '', vessel_id: '', room_id: '',
   travelers: [], // optional additional travelers beyond the lead guest — [{full_name, email, phone}]
+  // Optional — all-zero means "not broken down", which is the default and
+  // changes nothing. Only used later when generating an invoice, to
+  // suggest park/entry fee line items (see rate_sheet_items.is_park_fee).
+  guest_count_local: 0, guest_count_sadc: 0, guest_count_international: 0,
+  showResidency: false,
 }
 
 function BookingsContent() {
@@ -115,6 +120,9 @@ function BookingsContent() {
       guide_id: booking.guide_id || '', driver_id: booking.driver_id || '', vehicle_id: booking.vehicle_id || '',
       vessel_id: booking.vessel_id || '', room_id: booking.room_id || '',
       travelers: travs || [],
+      guest_count_local: booking.guest_count_local || 0, guest_count_sadc: booking.guest_count_sadc || 0,
+      guest_count_international: booking.guest_count_international || 0,
+      showResidency: !!(booking.guest_count_local || booking.guest_count_sadc || booking.guest_count_international),
     })
     setModalOpen(true)
   }
@@ -169,7 +177,7 @@ function BookingsContent() {
     const guestCount = Number(form.guest_count) || 1
     const unitPrice = Number(form.unit_price) || 0
     const guestId = await findOrCreateGuest(form.guest_name, form.guest_email, form.guest_phone)
-    const { travelers, ...formRest } = form
+    const { travelers, showResidency, ...formRest } = form
     const payload = {
       ...formRest,
       guest_id: guestId,
@@ -183,6 +191,9 @@ function BookingsContent() {
       vehicle_id: form.vehicle_id || null,
       vessel_id: form.vessel_id || null,
       room_id: form.room_id || null,
+      guest_count_local: Number(form.guest_count_local) || 0,
+      guest_count_sadc: Number(form.guest_count_sadc) || 0,
+      guest_count_international: Number(form.guest_count_international) || 0,
     }
     let bookingId = editingId
     let error
@@ -258,7 +269,7 @@ function BookingsContent() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>{t('colRef')}</th><th>{t('colGuest')}</th><th>{t('colType')}</th><th>{t('colDates')}</th><th>{t('colPax')}</th><th>{t('colResources')}</th><th>{t('colTotal')}</th><th>{t('colStatus')}</th>
+                  <th>{t('colRef')}</th><th>{t('colGuest')}</th><th>{t('colType')}</th><th>{t('colDates')}</th><th>{t('colPax')}</th><th>{t('colResources')}</th><th>{t('colTotal')}</th><th>{t('colStatus')}</th><th></th>
                 </tr>
               </thead>
               <tbody>
@@ -292,6 +303,13 @@ function BookingsContent() {
                     <td style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', justifyContent: 'flex-end' }}>
                       <StatusBadge status={b.status} />
                       {!editable && <Lock size={12} color="var(--gray-400)" />}
+                    </td>
+                    <td style={{ textAlign: 'right' }} onClick={e => e.stopPropagation()}>
+                      {editable && (
+                        <Link href={`/invoices?fromBooking=${b.id}`} className="btn btn-outline btn-sm">
+                          {t('generateInvoice')}
+                        </Link>
+                      )}
                     </td>
                   </tr>
                   )
@@ -336,6 +354,29 @@ function BookingsContent() {
             <Input label={t('unitSellPrice')} type="number" step="0.01" value={form.unit_price} onChange={e => setForm({ ...form, unit_price: e.target.value })} />
             <Input label={t('amountPaid')} type="number" step="0.01" value={form.amount_paid} onChange={e => setForm({ ...form, amount_paid: e.target.value })} />
           </div>
+
+          {form.showResidency ? (
+            <div style={{ marginBottom: '0.875rem', padding: '0.75rem', background: 'var(--cream)', borderRadius: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)' }}>{t('residencyBreakdown')}</label>
+                <button type="button" onClick={() => setForm({ ...form, showResidency: false, guest_count_local: 0, guest_count_sadc: 0, guest_count_international: 0 })}
+                  style={{ background: 'none', border: 'none', color: 'var(--gray-400)', fontSize: '0.75rem', cursor: 'pointer' }}>{t('removeBreakdown')}</button>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 0.75rem' }}>
+                <Input label={t('residencyLocal')} type="number" min="0" value={form.guest_count_local} onChange={e => setForm({ ...form, guest_count_local: e.target.value })} />
+                <Input label={t('residencySadc')} type="number" min="0" value={form.guest_count_sadc} onChange={e => setForm({ ...form, guest_count_sadc: e.target.value })} />
+                <Input label={t('residencyInternational')} type="number" min="0" value={form.guest_count_international} onChange={e => setForm({ ...form, guest_count_international: e.target.value })} />
+              </div>
+              {(Number(form.guest_count_local) || 0) + (Number(form.guest_count_sadc) || 0) + (Number(form.guest_count_international) || 0) !== (Number(form.guest_count) || 0) && (
+                <p style={{ fontSize: '0.75rem', color: 'var(--gold)', margin: '0.5rem 0 0' }}>{t('residencyMismatch', { guestCount: Number(form.guest_count) || 0 })}</p>
+              )}
+            </div>
+          ) : (
+            <button type="button" onClick={() => setForm({ ...form, showResidency: true })}
+              style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', marginBottom: '0.875rem', padding: 0 }}>
+              + {t('addResidencyBreakdown')}
+            </button>
+          )}
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--cream)', borderRadius: '0.5rem', padding: '0.625rem 0.875rem', margin: '0.25rem 0 0.75rem' }}>
             <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-500)' }}>

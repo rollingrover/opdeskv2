@@ -199,7 +199,15 @@
     "travelersHint": "Opsioneel — lys addisionele reisigers op 'n groepbespreking benewens die hoofgas hierbo.",
     "travelerName": "Volle naam",
     "travelerEmail": "E-pos",
-    "travelerPhone": "Foon"
+    "travelerPhone": "Foon",
+    "addResidencyBreakdown": "Voeg verblyfstatus-opsplitsing by (vir park-/toegangsfooie)",
+    "residencyBreakdown": "Gaste Verblyfstatus-opsplitsing",
+    "removeBreakdown": "Verwyder",
+    "residencyLocal": "Plaaslik (SA)",
+    "residencySadc": "SADC",
+    "residencyInternational": "Internasionaal",
+    "residencyMismatch": "Opsplitsing tel nog nie op tot {guestCount} gaste nie.",
+    "generateInvoice": "Genereer Faktuur"
   },
   "Calendar": {
     "title": "Kalender",
@@ -1286,7 +1294,9 @@
     "unitPrice": "Eenheidsprys",
     "commissionEnable": "Hierdie tarief dra kommissie",
     "commissionPct": "Kommissie %",
-    "commissionHint": "Stel op 0 as hierdie verkoop geen kommissie dra nie maar jy wil dit steeds opspoor."
+    "commissionHint": "Stel op 0 as hierdie verkoop geen kommissie dra nie maar jy wil dit steeds opspoor.",
+    "isParkFee": "Dit is 'n park-/toegangsfooi",
+    "isParkFeeHint": "Word outomaties voorgestel wanneer 'n faktuur van 'n bespreking met 'n passende verblyfstatus-telling gegenereer word."
   },
   "CommissionReport": {
     "title": "Kommissieverslag",

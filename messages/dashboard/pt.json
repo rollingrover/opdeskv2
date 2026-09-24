@@ -199,7 +199,15 @@
     "travelersHint": "Opcional — liste viajantes adicionais numa reserva de grupo, além do hóspede principal acima.",
     "travelerName": "Nome completo",
     "travelerEmail": "Email",
-    "travelerPhone": "Telefone"
+    "travelerPhone": "Telefone",
+    "addResidencyBreakdown": "Adicionar detalhe de residência (para taxas de parque/entrada)",
+    "residencyBreakdown": "Detalhe de Residência dos Hóspedes",
+    "removeBreakdown": "Remover",
+    "residencyLocal": "Local (SA)",
+    "residencySadc": "SADC",
+    "residencyInternational": "Internacional",
+    "residencyMismatch": "O detalhe ainda não soma {guestCount} hóspedes.",
+    "generateInvoice": "Gerar Fatura"
   },
   "Calendar": {
     "title": "Calendário",
@@ -1286,7 +1294,9 @@
     "unitPrice": "Preço Unitário",
     "commissionEnable": "Esta tarifa tem comissão",
     "commissionPct": "Comissão %",
-    "commissionHint": "Defina como 0 se esta venda não tiver comissão mas quiser continuar a monitorizá-la."
+    "commissionHint": "Defina como 0 se esta venda não tiver comissão mas quiser continuar a monitorizá-la.",
+    "isParkFee": "Esta é uma taxa de parque/entrada",
+    "isParkFeeHint": "Sugerido automaticamente ao gerar uma fatura a partir de uma reserva com uma contagem de residência correspondente."
   },
   "CommissionReport": {
     "title": "Relatório de Comissão",

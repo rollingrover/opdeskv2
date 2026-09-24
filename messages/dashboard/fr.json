@@ -199,7 +199,15 @@
     "travelersHint": "Facultatif — listez les voyageurs supplémentaires sur une réservation de groupe, en plus du client principal ci-dessus.",
     "travelerName": "Nom complet",
     "travelerEmail": "E-mail",
-    "travelerPhone": "Téléphone"
+    "travelerPhone": "Téléphone",
+    "addResidencyBreakdown": "Ajouter une répartition par résidence (pour frais de parc/entrée)",
+    "residencyBreakdown": "Répartition des Clients par Résidence",
+    "removeBreakdown": "Retirer",
+    "residencyLocal": "Local (AS)",
+    "residencySadc": "SADC",
+    "residencyInternational": "International",
+    "residencyMismatch": "La répartition ne totalise pas encore {guestCount} clients.",
+    "generateInvoice": "Générer une Facture"
   },
   "Calendar": {
     "title": "Calendrier",
@@ -1286,7 +1294,9 @@
     "unitPrice": "Prix Unitaire",
     "commissionEnable": "Ce tarif comporte une commission",
     "commissionPct": "Commission %",
-    "commissionHint": "Réglez sur 0 si cette vente ne comporte pas de commission mais que vous souhaitez quand même la suivre."
+    "commissionHint": "Réglez sur 0 si cette vente ne comporte pas de commission mais que vous souhaitez quand même la suivre.",
+    "isParkFee": "Ceci est un frais de parc/entrée",
+    "isParkFeeHint": "Suggéré automatiquement lors de la génération d'une facture à partir d'une réservation avec un nombre de résidence correspondant."
   },
   "CommissionReport": {
     "title": "Rapport de Commission",

@@ -1,6 +1,7 @@
 'use client'
 import { BrandIcon } from '@/components/ui/BrandIcon'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
@@ -13,14 +14,15 @@ import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { Plus, FileText, FileDown, Send, CreditCard, X } from 'lucide-react'
 import { hasModuleAccess } from '@/lib/moduleAccess'
 
-const emptyForm = { guest_name: '', guest_email: '', guest_address: '', guest_vat_number: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '', line_items: [] }
+const emptyForm = { guest_name: '', guest_email: '', guest_address: '', guest_vat_number: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '', line_items: [], booking_id: null }
 const emptyPayment = { amount: '', payment_date: new Date().toISOString().slice(0, 10), method: 'eft', reference: '' }
 
-export default function InvoicesPage() {
+function InvoicesContent() {
   const t = useTranslations('Invoices')
   const tCommon = useTranslations('Common')
   const tStatus = useTranslations('StatusBadge')
   const { company, profile, needsCompany } = useAuth()
+  const searchParams = useSearchParams()
   const supabase = createClient()
   const toast = useToast()
   const [rows, setRows] = useState([])
@@ -52,6 +54,53 @@ export default function InvoicesPage() {
     setLoading(false)
   }
   useEffect(() => { load() }, [company])
+
+  // Deep-linked from a booking's "Generate Invoice" button. The booking's
+  // own service (its flat duration-based price) becomes one line item at
+  // the same price for every guest — that never varies by residency. Any
+  // park/entry fee rate sheet items ARE residency-priced, so if the
+  // booking recorded a residency breakdown, matching fee lines are
+  // suggested (one per non-zero residency bucket) — fully editable/
+  // removable before saving, never forced onto the invoice.
+  useEffect(() => {
+    const bookingId = searchParams.get('fromBooking')
+    if (!bookingId || !company) return
+    let cancelled = false
+    ;(async () => {
+      const { data: booking } = await supabase.from('bookings').select('*').eq('id', bookingId).eq('company_id', company.id).maybeSingle()
+      if (!booking || cancelled) return
+      const [{ data: bt }, { data: parkFees }] = await Promise.all([
+        supabase.from('booking_types').select('name').eq('company_id', company.id).eq('slug', booking.booking_type).maybeSingle(),
+        supabase.from('rate_sheet_items').select('*').eq('company_id', company.id).eq('is_park_fee', true).eq('active', true),
+      ])
+      if (cancelled) return
+
+      const lines = [{
+        description: `${bt?.name || booking.booking_type} — ${booking.guest_count} guest(s)`,
+        quantity: booking.guest_count, unit_price: booking.unit_price || 0,
+      }]
+      const residencyBuckets = [
+        ['local', booking.guest_count_local], ['sadc', booking.guest_count_sadc], ['international', booking.guest_count_international],
+      ]
+      for (const [residency, count] of residencyBuckets) {
+        if (!count) continue
+        const fee = (parkFees || []).find(f => f.residency === residency)
+        if (fee) {
+          lines.push({
+            description: `${fee.name} (${residency})`, quantity: count, unit_price: fee.unit_price,
+            residency, rate_sheet_item_id: fee.id,
+          })
+        }
+      }
+
+      setForm(f => ({
+        ...f, guest_name: booking.guest_name || '', guest_email: booking.guest_email || '', guest_phone: booking.guest_phone || '',
+        booking_id: booking.id, line_items: lines,
+      }))
+      setModalOpen(true)
+    })()
+    return () => { cancelled = true }
+  }, [searchParams, company])
 
   const canRateSheet = hasModuleAccess('rate_sheet', { profile, company, companyAddons: addons })
   const lineItemsTotal = form.line_items.reduce((sum, li) => sum + (Number(li.quantity) || 0) * (Number(li.unit_price) || 0), 0)
@@ -159,13 +208,13 @@ export default function InvoicesPage() {
           <h1 className="page-title">{t('title')}</h1>
           <p className="page-subtitle">{rows.length} {rows.length === 1 ? t('invoiceSingular') : t('invoicePlural')}</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setModalOpen(true)}><Plus size={16} /> {t('newInvoice')}</button>
+        <button className="btn btn-primary" onClick={() => { setForm(emptyForm); setModalOpen(true) }}><Plus size={16} /> {t('newInvoice')}</button>
       </div>
 
       <div className="card card-shadow">
         {rows.length === 0 ? (
           <EmptyState icon={<BrandIcon name="newInvoice" size={48} />} title={t('noInvoicesTitle')} description={t('noInvoicesDesc')}
-            action={<button className="btn btn-primary btn-sm" onClick={() => setModalOpen(true)}>{t('newInvoice')}</button>} />
+            action={<button className="btn btn-primary btn-sm" onClick={() => { setForm(emptyForm); setModalOpen(true) }}>{t('newInvoice')}</button>} />
         ) : (
           <div className="table-wrap">
             <table className="table">
@@ -196,7 +245,7 @@ export default function InvoicesPage() {
         )}
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('newInvoice')}
+      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setForm(emptyForm) }} title={t('newInvoice')}
         footer={<>
           <button className="btn btn-outline" onClick={() => setModalOpen(false)}>{t('cancel')}</button>
           <button className="btn btn-primary" disabled={saving} onClick={handleSave}>{saving ? t('saving') : t('createInvoice')}</button>
@@ -313,6 +362,14 @@ export default function InvoicesPage() {
         )}
       </Modal>
     </div>
+  )
+}
+
+export default function InvoicesPage() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <InvoicesContent />
+    </Suspense>
   )
 }
 
