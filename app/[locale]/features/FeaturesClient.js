@@ -10,9 +10,11 @@ const FEATURE_GROUPS = [
     groupKey: 'operations',
     items: [
       { slug: 'bookings-calendar', icon: 'bookingCalendar' },
+      { slug: 'booking-widget', icon: 'bookingCalendar' },
       { slug: 'fleet-management', icon: 'fleet' },
       { slug: 'trails-module', icon: 'trailsModule' },
       { slug: 'shifts-scheduling', icon: 'schedules' },
+      { slug: 'delivery-management', icon: 'delivery' },
     ],
   },
   {
@@ -22,6 +24,7 @@ const FEATURE_GROUPS = [
       { slug: 'certifications', icon: 'guides' },
       { slug: 'firearm-register', icon: 'firearmRegister' },
       { slug: 'cost-to-company', icon: 'driversShuttles' },
+      { slug: 'hr-package', icon: 'teamRoles' },
     ],
   },
   {
@@ -36,6 +39,7 @@ const FEATURE_GROUPS = [
     groupKey: 'finance',
     items: [
       { slug: 'invoicing', icon: 'proformaInvoice' },
+      { slug: 'rate-sheet-gate-fees', icon: 'proformaInvoice' },
       { slug: 'reports-analytics', icon: 'dashboardReports' },
       { slug: 'csv-export', icon: 'csvExport' },
       { slug: 'automatic-backups', icon: 'autoBackup' },

@@ -74,6 +74,10 @@
       "logistics": {
         "title": "Logistics & Cost Calculator",
         "desc": "Client accounts, price lists with full history, and a real cost/profit calculator for delivery, maintenance, and errand runs."
+      },
+      "bookingWidget": {
+        "title": "Direct Booking Widget",
+        "desc": "Add a live booking form to your own website — requests land straight in your dashboard, ready to confirm."
       }
     },
     "metaTitle": "OpDesk — Gestisci. Esplora. Cresci.",
@@ -302,6 +306,18 @@
       "built-for-africa": {
         "title": "Built for Africa's Operators",
         "desc": "Designed around how safari lodges, shuttle companies, charters and trail operators actually work day to day."
+      },
+      "booking-widget": {
+        "title": "Direct Booking Widget",
+        "desc": "Embed a live booking form on your own website — guests request directly, no email back-and-forth."
+      },
+      "rate-sheet-gate-fees": {
+        "title": "Rate Sheet & Gate Fees",
+        "desc": "Reusable rate sheet by residency, plus automatic park entry fee calculation by nationality."
+      },
+      "hr-package": {
+        "title": "HR Package for Bureaus",
+        "desc": "One login, every client’s HR kept separate — built for HR bureaus and consultancies."
       }
     },
     "ctaHeading": "See it running your business",

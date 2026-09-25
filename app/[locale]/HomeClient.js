@@ -20,6 +20,7 @@ const OPERATOR_TYPE_ICONS = [
 
 const FEATURE_ICONS = [
   { icon: 'bookingCalendar', key: 'bookings', slug: 'bookings-calendar' },
+  { icon: 'bookingCalendar', key: 'bookingWidget', slug: 'booking-widget' },
   { icon: 'teamRoles', key: 'staff', slug: 'staff-roles' },
   { icon: 'gameLodge', key: 'lodging', slug: 'lodging-rooms' },
   { icon: 'fleet', key: 'fleet', slug: 'fleet-management' },

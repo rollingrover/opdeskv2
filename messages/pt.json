@@ -74,6 +74,10 @@
       "logistics": {
         "title": "Logística & Calculadora de Custos",
         "desc": "Contas de clientes, listas de preços com histórico completo, e uma verdadeira calculadora de custo/lucro para entregas, manutenção e recados."
+      },
+      "bookingWidget": {
+        "title": "Widget de Reserva Direta",
+        "desc": "Adicione um formulário de reserva ao vivo ao seu próprio website — os pedidos chegam diretamente ao seu painel, prontos a confirmar."
       }
     },
     "metaTitle": "OpDesk — Operar. Explorar. Crescer.",
@@ -302,6 +306,18 @@
       "built-for-africa": {
         "title": "Criado para Operadores Africanos",
         "desc": "Desenhado em torno de como lodges de safári, empresas de transfer, charters e operadores de trilhas realmente trabalham no dia a dia."
+      },
+      "booking-widget": {
+        "title": "Widget de Reserva Direta",
+        "desc": "Incorpore um formulário de reserva ao vivo no seu próprio website — os hóspedes pedem diretamente, sem trocas de email."
+      },
+      "rate-sheet-gate-fees": {
+        "title": "Tabela de Tarifas e Taxas de Entrada",
+        "desc": "Tabela de tarifas reutilizável por residência, mais cálculo automático das taxas de entrada do parque por nacionalidade."
+      },
+      "hr-package": {
+        "title": "Pacote de RH para Agências",
+        "desc": "Um único login, os RH de cada cliente mantidos separados — criado para agências e consultorias de RH."
       }
     },
     "ctaHeading": "Veja-o a gerir o seu negócio",

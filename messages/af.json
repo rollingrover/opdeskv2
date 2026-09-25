@@ -74,6 +74,10 @@
       "logistics": {
         "title": "Logistiek & Kosteberekenaar",
         "desc": "Kliëntrekeninge, prysslyste met volledige geskiedenis, en 'n regte koste-/winsberekenaar vir aflewering, instandhouding en dwaaltogte."
+      },
+      "bookingWidget": {
+        "title": "Direkte Besprekingwidget",
+        "desc": "Voeg 'n lewende besprekingvorm by jou eie webwerf — versoeke beland reguit in jou dashboard, gereed om te bevestig."
       }
     },
     "metaTitle": "OpDesk — Bedryf. Verken. Groei.",
@@ -302,6 +306,18 @@
       "built-for-africa": {
         "title": "Gebou vir Afrika se Operateurs",
         "desc": "Ontwerp rondom hoe wildsafari-lodges, pendelmaatskappye, vervoerdienste en wandeloperateurs werklik daagliks werk."
+      },
+      "booking-widget": {
+        "title": "Direkte Besprekingwidget",
+        "desc": "Bed 'n lewende besprekingvorm op jou eie webwerf in — gaste versoek direk, geen e-pos heen-en-weer nie."
+      },
+      "rate-sheet-gate-fees": {
+        "title": "Tarieflys & Hekfooie",
+        "desc": "Herbruikbare tarieflys volgens verblyfstatus, plus outomatiese park-toegangsfooi-berekening volgens nasionaliteit."
+      },
+      "hr-package": {
+        "title": "HR-pakket vir Agentskappe",
+        "desc": "Een aanmelding, elke kliënt se HR apart gehou — gebou vir HR-agentskappe en konsultante."
       }
     },
     "ctaHeading": "Sien dit jou besigheid bedryf",

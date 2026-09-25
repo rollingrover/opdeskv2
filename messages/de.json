@@ -74,6 +74,10 @@
       "logistics": {
         "title": "Logistik & Kostenrechner",
         "desc": "Kundenkonten, Preislisten mit vollständigem Verlauf und ein echter Kosten-/Gewinnrechner für Lieferungen, Wartung und Besorgungen."
+      },
+      "bookingWidget": {
+        "title": "Direktes Buchungs-Widget",
+        "desc": "Fügen Sie ein Live-Buchungsformular zu Ihrer eigenen Website hinzu — Anfragen landen direkt in Ihrem Dashboard, bereit zur Bestätigung."
       }
     },
     "metaTitle": "OpDesk — Betreiben. Entdecken. Wachsen.",
@@ -302,6 +306,18 @@
       "built-for-africa": {
         "title": "Entwickelt für Afrikas Betreiber",
         "desc": "Entwickelt um die Art und Weise, wie Safari-Lodges, Shuttle-Unternehmen, Charter und Wanderführer-Betriebe tatsächlich täglich arbeiten."
+      },
+      "booking-widget": {
+        "title": "Direktes Buchungs-Widget",
+        "desc": "Betten Sie ein Live-Buchungsformular auf Ihrer eigenen Website ein — Gäste fragen direkt an, kein E-Mail-Hin-und-Her."
+      },
+      "rate-sheet-gate-fees": {
+        "title": "Preistabelle & Eintrittsgebühren",
+        "desc": "Wiederverwendbare Preistabelle nach Wohnsitz, plus automatische Berechnung der Parkeintrittsgebühren nach Nationalität."
+      },
+      "hr-package": {
+        "title": "HR-Paket für Agenturen",
+        "desc": "Ein Login, die Personalverwaltung jedes Kunden getrennt gehalten — für HR-Agenturen und Berater."
       }
     },
     "ctaHeading": "Sehen Sie es Ihr Unternehmen führen",
