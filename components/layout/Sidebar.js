@@ -41,7 +41,6 @@ const ALL_NAV = [
   {
     sectionKey: 'lodging',
     items: [
-      { href:'/lodging',             icon: Hotel,       key:'roomOverview',    module:'rooms' },
       { href:'/lodging/rooms',       icon: Bed,         key:'rooms',            module:'rooms' },
       { href:'/lodging/calendar',    icon: CalendarDays,key:'availability',     module:'rooms' },
       { href:'/lodging/housekeeping',icon: ClipboardList,key:'housekeeping',    module:'housekeeping' },

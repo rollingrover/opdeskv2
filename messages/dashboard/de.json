@@ -986,7 +986,9 @@
       "lodge": "Hotel / Gästehaus / B&B",
       "eastafrica": "Ostafrika-Touren",
       "transfer": "Insel-Transfers",
-      "delivery": "Logistik & Support-Dienste"
+      "delivery": "Logistik & Support-Dienste",
+      "river_cruise": "Bootskreuzfahrten / Fluss, Ästuar & Stausee",
+      "hr_bureau": "HR-Dienstleistungsagentur"
     }
   },
   "SettingsAddons": {

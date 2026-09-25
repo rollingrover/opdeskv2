@@ -986,7 +986,9 @@
       "lodge": "Hotel / Gastehuis / B&B",
       "eastafrica": "Oos-Afrika Toere",
       "transfer": "Eiland-vervoer",
-      "delivery": "Logistiek & Ondersteuningsdienste"
+      "delivery": "Logistiek & Ondersteuningsdienste",
+      "river_cruise": "Bootkruisvaarte / Rivier, Riviermonding & Dam",
+      "hr_bureau": "HR-diensteagentskap"
     }
   },
   "SettingsAddons": {

@@ -986,7 +986,9 @@
       "lodge": "Hotel / Guesthouse / B&B",
       "eastafrica": "East Africa Tours",
       "transfer": "Island Transfers",
-      "delivery": "Logistics & Support Services"
+      "delivery": "Logistics & Support Services",
+      "river_cruise": "Boat Cruises / River, Estuary & Dam",
+      "hr_bureau": "HR Services Bureau"
     }
   },
   "SettingsAddons": {
