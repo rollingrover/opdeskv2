@@ -140,6 +140,26 @@
       "updateButton": "Atualizar Palavra-passe",
       "mismatch": "As palavras-passe não coincidem",
       "tooShort": "A palavra-passe deve ter pelo menos 8 caracteres"
+    },
+    "AcceptInvite": {
+      "loadingInvite": "A carregar convite…",
+      "notFoundTitle": "Convite não encontrado",
+      "notFoundDesc": "Este link de convite não parece correto — verifique-o novamente, ou peça a quem o convidou para enviar um novo.",
+      "alreadyAcceptedTitle": "Já aceite",
+      "alreadyAcceptedDesc": "Este convite já foi utilizado.",
+      "signIn": "Iniciar Sessão",
+      "revokedTitle": "Convite revogado",
+      "revokedDesc": "Este convite foi cancelado por {company}. Peça-lhes para enviar um novo se isto foi inesperado.",
+      "alreadyLinkedTitle": "Conta já associada",
+      "alreadyLinkedDesc": "A sua conta com sessão iniciada já está associada a uma empresa, pelo que não pode também juntar-se a {company}. Inicie sessão com outra conta, ou peça a {company} para convidar outro email.",
+      "joinHeading": "Juntar-se a {company} na OpDesk",
+      "invitedAs": "Foi convidado como {role} ({email}).",
+      "roleAdmin": "administrador de equipa",
+      "roleStaff": "membro da equipa",
+      "acceptButton": "Aceitar e Juntar-se a {company}",
+      "joining": "A juntar-se…",
+      "signInToAccept": "Iniciar Sessão para Aceitar",
+      "newAccountHint": "Verifique o seu email para um link para definir a sua palavra-passe primeiro, se esta for uma conta nova."
     }
   },
   "Pricing": {

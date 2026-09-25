@@ -140,6 +140,26 @@
       "updateButton": "Mettre à jour le mot de passe",
       "mismatch": "Les mots de passe ne correspondent pas",
       "tooShort": "Le mot de passe doit contenir au moins 8 caractères"
+    },
+    "AcceptInvite": {
+      "loadingInvite": "Chargement de l'invitation…",
+      "notFoundTitle": "Invitation introuvable",
+      "notFoundDesc": "Ce lien d'invitation ne semble pas correct — vérifiez-le, ou demandez à la personne qui vous a invité d'en envoyer un nouveau.",
+      "alreadyAcceptedTitle": "Déjà acceptée",
+      "alreadyAcceptedDesc": "Cette invitation a déjà été utilisée.",
+      "signIn": "Se Connecter",
+      "revokedTitle": "Invitation révoquée",
+      "revokedDesc": "Cette invitation a été annulée par {company}. Demandez-leur d'en envoyer une nouvelle si c'était inattendu.",
+      "alreadyLinkedTitle": "Compte déjà lié",
+      "alreadyLinkedDesc": "Votre compte connecté est déjà lié à une entreprise, il ne peut donc pas aussi rejoindre {company}. Connectez-vous avec un autre compte, ou demandez à {company} d'inviter une autre adresse e-mail.",
+      "joinHeading": "Rejoindre {company} sur OpDesk",
+      "invitedAs": "Vous avez été invité en tant que {role} ({email}).",
+      "roleAdmin": "administrateur d'équipe",
+      "roleStaff": "membre de l'équipe",
+      "acceptButton": "Accepter et Rejoindre {company}",
+      "joining": "Adhésion en cours…",
+      "signInToAccept": "Se Connecter pour Accepter",
+      "newAccountHint": "Consultez votre e-mail pour un lien afin de définir d'abord votre mot de passe si c'est un nouveau compte."
     }
   },
   "Pricing": {

@@ -1175,7 +1175,12 @@
     "inviteHint": "Vão receber um convite por email para definir a sua própria password e iniciar sessão.",
     "inviteSent": "Convite enviado para {email}",
     "memberRemoved": "O acesso dessa pessoa foi removido",
-    "confirmRemove": "Remover {name} da sua equipa? O acesso será perdido imediatamente."
+    "confirmRemove": "Remover {name} da sua equipa? O acesso será perdido imediatamente.",
+    "pendingInvites": "Convites Pendentes",
+    "invitedOn": "Convidado em {date}",
+    "revokeInvite": "Revogar Convite",
+    "confirmRevoke": "Revogar o convite de {email}?",
+    "inviteRevoked": "Convite revogado"
   },
   "Locations": {
     "title": "Localizações",

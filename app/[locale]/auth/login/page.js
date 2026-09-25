@@ -23,7 +23,15 @@ function LoginForm() {
     setLoading(true); setError('')
     const { error } = await signIn(email, password)
     if (error) { setError(error.message); setLoading(false) }
-    else router.replace('/dashboard')
+    else {
+      const pendingToken = typeof window !== 'undefined' ? localStorage.getItem('opdesk_pending_invite_token') : null
+      if (pendingToken) {
+        localStorage.removeItem('opdesk_pending_invite_token')
+        router.replace(`/auth/accept-invite?token=${pendingToken}`)
+      } else {
+        router.replace('/dashboard')
+      }
+    }
   }
 
   return (

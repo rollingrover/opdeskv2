@@ -140,6 +140,26 @@
       "updateButton": "Werk Wagwoord Op",
       "mismatch": "Wagwoorde stem nie ooreen nie",
       "tooShort": "Wagwoord moet minstens 8 karakters wees"
+    },
+    "AcceptInvite": {
+      "loadingInvite": "Laai tans uitnodiging…",
+      "notFoundTitle": "Uitnodiging nie gevind nie",
+      "notFoundDesc": "Hierdie uitnodigingskakel lyk nie reg nie — kyk weer, of vra die persoon wat jou genooi het om 'n nuwe een te stuur.",
+      "alreadyAcceptedTitle": "Reeds aanvaar",
+      "alreadyAcceptedDesc": "Hierdie uitnodiging is reeds gebruik.",
+      "signIn": "Teken In",
+      "revokedTitle": "Uitnodiging herroep",
+      "revokedDesc": "Hierdie uitnodiging is deur {company} gekanselleer. Vra hulle om 'n nuwe een te stuur as dit onverwags was.",
+      "alreadyLinkedTitle": "Rekening reeds gekoppel",
+      "alreadyLinkedDesc": "Jou aangemelde rekening is reeds aan 'n maatskappy gekoppel, so dit kan nie ook by {company} aansluit nie. Meld aan met 'n ander rekening, of vra {company} om 'n ander e-posadres te nooi.",
+      "joinHeading": "Sluit aan by {company} op OpDesk",
+      "invitedAs": "Jy is genooi as {role} ({email}).",
+      "roleAdmin": "'n spanadmin",
+      "roleStaff": "'n spanlid",
+      "acceptButton": "Aanvaar & Sluit by {company} Aan",
+      "joining": "Sluit tans aan…",
+      "signInToAccept": "Teken In om te Aanvaar",
+      "newAccountHint": "Kyk jou e-pos vir 'n skakel om eers jou wagwoord te stel as dit 'n nuwe rekening is."
     }
   },
   "Pricing": {

@@ -1175,7 +1175,12 @@
     "inviteHint": "Hulle sal 'n e-pos uitnodiging kry om hul eie wagwoord op te stel en in te teken.",
     "inviteSent": "Uitnodiging gestuur na {email}",
     "memberRemoved": "Daardie persoon se toegang is verwyder",
-    "confirmRemove": "Verwyder {name} van jou span? Hulle sal onmiddellik toegang verloor."
+    "confirmRemove": "Verwyder {name} van jou span? Hulle sal onmiddellik toegang verloor.",
+    "pendingInvites": "Hangende Uitnodigings",
+    "invitedOn": "Genooi op {date}",
+    "revokeInvite": "Herroep Uitnodiging",
+    "confirmRevoke": "Herroep die uitnodiging vir {email}?",
+    "inviteRevoked": "Uitnodiging herroep"
   },
   "Locations": {
     "title": "Liggings",

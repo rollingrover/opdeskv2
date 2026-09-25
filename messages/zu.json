@@ -140,6 +140,26 @@
       "updateButton": "Update Password",
       "mismatch": "Passwords do not match",
       "tooShort": "Password must be at least 8 characters"
+    },
+    "AcceptInvite": {
+      "loadingInvite": "Loading invite…",
+      "notFoundTitle": "Invite not found",
+      "notFoundDesc": "This invite link doesn't look right — double-check it, or ask whoever invited you to send a new one.",
+      "alreadyAcceptedTitle": "Already accepted",
+      "alreadyAcceptedDesc": "This invite has already been used.",
+      "signIn": "Sign In",
+      "revokedTitle": "Invite revoked",
+      "revokedDesc": "This invite has been cancelled by {company}. Ask them to send a new one if this was unexpected.",
+      "alreadyLinkedTitle": "Account already linked",
+      "alreadyLinkedDesc": "Your signed-in account is already linked to a company, so it can't also join {company}. Sign in with a different account, or ask {company} to invite a different email.",
+      "joinHeading": "Join {company} on OpDesk",
+      "invitedAs": "You've been invited as {role} ({email}).",
+      "roleAdmin": "a team admin",
+      "roleStaff": "a team member",
+      "acceptButton": "Accept & Join {company}",
+      "joining": "Joining…",
+      "signInToAccept": "Sign In to Accept",
+      "newAccountHint": "Check your email for a link to set your password first if this is a new account."
     }
   },
   "Pricing": {

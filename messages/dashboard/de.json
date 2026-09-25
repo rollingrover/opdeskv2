@@ -1175,7 +1175,12 @@
     "inviteHint": "Sie erhalten eine E-Mail-Einladung, um ihr eigenes Passwort festzulegen und sich anzumelden.",
     "inviteSent": "Einladung an {email} gesendet",
     "memberRemoved": "Der Zugriff dieser Person wurde entfernt",
-    "confirmRemove": "{name} aus Ihrem Team entfernen? Der Zugriff geht sofort verloren."
+    "confirmRemove": "{name} aus Ihrem Team entfernen? Der Zugriff geht sofort verloren.",
+    "pendingInvites": "Ausstehende Einladungen",
+    "invitedOn": "Eingeladen am {date}",
+    "revokeInvite": "Einladung Widerrufen",
+    "confirmRevoke": "Einladung für {email} widerrufen?",
+    "inviteRevoked": "Einladung widerrufen"
   },
   "Locations": {
     "title": "Standorte",

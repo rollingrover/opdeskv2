@@ -1175,7 +1175,12 @@
     "inviteHint": "They'll get an email invite to set their own password and sign in.",
     "inviteSent": "Invite sent to {email}",
     "memberRemoved": "That person's access has been removed",
-    "confirmRemove": "Remove {name} from your team? They'll lose access immediately."
+    "confirmRemove": "Remove {name} from your team? They'll lose access immediately.",
+    "pendingInvites": "Pending Invites",
+    "invitedOn": "Invited {date}",
+    "revokeInvite": "Revoke Invite",
+    "confirmRevoke": "Revoke the invite for {email}?",
+    "inviteRevoked": "Invite revoked"
   },
   "Locations": {
     "title": "Locations",

@@ -11,7 +11,7 @@ import { Input, Select } from '@/components/ui/FormField'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { LimitBanner } from '@/components/ui/LimitBanner'
 import { checkLimit } from '@/lib/limits'
-import { Plus, UserX, Crown } from 'lucide-react'
+import { Plus, UserX, Crown, Mail, X } from 'lucide-react'
 
 const emptyForm = { email: '', role: 'staff' }
 
@@ -22,22 +22,26 @@ export default function TeamPage() {
   const supabase = createClient()
   const toast = useToast()
   const [members, setMembers] = useState([])
+  const [pendingInvites, setPendingInvites] = useState([])
   const [addons, setAddons] = useState([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [removingId, setRemovingId] = useState(null)
+  const [revokingId, setRevokingId] = useState(null)
 
   async function load() {
     if (!company) { setLoading(false); return }
     setLoading(true)
-    const [m, a] = await Promise.all([
+    const [m, a, inv] = await Promise.all([
       supabase.from('profiles').select('id, full_name, email, role, created_at').eq('company_id', company.id).order('created_at'),
       supabase.from('company_addons').select('addon_key, quantity, active').eq('company_id', company.id).eq('active', true),
+      supabase.from('company_invites').select('id, email, role, created_at').eq('company_id', company.id).eq('status', 'pending').order('created_at'),
     ])
     setMembers(m.data || [])
     setAddons(a.data || [])
+    setPendingInvites(inv.data || [])
     setLoading(false)
   }
   useEffect(() => { load() }, [company])
@@ -45,7 +49,10 @@ export default function TeamPage() {
   if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
-  const seatsLimit = checkLimit('seats', members.length, { profile, company, companyAddons: addons })
+  // Pending invites count toward the seat limit too now (matching what
+  // create_company_invite already enforces server-side) — otherwise this
+  // banner would understate usage until each invite was actually accepted.
+  const seatsLimit = checkLimit('seats', members.length + pendingInvites.length, { profile, company, companyAddons: addons })
 
   async function handleInvite(e) {
     e.preventDefault()
@@ -85,6 +92,16 @@ export default function TeamPage() {
     } finally {
       setRemovingId(null)
     }
+  }
+
+  async function handleRevoke(invite) {
+    if (!confirm(t('confirmRevoke', { email: invite.email }))) return
+    setRevokingId(invite.id)
+    const { error } = await supabase.rpc('revoke_company_invite', { p_invite_id: invite.id })
+    setRevokingId(null)
+    if (error) { toast.error(error.message); return }
+    toast.success(t('inviteRevoked'))
+    load()
   }
 
   return (
@@ -140,6 +157,36 @@ export default function TeamPage() {
           </tbody>
         </table>
       </div>
+
+      {pendingInvites.length > 0 && (
+        <div style={{ marginTop: '1.5rem' }}>
+          <h3 style={{ fontSize: '0.9375rem', color: 'var(--navy)', marginBottom: '0.75rem' }}>{t('pendingInvites')}</h3>
+          <div className="card card-shadow" style={{ padding: 0, overflow: 'hidden' }}>
+            <table className="table">
+              <tbody>
+                {pendingInvites.map(inv => (
+                  <tr key={inv.id}>
+                    <td style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Mail size={14} color="var(--gray-400)" />
+                      <span style={{ color: 'var(--gray-600)' }}>{inv.email}</span>
+                    </td>
+                    <td style={{ textTransform: 'capitalize', color: 'var(--gray-500)', fontSize: '0.8125rem' }}>{inv.role}</td>
+                    <td style={{ color: 'var(--gray-400)', fontSize: '0.75rem' }}>{t('invitedOn', { date: new Date(inv.created_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' }) })}</td>
+                    {isAdmin && (
+                      <td style={{ textAlign: 'right' }}>
+                        <button onClick={() => handleRevoke(inv)} disabled={revokingId === inv.id}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gray-400)' }} title={t('revokeInvite')}>
+                          <X size={15} />
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={t('inviteTeammate')}
         footer={<>

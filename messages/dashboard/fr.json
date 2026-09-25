@@ -1175,7 +1175,12 @@
     "inviteHint": "Cette personne recevra une invitation par e-mail pour définir son mot de passe et se connecter.",
     "inviteSent": "Invitation envoyée à {email}",
     "memberRemoved": "L'accès de cette personne a été retiré",
-    "confirmRemove": "Retirer {name} de votre équipe ? Son accès sera perdu immédiatement."
+    "confirmRemove": "Retirer {name} de votre équipe ? Son accès sera perdu immédiatement.",
+    "pendingInvites": "Invitations en Attente",
+    "invitedOn": "Invité le {date}",
+    "revokeInvite": "Révoquer l'Invitation",
+    "confirmRevoke": "Révoquer l'invitation pour {email} ?",
+    "inviteRevoked": "Invitation révoquée"
   },
   "Locations": {
     "title": "Établissements",
