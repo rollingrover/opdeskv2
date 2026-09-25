@@ -223,7 +223,10 @@
     "guides": "Guides sur cette Excursion",
     "addGuide": "Ajouter un Guide",
     "guidesHint": "Ajoutez un guide si son entrée doit compter dans les frais d'entrée — la plupart des guides entrent gratuitement, c'est donc facultatif.",
-    "chargeGateFee": "Facturer les frais d'entrée"
+    "chargeGateFee": "Facturer les frais d'entrée",
+    "bulkGuestsLabel": "Clients Supplémentaires (non nommés individuellement)",
+    "bulkGuestsHint": "Pour les grands groupes, il n'est pas pratique de nommer tout le monde — ajoutez ici des totaux pour toute personne au-delà du client principal et des voyageurs nommés ci-dessus.",
+    "accountedFor": "{counted} sur {total} clients pris en compte"
   },
   "Calendar": {
     "title": "Calendrier",

@@ -25,9 +25,14 @@ const emptyForm = {
   guide_id: '', driver_id: '', vehicle_id: '', vessel_id: '', room_id: '',
   travelers: [], // additional named travelers beyond the lead guest — [{full_name, email, phone, residency}]
   guides: [], // up to 3 — the people actually on this tour, distinct from staff.guide_id assigned in Resources — [{full_name, residency, gate_fee_exempt}]
+  // For large groups it isn't realistic to name every single guest — these
+  // three counts cover everyone NOT individually named above (on top of
+  // the lead + any named travelers), so gate fees still add up correctly
+  // for a 30+ person group without requiring 30 names.
+  guest_count_local: 0, guest_count_sadc: 0, guest_count_international: 0,
   // Per-person gate/entry fee rate for THIS booking — entered fresh each
-  // time rather than pulled from a fixed rate sheet, since the same park
-  // fee band can genuinely differ tour to tour depending on which park or
+  // time rather than pulled from a fixed rate sheet, since the same fee
+  // band can genuinely differ tour to tour depending on which park or
   // reserve is actually being visited.
   gate_fee_local: 0, gate_fee_sadc: 0, gate_fee_international: 0,
   showGateFees: false,
@@ -126,8 +131,9 @@ function BookingsContent() {
       guide_id: booking.guide_id || '', driver_id: booking.driver_id || '', vehicle_id: booking.vehicle_id || '',
       vessel_id: booking.vessel_id || '', room_id: booking.room_id || '',
       travelers, guides,
+      guest_count_local: booking.guest_count_local || 0, guest_count_sadc: booking.guest_count_sadc || 0, guest_count_international: booking.guest_count_international || 0,
       gate_fee_local: booking.gate_fee_local || 0, gate_fee_sadc: booking.gate_fee_sadc || 0, gate_fee_international: booking.gate_fee_international || 0,
-      showGateFees: !!(booking.gate_fee_local || booking.gate_fee_sadc || booking.gate_fee_international || guides.length > 0),
+      showGateFees: !!(booking.gate_fee_local || booking.gate_fee_sadc || booking.gate_fee_international || guides.length > 0 || booking.guest_count_local || booking.guest_count_sadc || booking.guest_count_international),
     })
     setModalOpen(true)
   }
@@ -254,12 +260,17 @@ function BookingsContent() {
   const bookingsLimit = checkLimit('bookings_per_month', thisMonthCount, { profile, company })
 
   // Every person actually counted against a gate fee: the lead guest, each
-  // named traveler with a residency set, and each guide whose entry isn't
-  // marked exempt (most are — this only adds them when that's unticked).
+  // named traveler with a residency set, each guide whose entry isn't
+  // marked exempt, plus the bulk unnamed-guest counts for large groups.
   const residencyCounts = { local: 0, sadc: 0, international: 0 }
   if (form.guest_residency) residencyCounts[form.guest_residency]++
   for (const trav of form.travelers) if (trav.residency) residencyCounts[trav.residency]++
   for (const guide of form.guides) if (guide.residency && !guide.gate_fee_exempt) residencyCounts[guide.residency]++
+  residencyCounts.local += Number(form.guest_count_local) || 0
+  residencyCounts.sadc += Number(form.guest_count_sadc) || 0
+  residencyCounts.international += Number(form.guest_count_international) || 0
+  const namedCount = (form.guest_residency ? 1 : 0) + form.travelers.length
+  const bulkCount = (Number(form.guest_count_local) || 0) + (Number(form.guest_count_sadc) || 0) + (Number(form.guest_count_international) || 0)
   const gateFeesTotal =
     residencyCounts.local * (Number(form.gate_fee_local) || 0) +
     residencyCounts.sadc * (Number(form.gate_fee_sadc) || 0) +
@@ -385,7 +396,7 @@ function BookingsContent() {
             <div style={{ marginBottom: '0.875rem', padding: '0.75rem', background: 'var(--cream)', borderRadius: '0.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                 <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)' }}>{t('gateFees')}</label>
-                <button type="button" onClick={() => setForm({ ...form, showGateFees: false, gate_fee_local: 0, gate_fee_sadc: 0, gate_fee_international: 0 })}
+                <button type="button" onClick={() => setForm({ ...form, showGateFees: false, gate_fee_local: 0, gate_fee_sadc: 0, gate_fee_international: 0, guest_count_local: 0, guest_count_sadc: 0, guest_count_international: 0 })}
                   style={{ background: 'none', border: 'none', color: 'var(--gray-400)', fontSize: '0.75rem', cursor: 'pointer' }}>{t('removeGateFees')}</button>
               </div>
               <p style={{ fontSize: '0.75rem', color: 'var(--gray-500)', margin: '0 0 0.5rem' }}>{t('gateFeesHint')}</p>
@@ -394,9 +405,23 @@ function BookingsContent() {
                 <Input label={`${t('residencySadc')} (${t('perPerson')})`} type="number" min="0" step="0.01" value={form.gate_fee_sadc} onChange={e => setForm({ ...form, gate_fee_sadc: e.target.value })} />
                 <Input label={`${t('residencyInternational')} (${t('perPerson')})`} type="number" min="0" step="0.01" value={form.gate_fee_international} onChange={e => setForm({ ...form, gate_fee_international: e.target.value })} />
               </div>
-              <p style={{ textAlign: 'right', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--navy)', margin: '0.5rem 0 0' }}>
-                {t('totalGateFees')}: {company.currency} {gateFeesTotal.toLocaleString()}
-              </p>
+
+              <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-700)', margin: '0.75rem 0 0.25rem' }}>{t('bulkGuestsLabel')}</p>
+              <p style={{ fontSize: '0.75rem', color: 'var(--gray-500)', margin: '0 0 0.5rem' }}>{t('bulkGuestsHint')}</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 0.75rem' }}>
+                <Input label={t('residencyLocal')} type="number" min="0" value={form.guest_count_local} onChange={e => setForm({ ...form, guest_count_local: e.target.value })} />
+                <Input label={t('residencySadc')} type="number" min="0" value={form.guest_count_sadc} onChange={e => setForm({ ...form, guest_count_sadc: e.target.value })} />
+                <Input label={t('residencyInternational')} type="number" min="0" value={form.guest_count_international} onChange={e => setForm({ ...form, guest_count_international: e.target.value })} />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '0.625rem', paddingTop: '0.5rem', borderTop: '1px solid var(--gray-100)' }}>
+                <span style={{ fontSize: '0.75rem', color: (namedCount + bulkCount) !== (Number(form.guest_count) || 0) ? 'var(--gold)' : 'var(--gray-400)' }}>
+                  {t('accountedFor', { counted: namedCount + bulkCount, total: Number(form.guest_count) || 0 })}
+                </span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--navy)' }}>
+                  {t('totalGateFees')}: {company.currency} {gateFeesTotal.toLocaleString()}
+                </span>
+              </div>
             </div>
           ) : (
             <button type="button" onClick={() => setForm({ ...form, showGateFees: true })}

@@ -223,7 +223,10 @@
     "guides": "Guides auf dieser Tour",
     "addGuide": "Guide Hinzufügen",
     "guidesHint": "Fügen Sie einen Guide hinzu, wenn sein Eintritt zu den Eintrittsgebühren zählen soll — die meisten Guides sind kostenlos, daher ist dies optional.",
-    "chargeGateFee": "Eintrittsgebühr berechnen"
+    "chargeGateFee": "Eintrittsgebühr berechnen",
+    "bulkGuestsLabel": "Weitere Gäste (nicht einzeln benannt)",
+    "bulkGuestsHint": "Bei großen Gruppen ist es nicht praktikabel, jeden zu benennen — fügen Sie hier Anzahlen für alle über den Hauptgast und die oben genannten Reisenden hinaus hinzu.",
+    "accountedFor": "{counted} von {total} Gästen erfasst"
   },
   "Calendar": {
     "title": "Kalender",

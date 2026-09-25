@@ -87,6 +87,11 @@ function InvoicesContent() {
         if (p.is_guide && p.gate_fee_exempt) continue
         counts[p.residency] = (counts[p.residency] || 0) + 1
       }
+      // Large groups aren't realistically named one by one — these three
+      // bulk counts cover everyone not individually listed above.
+      counts.local += booking.guest_count_local || 0
+      counts.sadc += booking.guest_count_sadc || 0
+      counts.international += booking.guest_count_international || 0
       const RESIDENCY_LABEL = { local: 'Local (SA)', sadc: 'SADC', international: 'International' }
       const gateFeeRate = { local: booking.gate_fee_local, sadc: booking.gate_fee_sadc, international: booking.gate_fee_international }
       for (const residency of ['local', 'sadc', 'international']) {

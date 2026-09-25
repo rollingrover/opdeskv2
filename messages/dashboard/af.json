@@ -223,7 +223,10 @@
     "guides": "Gidse op Hierdie Toer",
     "addGuide": "Voeg Gids By",
     "guidesHint": "Voeg 'n gids by as hul toegang teen hekfooie moet tel — die meeste gidse is gratis, so dit is opsioneel.",
-    "chargeGateFee": "Hef hekfooi"
+    "chargeGateFee": "Hef hekfooi",
+    "bulkGuestsLabel": "Addisionele Gaste (nie individueel genoem nie)",
+    "bulkGuestsHint": "Vir groot groepe is dit nie prakties om almal te noem nie — voeg hier tellings by vir enigeen buiten die hoofgas en reisigers hierbo genoem.",
+    "accountedFor": "{counted} van {total} gaste in ag geneem"
   },
   "Calendar": {
     "title": "Kalender",

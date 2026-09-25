@@ -223,7 +223,10 @@
     "guides": "Guias Neste Tour",
     "addGuide": "Adicionar Guia",
     "guidesHint": "Adicione um guia se a sua entrada deve contar para as taxas de entrada — a maioria dos guias entra gratuitamente, por isso é opcional.",
-    "chargeGateFee": "Cobrar taxa de entrada"
+    "chargeGateFee": "Cobrar taxa de entrada",
+    "bulkGuestsLabel": "Hóspedes Adicionais (não nomeados individualmente)",
+    "bulkGuestsHint": "Para grupos grandes não é prático nomear todos — adicione aqui contagens para qualquer pessoa além do hóspede principal e dos viajantes nomeados acima.",
+    "accountedFor": "{counted} de {total} hóspedes contabilizados"
   },
   "Calendar": {
     "title": "Calendário",

@@ -223,7 +223,10 @@
     "guides": "Guides on This Tour",
     "addGuide": "Add Guide",
     "guidesHint": "Add a guide if their entry should count toward gate fees — most guides are free, so this is optional.",
-    "chargeGateFee": "Charge gate fee"
+    "chargeGateFee": "Charge gate fee",
+    "bulkGuestsLabel": "Additional Guests (not individually named)",
+    "bulkGuestsHint": "For large groups it isn't practical to name everyone — add counts here for anyone beyond the lead guest and travelers named above.",
+    "accountedFor": "{counted} of {total} guests accounted for"
   },
   "Calendar": {
     "title": "Calendar",
