@@ -5,8 +5,18 @@ import { BrandIcon } from '@/components/ui/BrandIcon'
 import { MarketingNav } from '@/components/marketing/MarketingNav'
 import { MarketingFooter } from '@/components/marketing/MarketingFooter'
 
-const OPERATOR_ICONS = ['safari', 'shuttle', 'fishing', 'yacht', 'trail', 'lodge', 'eastAfrica', 'islandTransfer', 'logistics']
-const ICON_MAP = { safari: 'safari', shuttle: 'shuttle', fishing: 'fishing', yacht: 'yacht', trail: 'trailGuide', lodge: 'gameLodge', eastAfrica: 'eastAfrica', islandTransfer: 'islandTransfer', logistics: 'delivery' }
+const OPERATOR_TYPES = [
+  { key: 'safari', icon: 'safari', slug: 'safari-lodge-software' },
+  { key: 'shuttle', icon: 'shuttle', slug: 'shuttle-transfer-software' },
+  { key: 'fishing', icon: 'fishing', slug: 'fishing-charter-software' },
+  { key: 'yacht', icon: 'yacht', slug: 'yacht-charter-software' },
+  { key: 'trail', icon: 'trailGuide', slug: 'trail-guide-software' },
+  { key: 'lodge', icon: 'gameLodge', slug: 'guesthouse-hotel-software' },
+  { key: 'eastAfrica', icon: 'eastAfrica', slug: 'east-africa-tour-software' },
+  { key: 'islandTransfer', icon: 'islandTransfer', slug: 'island-transfer-software' },
+  { key: 'logistics', icon: 'delivery', slug: 'logistics-delivery-software' },
+  { key: 'riverCruise', icon: 'yacht', slug: 'river-boat-cruise-software' },
+]
 
 export default function AboutClient() {
   const t = useTranslations('About')
@@ -38,11 +48,14 @@ export default function AboutClient() {
         <h2 style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '1.5rem', color: 'var(--navy)', marginBottom: '0.5rem' }}>{t('whoHeading')}</h2>
         <p style={{ color: 'var(--gray-500)', marginBottom: '2.5rem' }}>{t('whoSubheading')}</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', maxWidth: '900px', margin: '0 auto' }}>
-          {OPERATOR_ICONS.map(key => (
-            <div key={key} className="card card-shadow" style={{ background: 'white' }}>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.625rem' }}><BrandIcon name={ICON_MAP[key]} size={40} /></div>
-              <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: 600, color: 'var(--navy)', lineHeight: 1.3 }}>{t(`operatorTypes.${key}`)}</p>
-            </div>
+          {OPERATOR_TYPES.map(o => (
+            <Link key={o.key} href={`/features/${o.slug}`} className="card card-shadow"
+              style={{ background: 'white', textDecoration: 'none', display: 'block', transition: 'transform 0.15s' }}
+              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.625rem' }}><BrandIcon name={o.icon} size={40} /></div>
+              <p style={{ margin: 0, fontSize: '0.875rem', fontWeight: 600, color: 'var(--navy)', lineHeight: 1.3 }}>{t(`operatorTypes.${o.key}`)}</p>
+            </Link>
           ))}
         </div>
       </section>
