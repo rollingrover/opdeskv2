@@ -440,7 +440,18 @@
       "campsite_small": "Kampeerterrein (Klein)",
       "campsite_large": "Kampeerterrein (Groot)",
       "dormitory": "Slaapsaal"
-    }
+    },
+    "roomSingular": "kamer",
+    "roomPlural": "kamers",
+    "viewCalendar": "Bekyk Kalender",
+    "editRoom": "Wysig Kamer",
+    "roomUpdated": "Kamer opgedateer",
+    "confirmDelete": "Verwyder \"{name}\"?",
+    "roomDeleted": "Kamer verwyder",
+    "roomNamePlaceholder": "bv. Chalet 3, Riviertent",
+    "description": "Beskrywing",
+    "notes": "Notas",
+    "roomActive": "Kamer is aktief"
   },
   "Housekeeping": {
     "title": "Huishouding",

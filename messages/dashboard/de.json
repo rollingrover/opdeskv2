@@ -440,7 +440,18 @@
       "campsite_small": "Campingplatz (Klein)",
       "campsite_large": "Campingplatz (Groß)",
       "dormitory": "Schlafsaal"
-    }
+    },
+    "roomSingular": "Zimmer",
+    "roomPlural": "Zimmer",
+    "viewCalendar": "Kalender Ansehen",
+    "editRoom": "Zimmer Bearbeiten",
+    "roomUpdated": "Zimmer aktualisiert",
+    "confirmDelete": "\"{name}\" löschen?",
+    "roomDeleted": "Zimmer gelöscht",
+    "roomNamePlaceholder": "z. B. Chalet 3, Flusszelt",
+    "description": "Beschreibung",
+    "notes": "Notizen",
+    "roomActive": "Zimmer ist aktiv"
   },
   "Housekeeping": {
     "title": "Housekeeping",

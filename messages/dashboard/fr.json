@@ -440,7 +440,18 @@
       "campsite_small": "Emplacement Camping (Petit)",
       "campsite_large": "Emplacement Camping (Grand)",
       "dormitory": "Dortoir"
-    }
+    },
+    "roomSingular": "chambre",
+    "roomPlural": "chambres",
+    "viewCalendar": "Voir le Calendrier",
+    "editRoom": "Modifier la Chambre",
+    "roomUpdated": "Chambre mise à jour",
+    "confirmDelete": "Supprimer « {name} » ?",
+    "roomDeleted": "Chambre supprimée",
+    "roomNamePlaceholder": "ex. Chalet 3, Tente Rivière",
+    "description": "Description",
+    "notes": "Notes",
+    "roomActive": "La chambre est active"
   },
   "Housekeeping": {
     "title": "Ménage",

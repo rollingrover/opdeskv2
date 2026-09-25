@@ -440,7 +440,18 @@
       "campsite_small": "Parque de Campismo (Pequeno)",
       "campsite_large": "Parque de Campismo (Grande)",
       "dormitory": "Dormitório"
-    }
+    },
+    "roomSingular": "quarto",
+    "roomPlural": "quartos",
+    "viewCalendar": "Ver Calendário",
+    "editRoom": "Editar Quarto",
+    "roomUpdated": "Quarto atualizado",
+    "confirmDelete": "Eliminar \"{name}\"?",
+    "roomDeleted": "Quarto eliminado",
+    "roomNamePlaceholder": "ex. Chalé 3, Tenda do Rio",
+    "description": "Descrição",
+    "notes": "Notas",
+    "roomActive": "O quarto está ativo"
   },
   "Housekeeping": {
     "title": "Limpeza",

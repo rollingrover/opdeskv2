@@ -440,7 +440,18 @@
       "campsite_small": "Campsite (Small)",
       "campsite_large": "Campsite (Large)",
       "dormitory": "Dormitory"
-    }
+    },
+    "roomSingular": "room",
+    "roomPlural": "rooms",
+    "viewCalendar": "View Calendar",
+    "editRoom": "Edit Room",
+    "roomUpdated": "Room updated",
+    "confirmDelete": "Delete \"{name}\"?",
+    "roomDeleted": "Room deleted",
+    "roomNamePlaceholder": "e.g. Chalet 3, Riverside Tent",
+    "description": "Description",
+    "notes": "Notes",
+    "roomActive": "Room is active"
   },
   "Housekeeping": {
     "title": "Housekeeping",

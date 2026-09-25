@@ -45,7 +45,6 @@ const ALL_NAV = [
       { href:'/lodging/rooms',       icon: Bed,         key:'rooms',            module:'rooms' },
       { href:'/lodging/calendar',    icon: CalendarDays,key:'availability',     module:'rooms' },
       { href:'/lodging/housekeeping',icon: ClipboardList,key:'housekeeping',    module:'housekeeping' },
-      { href:'/lodging/guests',      icon: Users,       key:'guests',           module:'rooms' },
       { href:'/lodging/channel-sync',icon: RefreshCw,   key:'channelSync',     module:'rooms', gate:'ical_sync' },
     ]
   },
