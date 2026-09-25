@@ -318,6 +318,10 @@
       "hr-package": {
         "title": "Pacote de RH para Agências",
         "desc": "Um único login, os RH de cada cliente mantidos separados — criado para agências e consultorias de RH."
+      },
+      "delivery-management": {
+        "title": "Gestão de Entregas e Abastecimento",
+        "desc": "Listas de preços por cliente, registo de encomendas e extratos com um clique para operadores de entrega e logística."
       }
     },
     "ctaHeading": "Veja-o a gerir o seu negócio",

@@ -318,6 +318,10 @@
       "hr-package": {
         "title": "HR-Paket für Agenturen",
         "desc": "Ein Login, die Personalverwaltung jedes Kunden getrennt gehalten — für HR-Agenturen und Berater."
+      },
+      "delivery-management": {
+        "title": "Liefer- & Versorgungsmanagement",
+        "desc": "Kundenspezifische Preislisten, ein Auftragsprotokoll und Kontoauszüge per Klick für Liefer- und Logistikbetreiber."
       }
     },
     "ctaHeading": "Sehen Sie es Ihr Unternehmen führen",

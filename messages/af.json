@@ -318,6 +318,10 @@
       "hr-package": {
         "title": "HR-pakket vir Agentskappe",
         "desc": "Een aanmelding, elke kliënt se HR apart gehou — gebou vir HR-agentskappe en konsultante."
+      },
+      "delivery-management": {
+        "title": "Aflewering- & Voorsieningbestuur",
+        "desc": "Kliëntspesifieke pryslyste, 'n bestellingslog, en een-klik gemerkte state vir aflewering- en logistiek-operateurs."
       }
     },
     "ctaHeading": "Sien dit jou besigheid bedryf",

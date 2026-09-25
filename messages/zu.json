@@ -318,6 +318,10 @@
       "hr-package": {
         "title": "HR Package for Bureaus",
         "desc": "One login, every client’s HR kept separate — built for HR bureaus and consultancies."
+      },
+      "delivery-management": {
+        "title": "Delivery & Supply Management",
+        "desc": "Client-specific price lists, an order log, and one-click branded statements for delivery and logistics operators."
       }
     },
     "ctaHeading": "See it running your business",

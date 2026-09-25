@@ -318,6 +318,10 @@
       "hr-package": {
         "title": "Forfait RH pour Agences",
         "desc": "Une seule connexion, les RH de chaque client restent séparées — conçu pour les agences et cabinets de conseil RH."
+      },
+      "delivery-management": {
+        "title": "Gestion des Livraisons & Approvisionnement",
+        "desc": "Listes de prix par client, journal des commandes, et relevés en un clic pour les opérateurs de livraison et de logistique."
       }
     },
     "ctaHeading": "Voyez-le gérer votre entreprise",
