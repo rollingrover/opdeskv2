@@ -19,16 +19,18 @@ import { Plus, Lock } from 'lucide-react'
 import Link from 'next/link'
 
 const emptyForm = {
-  guest_name: '', guest_email: '', guest_phone: '', guest_count: 1,
+  guest_name: '', guest_email: '', guest_phone: '', guest_count: 1, guest_residency: '',
   start_date: '', end_date: '', booking_type: 'tour', status: 'pending',
   unit_price: 0, amount_paid: 0, notes: '',
   guide_id: '', driver_id: '', vehicle_id: '', vessel_id: '', room_id: '',
-  travelers: [], // optional additional travelers beyond the lead guest — [{full_name, email, phone}]
-  // Optional — all-zero means "not broken down", which is the default and
-  // changes nothing. Only used later when generating an invoice, to
-  // suggest park/entry fee line items (see rate_sheet_items.is_park_fee).
-  guest_count_local: 0, guest_count_sadc: 0, guest_count_international: 0,
-  showResidency: false,
+  travelers: [], // additional named travelers beyond the lead guest — [{full_name, email, phone, residency}]
+  guides: [], // up to 3 — the people actually on this tour, distinct from staff.guide_id assigned in Resources — [{full_name, residency, gate_fee_exempt}]
+  // Per-person gate/entry fee rate for THIS booking — entered fresh each
+  // time rather than pulled from a fixed rate sheet, since the same park
+  // fee band can genuinely differ tour to tour depending on which park or
+  // reserve is actually being visited.
+  gate_fee_local: 0, gate_fee_sadc: 0, gate_fee_international: 0,
+  showGateFees: false,
 }
 
 function BookingsContent() {
@@ -110,19 +112,22 @@ function BookingsContent() {
   async function openForEdit(booking) {
     if (!isEditable(booking)) return
     setEditingId(booking.id)
-    const { data: travs } = await supabase.from('booking_travelers').select('full_name, email, phone').eq('booking_id', booking.id).eq('is_lead', false)
+    const { data: allTravs } = await supabase.from('booking_travelers').select('full_name, email, phone, residency, is_lead, is_guide, gate_fee_exempt').eq('booking_id', booking.id)
+    const lead = (allTravs || []).find(tv => tv.is_lead)
+    const travelers = (allTravs || []).filter(tv => !tv.is_lead && !tv.is_guide).map(tv => ({ full_name: tv.full_name, email: tv.email, phone: tv.phone, residency: tv.residency || '' }))
+    const guides = (allTravs || []).filter(tv => tv.is_guide).map(tv => ({ full_name: tv.full_name, residency: tv.residency || '', gate_fee_exempt: tv.gate_fee_exempt !== false }))
     setForm({
       guest_name: booking.guest_name || '', guest_email: booking.guest_email || '', guest_phone: booking.guest_phone || '',
-      guest_count: booking.guest_count || 1, start_date: booking.start_date || '', end_date: booking.end_date || '',
+      guest_count: booking.guest_count || 1, guest_residency: lead?.residency || '',
+      start_date: booking.start_date || '', end_date: booking.end_date || '',
       booking_type: booking.booking_type || bookingTypes[0]?.slug || '', status: booking.status || 'pending',
       unit_price: booking.unit_price ?? (booking.amount_total ? booking.amount_total / (booking.guest_count || 1) : 0),
       amount_paid: booking.amount_paid || 0, notes: booking.notes || '',
       guide_id: booking.guide_id || '', driver_id: booking.driver_id || '', vehicle_id: booking.vehicle_id || '',
       vessel_id: booking.vessel_id || '', room_id: booking.room_id || '',
-      travelers: travs || [],
-      guest_count_local: booking.guest_count_local || 0, guest_count_sadc: booking.guest_count_sadc || 0,
-      guest_count_international: booking.guest_count_international || 0,
-      showResidency: !!(booking.guest_count_local || booking.guest_count_sadc || booking.guest_count_international),
+      travelers, guides,
+      gate_fee_local: booking.gate_fee_local || 0, gate_fee_sadc: booking.gate_fee_sadc || 0, gate_fee_international: booking.gate_fee_international || 0,
+      showGateFees: !!(booking.gate_fee_local || booking.gate_fee_sadc || booking.gate_fee_international || guides.length > 0),
     })
     setModalOpen(true)
   }
@@ -177,7 +182,7 @@ function BookingsContent() {
     const guestCount = Number(form.guest_count) || 1
     const unitPrice = Number(form.unit_price) || 0
     const guestId = await findOrCreateGuest(form.guest_name, form.guest_email, form.guest_phone)
-    const { travelers, showResidency, ...formRest } = form
+    const { travelers, guides, showGateFees, guest_residency, ...formRest } = form
     const payload = {
       ...formRest,
       guest_id: guestId,
@@ -191,9 +196,9 @@ function BookingsContent() {
       vehicle_id: form.vehicle_id || null,
       vessel_id: form.vessel_id || null,
       room_id: form.room_id || null,
-      guest_count_local: Number(form.guest_count_local) || 0,
-      guest_count_sadc: Number(form.guest_count_sadc) || 0,
-      guest_count_international: Number(form.guest_count_international) || 0,
+      gate_fee_local: Number(form.gate_fee_local) || 0,
+      gate_fee_sadc: Number(form.gate_fee_sadc) || 0,
+      gate_fee_international: Number(form.gate_fee_international) || 0,
     }
     let bookingId = editingId
     let error
@@ -207,18 +212,21 @@ function BookingsContent() {
     }
     if (error) { setSaving(false); toast.error(error.message); return }
 
-    // Travelers are entirely optional — most bookings have none listed
-    // beyond the lead guest, and that's fine. When editing, the existing
-    // list is replaced wholesale with whatever's currently in the form,
-    // which is simplest and matches how the rest of this form already
-    // works (no partial-diff tracking anywhere else on this page either).
+    // Travelers, guides and the lead's own residency are all rows in the
+    // same booking_travelers table now — distinguished by is_lead/is_guide
+    // rather than separate storage. Whole list is replaced on every save,
+    // same as before (no partial-diff tracking anywhere else on this form).
     if (bookingId) {
       await supabase.from('booking_travelers').delete().eq('booking_id', bookingId)
-      const rows = [{ full_name: form.guest_name, email: form.guest_email || null, phone: form.guest_phone || null, is_lead: true, guest_id: guestId }]
+      const rows = [{ full_name: form.guest_name, email: form.guest_email || null, phone: form.guest_phone || null, is_lead: true, is_guide: false, residency: guest_residency || null, guest_id: guestId }]
       for (const trav of travelers) {
         if (!trav.full_name) continue
         const travGuestId = await findOrCreateGuest(trav.full_name, trav.email, trav.phone)
-        rows.push({ full_name: trav.full_name, email: trav.email || null, phone: trav.phone || null, is_lead: false, guest_id: travGuestId })
+        rows.push({ full_name: trav.full_name, email: trav.email || null, phone: trav.phone || null, is_lead: false, is_guide: false, residency: trav.residency || null, guest_id: travGuestId })
+      }
+      for (const guide of guides) {
+        if (!guide.full_name) continue
+        rows.push({ full_name: guide.full_name, email: null, phone: null, is_lead: false, is_guide: true, residency: guide.residency || null, gate_fee_exempt: guide.gate_fee_exempt !== false, guest_id: null })
       }
       if (rows.length > 0) {
         await supabase.from('booking_travelers').insert(rows.map(r => ({ ...r, booking_id: bookingId, company_id: company.id })))
@@ -244,6 +252,18 @@ function BookingsContent() {
     return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
   }).length
   const bookingsLimit = checkLimit('bookings_per_month', thisMonthCount, { profile, company })
+
+  // Every person actually counted against a gate fee: the lead guest, each
+  // named traveler with a residency set, and each guide whose entry isn't
+  // marked exempt (most are — this only adds them when that's unticked).
+  const residencyCounts = { local: 0, sadc: 0, international: 0 }
+  if (form.guest_residency) residencyCounts[form.guest_residency]++
+  for (const trav of form.travelers) if (trav.residency) residencyCounts[trav.residency]++
+  for (const guide of form.guides) if (guide.residency && !guide.gate_fee_exempt) residencyCounts[guide.residency]++
+  const gateFeesTotal =
+    residencyCounts.local * (Number(form.gate_fee_local) || 0) +
+    residencyCounts.sadc * (Number(form.gate_fee_sadc) || 0) +
+    residencyCounts.international * (Number(form.gate_fee_international) || 0)
 
   return (
     <div>
@@ -330,6 +350,12 @@ function BookingsContent() {
             <Input label={t('guestName')} required value={form.guest_name} onChange={e => setForm({ ...form, guest_name: e.target.value })} />
             <Input label={t('guestEmail')} type="email" value={form.guest_email} onChange={e => setForm({ ...form, guest_email: e.target.value })} />
             <Input label={t('guestPhone')} value={form.guest_phone} onChange={e => setForm({ ...form, guest_phone: e.target.value })} />
+            <Select label={t('residency')} value={form.guest_residency} onChange={e => setForm({ ...form, guest_residency: e.target.value })}>
+              <option value="">{t('residencyNotSet')}</option>
+              <option value="local">{t('residencyLocal')}</option>
+              <option value="sadc">{t('residencySadc')}</option>
+              <option value="international">{t('residencyInternational')}</option>
+            </Select>
             <Input label={t('guests')} type="number" min="1" value={form.guest_count} onChange={e => setForm({ ...form, guest_count: e.target.value })} />
             <Input label={t('startDate')} type="date" required value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} />
             <Input label={t('endDate')} type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} />
@@ -355,26 +381,27 @@ function BookingsContent() {
             <Input label={t('amountPaid')} type="number" step="0.01" value={form.amount_paid} onChange={e => setForm({ ...form, amount_paid: e.target.value })} />
           </div>
 
-          {form.showResidency ? (
+          {form.showGateFees ? (
             <div style={{ marginBottom: '0.875rem', padding: '0.75rem', background: 'var(--cream)', borderRadius: '0.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)' }}>{t('residencyBreakdown')}</label>
-                <button type="button" onClick={() => setForm({ ...form, showResidency: false, guest_count_local: 0, guest_count_sadc: 0, guest_count_international: 0 })}
-                  style={{ background: 'none', border: 'none', color: 'var(--gray-400)', fontSize: '0.75rem', cursor: 'pointer' }}>{t('removeBreakdown')}</button>
+                <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)' }}>{t('gateFees')}</label>
+                <button type="button" onClick={() => setForm({ ...form, showGateFees: false, gate_fee_local: 0, gate_fee_sadc: 0, gate_fee_international: 0 })}
+                  style={{ background: 'none', border: 'none', color: 'var(--gray-400)', fontSize: '0.75rem', cursor: 'pointer' }}>{t('removeGateFees')}</button>
               </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--gray-500)', margin: '0 0 0.5rem' }}>{t('gateFeesHint')}</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0 0.75rem' }}>
-                <Input label={t('residencyLocal')} type="number" min="0" value={form.guest_count_local} onChange={e => setForm({ ...form, guest_count_local: e.target.value })} />
-                <Input label={t('residencySadc')} type="number" min="0" value={form.guest_count_sadc} onChange={e => setForm({ ...form, guest_count_sadc: e.target.value })} />
-                <Input label={t('residencyInternational')} type="number" min="0" value={form.guest_count_international} onChange={e => setForm({ ...form, guest_count_international: e.target.value })} />
+                <Input label={`${t('residencyLocal')} (${t('perPerson')})`} type="number" min="0" step="0.01" value={form.gate_fee_local} onChange={e => setForm({ ...form, gate_fee_local: e.target.value })} />
+                <Input label={`${t('residencySadc')} (${t('perPerson')})`} type="number" min="0" step="0.01" value={form.gate_fee_sadc} onChange={e => setForm({ ...form, gate_fee_sadc: e.target.value })} />
+                <Input label={`${t('residencyInternational')} (${t('perPerson')})`} type="number" min="0" step="0.01" value={form.gate_fee_international} onChange={e => setForm({ ...form, gate_fee_international: e.target.value })} />
               </div>
-              {(Number(form.guest_count_local) || 0) + (Number(form.guest_count_sadc) || 0) + (Number(form.guest_count_international) || 0) !== (Number(form.guest_count) || 0) && (
-                <p style={{ fontSize: '0.75rem', color: 'var(--gold)', margin: '0.5rem 0 0' }}>{t('residencyMismatch', { guestCount: Number(form.guest_count) || 0 })}</p>
-              )}
+              <p style={{ textAlign: 'right', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--navy)', margin: '0.5rem 0 0' }}>
+                {t('totalGateFees')}: {company.currency} {gateFeesTotal.toLocaleString()}
+              </p>
             </div>
           ) : (
-            <button type="button" onClick={() => setForm({ ...form, showResidency: true })}
+            <button type="button" onClick={() => setForm({ ...form, showGateFees: true })}
               style={{ background: 'none', border: 'none', color: 'var(--gold)', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', marginBottom: '0.875rem', padding: 0 }}>
-              + {t('addResidencyBreakdown')}
+              + {t('addGateFees')}
             </button>
           )}
 
@@ -426,7 +453,7 @@ function BookingsContent() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.375rem' }}>
               <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)' }}>{t('travelers')}</label>
               <button type="button" className="btn btn-outline btn-sm"
-                onClick={() => setForm({ ...form, travelers: [...form.travelers, { full_name: '', email: '', phone: '' }] })}>
+                onClick={() => setForm({ ...form, travelers: [...form.travelers, { full_name: '', email: '', phone: '', residency: '' }] })}>
                 + {t('addTraveler')}
               </button>
             </div>
@@ -435,17 +462,64 @@ function BookingsContent() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {form.travelers.map((trav, i) => (
-                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1.5fr 1fr auto', gap: '0.5rem', alignItems: 'center' }}>
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.3fr 1.3fr 0.9fr 1fr auto', gap: '0.5rem', alignItems: 'center' }}>
                     <input placeholder={t('travelerName')} value={trav.full_name}
                       onChange={e => setForm({ ...form, travelers: form.travelers.map((tv, ti) => ti === i ? { ...tv, full_name: e.target.value } : tv) })}
                       style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
                     <input placeholder={t('travelerEmail')} type="email" value={trav.email}
                       onChange={e => setForm({ ...form, travelers: form.travelers.map((tv, ti) => ti === i ? { ...tv, email: e.target.value } : tv) })}
                       style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
+                    <select value={trav.residency || ''} onChange={e => setForm({ ...form, travelers: form.travelers.map((tv, ti) => ti === i ? { ...tv, residency: e.target.value } : tv) })}
+                      style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }}>
+                      <option value="">{t('residencyShort')}</option>
+                      <option value="local">{t('residencyLocalShort')}</option>
+                      <option value="sadc">{t('residencySadcShort')}</option>
+                      <option value="international">{t('residencyIntlShort')}</option>
+                    </select>
                     <input placeholder={t('travelerPhone')} value={trav.phone}
                       onChange={e => setForm({ ...form, travelers: form.travelers.map((tv, ti) => ti === i ? { ...tv, phone: e.target.value } : tv) })}
                       style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
                     <button type="button" onClick={() => setForm({ ...form, travelers: form.travelers.filter((_, ti) => ti !== i) })}
+                      style={{ background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer', fontSize: '1rem' }}>×</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          )}
+
+          {form.showGateFees && (
+          <div style={{ marginBottom: '0.875rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.375rem' }}>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-700)' }}>{t('guides')}</label>
+              {form.guides.length < 3 && (
+                <button type="button" className="btn btn-outline btn-sm"
+                  onClick={() => setForm({ ...form, guides: [...form.guides, { full_name: '', residency: '', gate_fee_exempt: true }] })}>
+                  + {t('addGuide')}
+                </button>
+              )}
+            </div>
+            {form.guides.length === 0 ? (
+              <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{t('guidesHint')}</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                {form.guides.map((guide, i) => (
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1.3fr auto', gap: '0.5rem', alignItems: 'center' }}>
+                    <input placeholder={t('travelerName')} value={guide.full_name}
+                      onChange={e => setForm({ ...form, guides: form.guides.map((g, gi) => gi === i ? { ...g, full_name: e.target.value } : g) })}
+                      style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }} />
+                    <select value={guide.residency || ''} onChange={e => setForm({ ...form, guides: form.guides.map((g, gi) => gi === i ? { ...g, residency: e.target.value } : g) })}
+                      style={{ padding: '0.4rem 0.6rem', border: '1px solid var(--gray-200)', borderRadius: '0.375rem', fontSize: '0.8125rem' }}>
+                      <option value="">{t('residencyShort')}</option>
+                      <option value="local">{t('residencyLocalShort')}</option>
+                      <option value="sadc">{t('residencySadcShort')}</option>
+                      <option value="international">{t('residencyIntlShort')}</option>
+                    </select>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', fontSize: '0.75rem', color: 'var(--gray-500)' }}>
+                      <input type="checkbox" checked={!guide.gate_fee_exempt} onChange={e => setForm({ ...form, guides: form.guides.map((g, gi) => gi === i ? { ...g, gate_fee_exempt: !e.target.checked } : g) })} />
+                      {t('chargeGateFee')}
+                    </label>
+                    <button type="button" onClick={() => setForm({ ...form, guides: form.guides.filter((_, gi) => gi !== i) })}
                       style={{ background: 'none', border: 'none', color: 'var(--gray-400)', cursor: 'pointer', fontSize: '1rem' }}>×</button>
                   </div>
                 ))}

@@ -58,11 +58,12 @@ function InvoicesContent() {
 
   // Deep-linked from a booking's "Generate Invoice" button. The booking's
   // own service (its flat duration-based price) becomes one line item at
-  // the same price for every guest — that never varies by residency. Any
-  // park/entry fee rate sheet items ARE residency-priced, so if the
-  // booking recorded a residency breakdown, matching fee lines are
-  // suggested (one per non-zero residency bucket) — fully editable/
-  // removable before saving, never forced onto the invoice.
+  // the same price for every guest — that never varies by residency. Gate
+  // fee lines are suggested from the booking's own gate_fee_local/sadc/
+  // international rates (entered per-booking, since the actual fee varies
+  // by which park a specific tour visits) times the real headcount per
+  // band, counted from booking_travelers (lead guest + named travelers +
+  // any non-exempt guides) — fully editable/removable before saving.
   useEffect(() => {
     const bookingId = searchParams.get('fromBooking')
     if (!bookingId || !company) return
@@ -70,9 +71,9 @@ function InvoicesContent() {
     ;(async () => {
       const { data: booking } = await supabase.from('bookings').select('*').eq('id', bookingId).eq('company_id', company.id).maybeSingle()
       if (!booking || cancelled) return
-      const [{ data: bt }, { data: parkFees }] = await Promise.all([
+      const [{ data: bt }, { data: people }] = await Promise.all([
         supabase.from('booking_types').select('name').eq('company_id', company.id).eq('slug', booking.booking_type).maybeSingle(),
-        supabase.from('rate_sheet_items').select('*').eq('company_id', company.id).eq('is_park_fee', true).eq('active', true),
+        supabase.from('booking_travelers').select('residency, is_guide, gate_fee_exempt').eq('booking_id', bookingId),
       ])
       if (cancelled) return
 
@@ -80,17 +81,19 @@ function InvoicesContent() {
         description: `${bt?.name || booking.booking_type} — ${booking.guest_count} guest(s)`,
         quantity: booking.guest_count, unit_price: booking.unit_price || 0,
       }]
-      const residencyBuckets = [
-        ['local', booking.guest_count_local], ['sadc', booking.guest_count_sadc], ['international', booking.guest_count_international],
-      ]
-      for (const [residency, count] of residencyBuckets) {
-        if (!count) continue
-        const fee = (parkFees || []).find(f => f.residency === residency)
-        if (fee) {
-          lines.push({
-            description: `${fee.name} (${residency})`, quantity: count, unit_price: fee.unit_price,
-            residency, rate_sheet_item_id: fee.id,
-          })
+      const counts = { local: 0, sadc: 0, international: 0 }
+      for (const p of people || []) {
+        if (!p.residency) continue
+        if (p.is_guide && p.gate_fee_exempt) continue
+        counts[p.residency] = (counts[p.residency] || 0) + 1
+      }
+      const RESIDENCY_LABEL = { local: 'Local (SA)', sadc: 'SADC', international: 'International' }
+      const gateFeeRate = { local: booking.gate_fee_local, sadc: booking.gate_fee_sadc, international: booking.gate_fee_international }
+      for (const residency of ['local', 'sadc', 'international']) {
+        const count = counts[residency]
+        const rate = Number(gateFeeRate[residency]) || 0
+        if (count > 0 && rate > 0) {
+          lines.push({ description: `Gate/Entry Fee — ${RESIDENCY_LABEL[residency]}`, quantity: count, unit_price: rate, residency })
         }
       }
 
