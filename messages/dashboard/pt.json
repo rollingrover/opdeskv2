@@ -1336,5 +1336,15 @@
     "colSaleAmount": "Valor da Venda",
     "colPct": "%",
     "colCommission": "Comissão"
+  },
+  "LodgingCalendar": {
+    "title": "Calendário de Disponibilidade",
+    "subtitle": "Ocupação dos quartos num relance — clique numa noite reservada para a abrir.",
+    "today": "Hoje",
+    "room": "Quarto",
+    "available": "Disponível",
+    "noRoomsTitle": "Sem quartos para mostrar",
+    "noRoomsDesc": "Adicione primeiro os seus quartos, depois a disponibilidade aparecerá aqui.",
+    "addRooms": "Adicionar Quartos"
   }
 }

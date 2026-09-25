@@ -1336,5 +1336,15 @@
     "colSaleAmount": "Verkoopbedrag",
     "colPct": "%",
     "colCommission": "Kommissie"
+  },
+  "LodgingCalendar": {
+    "title": "Beskikbaarheidskalender",
+    "subtitle": "Kamerbesetting op 'n oogopslag — klik 'n bespreekte nag om dit oop te maak.",
+    "today": "Vandag",
+    "room": "Kamer",
+    "available": "Beskikbaar",
+    "noRoomsTitle": "Geen kamers om te wys nie",
+    "noRoomsDesc": "Voeg eers jou kamers by, dan sal hul beskikbaarheid hier verskyn.",
+    "addRooms": "Voeg Kamers By"
   }
 }

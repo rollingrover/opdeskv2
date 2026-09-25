@@ -1336,5 +1336,15 @@
     "colSaleAmount": "Sale Amount",
     "colPct": "%",
     "colCommission": "Commission"
+  },
+  "LodgingCalendar": {
+    "title": "Availability Calendar",
+    "subtitle": "Room occupancy at a glance — click a booked night to open it.",
+    "today": "Today",
+    "room": "Room",
+    "available": "Available",
+    "noRoomsTitle": "No rooms to show",
+    "noRoomsDesc": "Add your rooms first, then their availability will show up here.",
+    "addRooms": "Add Rooms"
   }
 }

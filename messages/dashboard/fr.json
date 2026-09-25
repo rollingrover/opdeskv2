@@ -1336,5 +1336,15 @@
     "colSaleAmount": "Montant de Vente",
     "colPct": "%",
     "colCommission": "Commission"
+  },
+  "LodgingCalendar": {
+    "title": "Calendrier de Disponibilité",
+    "subtitle": "Occupation des chambres en un coup d'œil — cliquez sur une nuit réservée pour l'ouvrir.",
+    "today": "Aujourd'hui",
+    "room": "Chambre",
+    "available": "Disponible",
+    "noRoomsTitle": "Aucune chambre à afficher",
+    "noRoomsDesc": "Ajoutez d'abord vos chambres, leur disponibilité apparaîtra ensuite ici.",
+    "addRooms": "Ajouter des Chambres"
   }
 }
