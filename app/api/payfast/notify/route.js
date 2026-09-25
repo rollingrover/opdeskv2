@@ -13,30 +13,53 @@ export async function POST(request) {
   const rawBody = await request.text()
   const params = new URLSearchParams(rawBody)
   const postData = Object.fromEntries(params.entries())
+  const supabase = createServiceClient()
+
+  // Every call to this endpoint gets exactly one row here, whatever the
+  // outcome — this table existed in the schema from early on but nothing
+  // ever wrote to it, so there was no audit trail for a webhook that
+  // moves real money. logAndReturn wraps every existing return path
+  // below rather than restructuring them, so nothing about the actual
+  // payment logic changes.
+  async function logAndReturn(response, { intent, outcome, error, companyId } = {}) {
+    try {
+      await supabase.from('payfast_itn_log').insert([{
+        payment_status: postData.payment_status || null, pf_payment_id: postData.pf_payment_id || null,
+        m_payment_id: postData.m_payment_id || null, amount_gross: postData.amount_gross ? Number(postData.amount_gross) : null,
+        company_id: companyId || null, intent: intent ? { type: intent } : null, raw_params: postData,
+        outcome: outcome || null, error: error || null,
+      }])
+    } catch (logErr) {
+      console.error('[payfast/notify] failed to write itn log:', logErr)
+    }
+    return response
+  }
 
   try {
     if (!verifyItnSignature(postData)) {
       console.error('[payfast/notify] signature mismatch', postData.m_payment_id)
-      return new NextResponse('invalid signature', { status: 400 })
+      return logAndReturn(new NextResponse('invalid signature', { status: 400 }), { outcome: 'rejected', error: 'signature mismatch' })
     }
 
     const confirmed = await confirmWithPayfast(rawBody)
     if (!confirmed) {
       console.error('[payfast/notify] PayFast did not confirm this notification', postData.m_payment_id)
-      return new NextResponse('not confirmed', { status: 400 })
+      return logAndReturn(new NextResponse('not confirmed', { status: 400 }), { outcome: 'rejected', error: 'not confirmed by PayFast' })
     }
 
-    const supabase = createServiceClient()
     const mPaymentId = postData.m_payment_id || ''
 
     // --- RollingRover Productions payment (one-off or recurring) ---
     if (mPaymentId.startsWith('RR-')) {
-      if (postData.payment_status !== 'COMPLETE') return new NextResponse('OK', { status: 200 })
+      if (postData.payment_status !== 'COMPLETE') return logAndReturn(new NextResponse('OK', { status: 200 }), { intent: 'rollingrover_payment', outcome: 'ignored_not_complete' })
       const { error } = await supabase.from('rollingrover_requests')
         .update({ status: 'paid', paid_at: new Date().toISOString(), payfast_pf_payment_id: postData.pf_payment_id })
         .eq('payfast_m_payment_id', mPaymentId)
-      if (error) { console.error('[payfast/notify] RR update failed:', error); return new NextResponse('db error', { status: 500 }) }
-      return new NextResponse('OK', { status: 200 })
+      if (error) {
+        console.error('[payfast/notify] RR update failed:', error)
+        return logAndReturn(new NextResponse('db error', { status: 500 }), { intent: 'rollingrover_payment', outcome: 'error', error: error.message })
+      }
+      return logAndReturn(new NextResponse('OK', { status: 200 }), { intent: 'rollingrover_payment', outcome: 'success' })
     }
 
     // --- OpDesk SaaS subscription payment ---
@@ -63,7 +86,7 @@ export async function POST(request) {
 
     if (!companyId) {
       console.error('[payfast/notify] could not match SUB payment to a company', mPaymentId, postData.token)
-      return new NextResponse('OK', { status: 200 }) // acknowledge anyway — nothing more we can do with it
+      return logAndReturn(new NextResponse('OK', { status: 200 }), { intent: 'subscription_payment', outcome: 'unmatched', error: 'could not match to a company' }) // acknowledge anyway — nothing more we can do with it
     }
 
     if (postData.payment_status !== 'COMPLETE') {
@@ -75,7 +98,7 @@ export async function POST(request) {
         payfast_m_payment_id: mPaymentId, payfast_pf_payment_id: postData.pf_payment_id,
         payfast_token: postData.token, payment_status: postData.payment_status,
       }])
-      return new NextResponse('OK', { status: 200 })
+      return logAndReturn(new NextResponse('OK', { status: 200 }), { intent: 'subscription_payment', outcome: 'payment_failed', companyId })
     }
 
     await supabase.from('subscription_payments').insert([{
@@ -106,9 +129,9 @@ export async function POST(request) {
       }).eq('id', companyId)
     }
 
-    return new NextResponse('OK', { status: 200 })
+    return logAndReturn(new NextResponse('OK', { status: 200 }), { intent: isInitialSetup ? 'subscription_initial_setup' : 'subscription_renewal', outcome: 'success', companyId })
   } catch (error) {
     console.error('[payfast/notify] error:', error)
-    return new NextResponse('error', { status: 500 })
+    return logAndReturn(new NextResponse('error', { status: 500 }), { intent: 'unhandled', outcome: 'error', error: error.message })
   }
 }
