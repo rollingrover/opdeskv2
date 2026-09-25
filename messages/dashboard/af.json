@@ -229,7 +229,16 @@
     "addBooking": "Voeg Bespreking By"
   },
   "Common": {
-    "needsCompanyTitle": "Stel eers jou maatskappy op"
+    "needsCompanyTitle": "Stel eers jou maatskappy op",
+    "onRoadmap": "Hierdie module is op die padkaart.",
+    "comingSoonTitle": "{title} kom binnekort",
+    "comingSoonDefaultDesc": "Ons bou steeds hierdie deel van OpDesk. Kom kyk gou weer.",
+    "backToDashboard": "Terug na Dashboard",
+    "thisModule": "Hierdie module",
+    "notInPlan": "Nie ingesluit in jou huidige plan nie",
+    "moduleLockedTitle": "{label} is nie deel van jou huidige plan nie",
+    "moduleLockedDesc": "Hierdie kenmerk is ten volle gebou en gereed om te gebruik — dit hoef net by jou rekening gevoeg te word. Gradeer jou plan op of voeg dit individueel by om dit oop te sluit.",
+    "buyThisModule": "Koop Hierdie Module"
   },
   "Staff": {
     "title": "Personeellede",

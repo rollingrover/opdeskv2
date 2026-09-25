@@ -229,7 +229,16 @@
     "addBooking": "Ajouter une Réservation"
   },
   "Common": {
-    "needsCompanyTitle": "Configurez d'abord votre entreprise"
+    "needsCompanyTitle": "Configurez d'abord votre entreprise",
+    "onRoadmap": "Ce module est sur notre feuille de route.",
+    "comingSoonTitle": "{title} arrive bientôt",
+    "comingSoonDefaultDesc": "Nous travaillons encore sur cette partie d’OpDesk. Revenez bientôt.",
+    "backToDashboard": "Retour au Tableau de Bord",
+    "thisModule": "Ce module",
+    "notInPlan": "N'est pas inclus dans votre forfait actuel",
+    "moduleLockedTitle": "{label} ne fait pas partie de votre forfait actuel",
+    "moduleLockedDesc": "Cette fonctionnalité est entièrement développée et prête à l'emploi — il suffit de l'ajouter à votre compte. Passez à un forfait supérieur ou ajoutez-la individuellement pour la débloquer.",
+    "buyThisModule": "Acheter ce Module"
   },
   "Staff": {
     "title": "Personnel",

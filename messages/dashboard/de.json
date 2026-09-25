@@ -229,7 +229,16 @@
     "addBooking": "Buchung Hinzufügen"
   },
   "Common": {
-    "needsCompanyTitle": "Richten Sie zuerst Ihr Unternehmen ein"
+    "needsCompanyTitle": "Richten Sie zuerst Ihr Unternehmen ein",
+    "onRoadmap": "Dieses Modul steht auf der Roadmap.",
+    "comingSoonTitle": "{title} kommt bald",
+    "comingSoonDefaultDesc": "Wir arbeiten noch an diesem Teil von OpDesk. Schauen Sie bald wieder vorbei.",
+    "backToDashboard": "Zurück zum Dashboard",
+    "thisModule": "Dieses Modul",
+    "notInPlan": "Nicht in Ihrem aktuellen Tarif enthalten",
+    "moduleLockedTitle": "{label} ist nicht Teil Ihres aktuellen Tarifs",
+    "moduleLockedDesc": "Diese Funktion ist vollständig gebaut und einsatzbereit — sie muss nur zu Ihrem Konto hinzugefügt werden. Upgraden Sie Ihren Tarif oder fügen Sie sie einzeln hinzu, um sie freizuschalten.",
+    "buyThisModule": "Dieses Modul Kaufen"
   },
   "Staff": {
     "title": "Mitarbeiter",

@@ -229,7 +229,16 @@
     "addBooking": "Add Booking"
   },
   "Common": {
-    "needsCompanyTitle": "Set up your company first"
+    "needsCompanyTitle": "Set up your company first",
+    "onRoadmap": "This module is on the roadmap.",
+    "comingSoonTitle": "{title} is coming soon",
+    "comingSoonDefaultDesc": "We're still building this part of OpDesk. Check back soon.",
+    "backToDashboard": "Back to Dashboard",
+    "thisModule": "This module",
+    "notInPlan": "Not included in your current plan",
+    "moduleLockedTitle": "{label} isn't part of your current plan",
+    "moduleLockedDesc": "This feature is fully built and ready to use — it just needs to be added to your account. Upgrade your plan or add it individually to unlock it.",
+    "buyThisModule": "Buy This Module"
   },
   "Staff": {
     "title": "Staff Members",

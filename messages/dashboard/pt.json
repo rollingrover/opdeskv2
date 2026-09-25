@@ -229,7 +229,16 @@
     "addBooking": "Adicionar Reserva"
   },
   "Common": {
-    "needsCompanyTitle": "Configure primeiro a sua empresa"
+    "needsCompanyTitle": "Configure primeiro a sua empresa",
+    "onRoadmap": "Este módulo está no roteiro.",
+    "comingSoonTitle": "{title} está a chegar em breve",
+    "comingSoonDefaultDesc": "Ainda estamos a construir esta parte da OpDesk. Volte em breve.",
+    "backToDashboard": "Voltar ao Painel",
+    "thisModule": "Este módulo",
+    "notInPlan": "Não incluído no seu plano atual",
+    "moduleLockedTitle": "{label} não faz parte do seu plano atual",
+    "moduleLockedDesc": "Esta funcionalidade está totalmente construída e pronta a usar — só precisa de ser adicionada à sua conta. Atualize o seu plano ou adicione-a individualmente para a desbloquear.",
+    "buyThisModule": "Comprar Este Módulo"
   },
   "Staff": {
     "title": "Membros da Equipa",
