@@ -241,6 +241,7 @@ export function Sidebar({ mobileOpen, onClose }) {
                 { href:'/admin/pricing',   icon: DollarSign, label:'Add-on Pricing' },
                 { href:'/admin/packages',  icon: FileText, label:'Marketing Packages' },
                 { href:'/admin/community-contributions', icon: Star, label:'Community Contributions' },
+                { href:'/admin/opdesk-invoices', icon: FileText, label:'OpDesk Invoices' },
                 { href:'/admin/affiliates', icon: Star, label:'Affiliates' },
                 { href:'/admin/discounts', icon: FileText, label:'Discount Codes' },
                 { href:'/admin/support',   icon: HelpCircle, label:'Support Queue' },
