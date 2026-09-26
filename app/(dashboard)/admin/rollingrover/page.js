@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
-import { Copy, ExternalLink, RefreshCw } from 'lucide-react'
+import { Copy, ExternalLink, RefreshCw, UserPlus, FileText } from 'lucide-react'
 
 const STATUS_COLORS = { new: '#3b82f6', quoted: '#f59e0b', paid: '#22c55e', declined: '#ef4444', archived: '#6b7280' }
 
@@ -10,21 +10,39 @@ function SARollingRover() {
   const supabase = createClient()
   const toast = useToast()
   const [requests, setRequests] = useState([])
+  const [clientMap, setClientMap] = useState({}) // source_request_id -> opdesk_clients row, so already-promoted requests show that instead of the button
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
   const [selected, setSelected] = useState(null)
   const [quoteForm, setQuoteForm] = useState({ quote_amount: '', quote_notes: '', billing_type: 'one_off', recurring_cadence: 'monthly' })
   const [saving, setSaving] = useState(false)
   const [generating, setGenerating] = useState(false)
+  const [promoting, setPromoting] = useState(false)
 
   async function load() {
     setLoading(true)
-    const { data, error } = await supabase.from('rollingrover_requests').select('*').order('created_at', { ascending: false })
+    const [{ data, error }, { data: clients }] = await Promise.all([
+      supabase.from('rollingrover_requests').select('*').order('created_at', { ascending: false }),
+      supabase.from('opdesk_clients').select('id, source_request_id').not('source_request_id', 'is', null),
+    ])
     if (error) toast.error(error.message)
     setRequests(data || [])
+    setClientMap(Object.fromEntries((clients || []).map(c => [c.source_request_id, c])))
     setLoading(false)
   }
   useEffect(() => { load() }, [])
+
+  async function promoteToClient(r) {
+    setPromoting(true)
+    const { error } = await supabase.from('opdesk_clients').insert([{
+      name: r.name, business_name: r.business_name || null, email: r.email || null, phone: r.phone || null,
+      source_request_id: r.id,
+    }])
+    setPromoting(false)
+    if (error) { toast.error(error.message); return }
+    toast.success('Added to Client Directory')
+    load()
+  }
 
   function openRequest(r) {
     setSelected(r)
@@ -177,6 +195,25 @@ function SARollingRover() {
                 <div style={{ fontSize: 12, color: '#6b7280' }}>{selected.email} {selected.phone ? `· ${selected.phone}` : ''}</div>
               </div>
               <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer', fontSize: 20 }}>×</button>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+              {clientMap[selected.id] ? (
+                <span style={{ flex: 1, textAlign: 'center', background: '#22c55e22', color: '#22c55e', border: '1px solid #22c55e', borderRadius: 8, padding: '8px 0', fontSize: 12, fontWeight: 600 }}>
+                  ✓ In Client Directory
+                </span>
+              ) : (
+                <button onClick={() => promoteToClient(selected)} disabled={promoting}
+                  style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: '#1a1a1a', color: '#D4A853', border: '1px solid #D4A853', borderRadius: 8, padding: '8px 0', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>
+                  <UserPlus size={13} /> {promoting ? 'Adding…' : 'Promote to Client'}
+                </button>
+              )}
+              {selected.quote_amount > 0 && (
+                <a href={`/admin/opdesk-invoices?fromRequest=${selected.id}`}
+                  style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, background: '#1a1a1a', color: '#3b82f6', border: '1px solid #3b82f6', borderRadius: 8, padding: '8px 0', cursor: 'pointer', fontSize: 12, fontWeight: 600, textDecoration: 'none' }}>
+                  <FileText size={13} /> Create Invoice
+                </a>
+              )}
             </div>
 
             <div style={{ background: '#111', borderRadius: 8, padding: 14, marginBottom: 16, fontSize: 13, color: '#d1d5db' }}>
