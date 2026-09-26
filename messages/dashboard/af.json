@@ -227,7 +227,13 @@
     "chargeGateFee": "Hef hekfooi",
     "bulkGuestsLabel": "Addisionele Gaste (nie individueel genoem nie)",
     "bulkGuestsHint": "Vir groot groepe is dit nie prakties om almal te noem nie — voeg hier tellings by vir enigeen buiten die hoofgas en reisigers hierbo genoem.",
-    "accountedFor": "{counted} van {total} gaste in ag geneem"
+    "accountedFor": "{counted} van {total} gaste in ag geneem",
+    "cancellationReason": "Rede vir Kansellasie",
+    "selectReason": "Kies 'n rede",
+    "reasonWeather": "Weer",
+    "reasonGuestRequest": "Gasversoek",
+    "reasonOperator": "Operateur Gekanselleer",
+    "reasonOther": "Ander"
   },
   "Calendar": {
     "title": "Kalender",
@@ -1283,7 +1289,9 @@
     "manageTypes": "bestuur bespreking tipes",
     "lockedTitle": "Besprekingwidget is 'n Professional-kenmerk",
     "lockedDesc": "Gradeer op na Professional of Enterprise om gaste toe te laat om direk van jou eie webwerf af te bespreek.",
-    "viewPlans": "Bekyk Planne"
+    "viewPlans": "Bekyk Planne",
+    "minNoticeHours": "Minimum Kennisgewing (ure)",
+    "minNoticeHint": "bv. 24 beteken 'n gas kan nie 'n bespreking vir minder as 24 uur van nou af versoek nie. Los op 0 vir geen minimum nie."
   },
   "Guests": {
     "title": "Gaste",

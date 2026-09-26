@@ -227,7 +227,13 @@
     "chargeGateFee": "Eintrittsgebühr berechnen",
     "bulkGuestsLabel": "Weitere Gäste (nicht einzeln benannt)",
     "bulkGuestsHint": "Bei großen Gruppen ist es nicht praktikabel, jeden zu benennen — fügen Sie hier Anzahlen für alle über den Hauptgast und die oben genannten Reisenden hinaus hinzu.",
-    "accountedFor": "{counted} von {total} Gästen erfasst"
+    "accountedFor": "{counted} von {total} Gästen erfasst",
+    "cancellationReason": "Stornierungsgrund",
+    "selectReason": "Grund auswählen",
+    "reasonWeather": "Wetter",
+    "reasonGuestRequest": "Gastwunsch",
+    "reasonOperator": "Vom Betreiber Storniert",
+    "reasonOther": "Sonstiges"
   },
   "Calendar": {
     "title": "Kalender",
@@ -1283,7 +1289,9 @@
     "manageTypes": "Buchungsarten verwalten",
     "lockedTitle": "Buchungs-Widget ist eine Professional-Funktion",
     "lockedDesc": "Upgraden Sie auf Professional oder Enterprise, damit Gäste direkt über Ihre eigene Website buchen können.",
-    "viewPlans": "Tarife ansehen"
+    "viewPlans": "Tarife ansehen",
+    "minNoticeHours": "Mindestvorlaufzeit (Stunden)",
+    "minNoticeHint": "z.B. bedeutet 24, dass ein Gast keine Buchung für weniger als 24 Stunden ab jetzt anfragen kann. Bei 0 belassen für kein Minimum."
   },
   "Guests": {
     "title": "Gäste",

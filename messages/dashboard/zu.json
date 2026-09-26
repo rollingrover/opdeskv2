@@ -227,7 +227,13 @@
     "chargeGateFee": "Charge gate fee",
     "bulkGuestsLabel": "Additional Guests (not individually named)",
     "bulkGuestsHint": "For large groups it isn't practical to name everyone — add counts here for anyone beyond the lead guest and travelers named above.",
-    "accountedFor": "{counted} of {total} guests accounted for"
+    "accountedFor": "{counted} of {total} guests accounted for",
+    "cancellationReason": "Cancellation Reason",
+    "selectReason": "Select a reason",
+    "reasonWeather": "Weather",
+    "reasonGuestRequest": "Guest Request",
+    "reasonOperator": "Operator Cancelled",
+    "reasonOther": "Other"
   },
   "Calendar": {
     "title": "Calendar",
@@ -1283,7 +1289,9 @@
     "manageTypes": "manage booking types",
     "lockedTitle": "Booking Widget is a Professional feature",
     "lockedDesc": "Upgrade to Professional or Enterprise to let guests book directly from your own website.",
-    "viewPlans": "View Plans"
+    "viewPlans": "View Plans",
+    "minNoticeHours": "Minimum Notice (hours)",
+    "minNoticeHint": "e.g. 24 means a guest can't request a booking for less than 24 hours from now. Leave at 0 for no minimum."
   },
   "Guests": {
     "title": "Guests",

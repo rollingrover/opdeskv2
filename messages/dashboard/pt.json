@@ -227,7 +227,13 @@
     "chargeGateFee": "Cobrar taxa de entrada",
     "bulkGuestsLabel": "Hóspedes Adicionais (não nomeados individualmente)",
     "bulkGuestsHint": "Para grupos grandes não é prático nomear todos — adicione aqui contagens para qualquer pessoa além do hóspede principal e dos viajantes nomeados acima.",
-    "accountedFor": "{counted} de {total} hóspedes contabilizados"
+    "accountedFor": "{counted} de {total} hóspedes contabilizados",
+    "cancellationReason": "Motivo do Cancelamento",
+    "selectReason": "Selecione um motivo",
+    "reasonWeather": "Meteorologia",
+    "reasonGuestRequest": "Pedido do Hóspede",
+    "reasonOperator": "Cancelado pelo Operador",
+    "reasonOther": "Outro"
   },
   "Calendar": {
     "title": "Calendário",
@@ -1283,7 +1289,9 @@
     "manageTypes": "gerir tipos de reserva",
     "lockedTitle": "O Widget de Reservas é uma funcionalidade Professional",
     "lockedDesc": "Atualize para Professional ou Enterprise para permitir que os hóspedes reservem diretamente a partir do seu próprio website.",
-    "viewPlans": "Ver Planos"
+    "viewPlans": "Ver Planos",
+    "minNoticeHours": "Aviso Prévio Mínimo (horas)",
+    "minNoticeHint": "ex. 24 significa que um hóspede não pode pedir uma reserva com menos de 24 horas de antecedência. Deixe em 0 para não haver mínimo."
   },
   "Guests": {
     "title": "Hóspedes",

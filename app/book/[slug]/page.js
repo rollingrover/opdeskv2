@@ -167,7 +167,8 @@ export default function BookingWidgetPage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 0.75rem' }}>
             <Field label={t.date}>
-              <input type="date" required value={form.start_date} min={new Date().toISOString().slice(0, 10)}
+              <input type="date" required value={form.start_date}
+                min={new Date(Date.now() + (data?.company?.widget_min_notice_hours || 0) * 60 * 60 * 1000).toISOString().slice(0, 10)}
                 onChange={e => setForm({ ...form, start_date: e.target.value })} style={inputStyle} />
             </Field>
             <Field label={t.guests}>

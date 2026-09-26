@@ -227,7 +227,13 @@
     "chargeGateFee": "Facturer les frais d'entrée",
     "bulkGuestsLabel": "Clients Supplémentaires (non nommés individuellement)",
     "bulkGuestsHint": "Pour les grands groupes, il n'est pas pratique de nommer tout le monde — ajoutez ici des totaux pour toute personne au-delà du client principal et des voyageurs nommés ci-dessus.",
-    "accountedFor": "{counted} sur {total} clients pris en compte"
+    "accountedFor": "{counted} sur {total} clients pris en compte",
+    "cancellationReason": "Motif d'Annulation",
+    "selectReason": "Sélectionner un motif",
+    "reasonWeather": "Météo",
+    "reasonGuestRequest": "Demande du Client",
+    "reasonOperator": "Annulé par l'Opérateur",
+    "reasonOther": "Autre"
   },
   "Calendar": {
     "title": "Calendrier",
@@ -1283,7 +1289,9 @@
     "manageTypes": "gérer les types de réservation",
     "lockedTitle": "Le Widget de Réservation est une fonctionnalité Professional",
     "lockedDesc": "Passez à Professional ou Enterprise pour permettre à vos clients de réserver directement depuis votre propre site web.",
-    "viewPlans": "Voir les Forfaits"
+    "viewPlans": "Voir les Forfaits",
+    "minNoticeHours": "Préavis Minimum (heures)",
+    "minNoticeHint": "par ex. 24 signifie qu'un client ne peut pas demander une réservation à moins de 24 heures. Laissez à 0 pour aucun minimum."
   },
   "Guests": {
     "title": "Clients",

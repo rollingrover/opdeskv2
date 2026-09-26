@@ -19,9 +19,11 @@ import { Plus, Lock, Download } from 'lucide-react'
 import { exportToCSV } from '@/lib/csvExport'
 import Link from 'next/link'
 
+const CANCELLATION_REASON_KEY = { weather: 'reasonWeather', guest_request: 'reasonGuestRequest', operator: 'reasonOperator', other: 'reasonOther' }
+
 const emptyForm = {
   guest_name: '', guest_email: '', guest_phone: '', guest_count: 1, guest_residency: '',
-  start_date: '', end_date: '', booking_type: 'tour', status: 'pending',
+  start_date: '', end_date: '', booking_type: 'tour', status: 'pending', cancellation_reason: '',
   unit_price: 0, amount_paid: 0, notes: '',
   guide_id: '', driver_id: '', vehicle_id: '', vessel_id: '', room_id: '',
   travelers: [], // additional named travelers beyond the lead guest — [{full_name, email, phone, residency}]
@@ -127,6 +129,7 @@ function BookingsContent() {
       guest_count: booking.guest_count || 1, guest_residency: lead?.residency || '',
       start_date: booking.start_date || '', end_date: booking.end_date || '',
       booking_type: booking.booking_type || bookingTypes[0]?.slug || '', status: booking.status || 'pending',
+      cancellation_reason: booking.cancellation_reason || '',
       unit_price: booking.unit_price ?? (booking.amount_total ? booking.amount_total / (booking.guest_count || 1) : 0),
       amount_paid: booking.amount_paid || 0, notes: booking.notes || '',
       guide_id: booking.guide_id || '', driver_id: booking.driver_id || '', vehicle_id: booking.vehicle_id || '',
@@ -369,6 +372,11 @@ function BookingsContent() {
                     <td>{company.currency} {Number(b.amount_total || 0).toLocaleString()}</td>
                     <td style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', justifyContent: 'flex-end' }}>
                       <StatusBadge status={b.status} />
+                      {b.status === 'cancelled' && b.cancellation_reason && (
+                        <span style={{ fontSize: '0.6875rem', color: 'var(--gray-400)' }}>
+                          ({t(CANCELLATION_REASON_KEY[b.cancellation_reason])})
+                        </span>
+                      )}
                       {!editable && <Lock size={12} color="var(--gray-400)" />}
                     </td>
                     <td style={{ textAlign: 'right' }} onClick={e => e.stopPropagation()}>
@@ -409,6 +417,15 @@ function BookingsContent() {
             <Select label={t('status')} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
               {BOOKING_STATUSES.map(s => <option key={s.value} value={s.value}>{tStatus(s.value)}</option>)}
             </Select>
+            {form.status === 'cancelled' && (
+              <Select label={t('cancellationReason')} value={form.cancellation_reason} onChange={e => setForm({ ...form, cancellation_reason: e.target.value })}>
+                <option value="">{t('selectReason')}</option>
+                <option value="weather">{t('reasonWeather')}</option>
+                <option value="guest_request">{t('reasonGuestRequest')}</option>
+                <option value="operator">{t('reasonOperator')}</option>
+                <option value="other">{t('reasonOther')}</option>
+              </Select>
+            )}
             <Select label={t('type')} value={form.booking_type} onChange={e => setForm({ ...form, booking_type: e.target.value })}>
               {bookingTypes.length === 0
                 ? <option value="">{t('noTypesYet')}</option>

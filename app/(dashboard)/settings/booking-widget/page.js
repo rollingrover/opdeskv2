@@ -23,11 +23,11 @@ export default function BookingWidgetPage() {
   const toast = useToast()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [form, setForm] = useState({ widget_enabled: false, slug: '' })
+  const [form, setForm] = useState({ widget_enabled: false, slug: '', widget_min_notice_hours: 0 })
 
   useEffect(() => {
     if (!company) { setLoading(false); return }
-    setForm({ widget_enabled: company.widget_enabled || false, slug: company.slug || slugify(company.name) })
+    setForm({ widget_enabled: company.widget_enabled || false, slug: company.slug || slugify(company.name), widget_min_notice_hours: company.widget_min_notice_hours || 0 })
     setLoading(false)
   }, [company])
 
@@ -45,6 +45,7 @@ export default function BookingWidgetPage() {
     const { error } = await supabase.from('companies').update({
       widget_enabled: form.widget_enabled,
       slug: form.slug || slugify(company.name),
+      widget_min_notice_hours: Number(form.widget_min_notice_hours) || 0,
     }).eq('id', company.id)
     setSaving(false)
     if (error) { toast.error(error.code === '23505' ? t('urlTaken') : error.message); return }
@@ -102,6 +103,9 @@ export default function BookingWidgetPage() {
         <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginTop: '-0.5rem', marginBottom: '1rem' }}>
           opdesk.app/book/<strong>{form.slug || slugify(company.name)}</strong>
         </p>
+
+        <Input label={t('minNoticeHours')} type="number" min="0" max="720" value={form.widget_min_notice_hours}
+          onChange={e => setForm({ ...form, widget_min_notice_hours: e.target.value })} hint={t('minNoticeHint')} />
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
           <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? t('saving') : t('save')}</button>

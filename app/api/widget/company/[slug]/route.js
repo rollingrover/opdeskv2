@@ -7,7 +7,7 @@ export async function GET(request, { params }) {
 
   const { data: company } = await supabase
     .from('companies')
-    .select('id, name, logo_url, currency, operator_type, widget_enabled, language')
+    .select('id, name, logo_url, currency, operator_type, widget_enabled, language, widget_min_notice_hours')
     .eq('slug', slug)
     .maybeSingle()
 
@@ -25,7 +25,7 @@ export async function GET(request, { params }) {
     .order('name')
 
   return NextResponse.json({
-    company: { name: company.name, logo_url: company.logo_url, currency: company.currency, operator_type: company.operator_type, language: company.language },
+    company: { name: company.name, logo_url: company.logo_url, currency: company.currency, operator_type: company.operator_type, language: company.language, widget_min_notice_hours: company.widget_min_notice_hours || 0 },
     bookingTypes: bookingTypes || [],
   })
 }

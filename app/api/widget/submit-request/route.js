@@ -11,9 +11,17 @@ export async function POST(request) {
 
     const supabase = createServiceClient()
     const { data: company } = await supabase
-      .from('companies').select('id, name, currency, billing_email, email')
+      .from('companies').select('id, name, currency, billing_email, email, widget_min_notice_hours')
       .eq('slug', slug).eq('widget_enabled', true).maybeSingle()
     if (!company) return NextResponse.json({ error: 'Booking widget not found or not enabled for this business' }, { status: 404 })
+
+    if (company.widget_min_notice_hours > 0) {
+      const requestedAt = new Date(start_date)
+      const earliestAllowed = new Date(Date.now() + company.widget_min_notice_hours * 60 * 60 * 1000)
+      if (requestedAt < earliestAllowed) {
+        return NextResponse.json({ error: `This booking type needs at least ${company.widget_min_notice_hours} hours' notice — please choose a later date.` }, { status: 400 })
+      }
+    }
 
     const { data: bt } = await supabase
       .from('booking_types').select('name, durations')
