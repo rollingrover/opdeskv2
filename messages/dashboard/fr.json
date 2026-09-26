@@ -257,7 +257,8 @@
     "notInPlan": "N'est pas inclus dans votre forfait actuel",
     "moduleLockedTitle": "{label} ne fait pas partie de votre forfait actuel",
     "moduleLockedDesc": "Cette fonctionnalité est entièrement développée et prête à l'emploi — il suffit de l'ajouter à votre compte. Passez à un forfait supérieur ou ajoutez-la individuellement pour la débloquer.",
-    "buyThisModule": "Acheter ce Module"
+    "buyThisModule": "Acheter ce Module",
+    "exportCsv": "Exporter en CSV"
   },
   "Staff": {
     "title": "Personnel",
@@ -832,7 +833,8 @@
     "lineItemsSubtotal": "Sous-total des lignes",
     "subtotalFromLines": "Calculé à partir des lignes ci-dessus",
     "currency": "Devise",
-    "currencyHint": "Les prix de la grille tarifaire ne se convertissent pas automatiquement — saisissez les montants directement dans cette devise."
+    "currencyHint": "Les prix de la grille tarifaire ne se convertissent pas automatiquement — saisissez les montants directement dans cette devise.",
+    "vatAmount": "Montant de la TVA"
   },
   "Quotations": {
     "title": "Devis",

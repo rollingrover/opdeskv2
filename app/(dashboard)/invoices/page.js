@@ -11,7 +11,8 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { Modal } from '@/components/ui/Modal'
 import { Input, Select } from '@/components/ui/FormField'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
-import { Plus, FileText, FileDown, Send, CreditCard, X } from 'lucide-react'
+import { Plus, FileText, FileDown, Send, CreditCard, X, Download } from 'lucide-react'
+import { exportToCSV } from '@/lib/csvExport'
 import { hasModuleAccess } from '@/lib/moduleAccess'
 
 const emptyForm = { guest_name: '', guest_email: '', guest_address: '', guest_vat_number: '', invoice_type: 'proforma', status: 'draft', subtotal: 0, vat_rate: 15, due_date: '', line_items: [], booking_id: null, currency: '' }
@@ -209,6 +210,22 @@ function InvoicesContent() {
   if (needsCompany) return <EmptyState icon={<BrandIcon name="companySetup" size={48} />} title={tCommon('needsCompanyTitle')} />
   if (loading) return <PageLoader />
 
+  function handleExportCSV() {
+    exportToCSV(rows, [
+      { key: 'invoice_number', label: t('colNumber') },
+      { key: 'guest_name', label: t('guestName') },
+      { key: 'guest_email', label: t('guestEmail') },
+      { label: t('type'), format: r => t(`type${r.invoice_type?.charAt(0).toUpperCase()}${r.invoice_type?.slice(1)}`) },
+      { key: 'subtotal', label: t('subtotal') },
+      { key: 'vat_amount', label: t('vatAmount') },
+      { key: 'total', label: t('total') },
+      { key: 'amount_paid', label: t('paid') },
+      { label: t('status'), format: r => tStatus(r.status) },
+      { key: 'due_date', label: t('dueDate') },
+      { key: 'created_at', label: t('colDate') },
+    ], 'invoices')
+  }
+
   return (
     <div>
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
@@ -217,7 +234,10 @@ function InvoicesContent() {
           <h1 className="page-title">{t('title')}</h1>
           <p className="page-subtitle">{rows.length} {rows.length === 1 ? t('invoiceSingular') : t('invoicePlural')}</p>
         </div>
-        <button className="btn btn-primary" onClick={() => { setForm({ ...emptyForm, currency: company.currency }); setModalOpen(true) }}><Plus size={16} /> {t('newInvoice')}</button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className="btn btn-outline" onClick={handleExportCSV}><Download size={16} /> {tCommon('exportCsv')}</button>
+          <button className="btn btn-primary" onClick={() => { setForm({ ...emptyForm, currency: company.currency }); setModalOpen(true) }}><Plus size={16} /> {t('newInvoice')}</button>
+        </div>
       </div>
 
       <div className="card card-shadow">

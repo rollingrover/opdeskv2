@@ -15,7 +15,8 @@ import { LimitBanner } from '@/components/ui/LimitBanner'
 import { checkLimit } from '@/lib/limits'
 import { hasModuleAccess } from '@/lib/moduleAccess'
 import { BOOKING_STATUSES } from '@/lib/constants'
-import { Plus, Lock } from 'lucide-react'
+import { Plus, Lock, Download } from 'lucide-react'
+import { exportToCSV } from '@/lib/csvExport'
 import Link from 'next/link'
 
 const emptyForm = {
@@ -276,6 +277,33 @@ function BookingsContent() {
     residencyCounts.sadc * (Number(form.gate_fee_sadc) || 0) +
     residencyCounts.international * (Number(form.gate_fee_international) || 0)
 
+  function handleExportCSV() {
+    const bookingTypeName = (slug) => bookingTypes.find(bt => bt.slug === slug)?.name || slug
+    const staffName = (id) => staff.find(s => s.id === id)?.full_name || ''
+    const vehicleName = (id) => vehicles.find(v => v.id === id)?.name || ''
+    const vesselName = (id) => vessels.find(v => v.id === id)?.name || ''
+    const roomName = (id) => rooms.find(r => r.id === id)?.name || ''
+    exportToCSV(bookings, [
+      { key: 'booking_ref', label: t('colRef') },
+      { key: 'guest_name', label: t('guestName') },
+      { key: 'guest_email', label: t('guestEmail') },
+      { key: 'guest_phone', label: t('guestPhone') },
+      { key: 'guest_count', label: t('guests') },
+      { label: t('type'), format: r => bookingTypeName(r.booking_type) },
+      { key: 'start_date', label: t('startDate') },
+      { key: 'end_date', label: t('endDate') },
+      { label: t('status'), format: r => tStatus(r.status) },
+      { key: 'unit_price', label: t('unitSellPrice') },
+      { key: 'amount_total', label: t('totalAmount') },
+      { key: 'amount_paid', label: t('amountPaid') },
+      { label: t('guide'), format: r => staffName(r.guide_id) },
+      { label: t('driver'), format: r => staffName(r.driver_id) },
+      { label: t('vehicle'), format: r => vehicleName(r.vehicle_id) },
+      { label: t('vessel'), format: r => vesselName(r.vessel_id) },
+      { label: t('room'), format: r => roomName(r.room_id) },
+    ], 'bookings')
+  }
+
   return (
     <div>
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
@@ -285,9 +313,12 @@ function BookingsContent() {
           <h1 className="page-title">{t('title')}</h1>
           <p className="page-subtitle">{bookings.length} {bookings.length === 1 ? t('bookingSingular') : t('bookingPlural')}</p>
         </div>
-        <button className="btn btn-primary" onClick={openForCreate}>
-          <Plus size={16} /> {t('newBooking')}
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className="btn btn-outline" onClick={handleExportCSV}><Download size={16} /> {tCommon('exportCsv')}</button>
+          <button className="btn btn-primary" onClick={openForCreate}>
+            <Plus size={16} /> {t('newBooking')}
+          </button>
+        </div>
       </div>
 
       <div className="card card-shadow">

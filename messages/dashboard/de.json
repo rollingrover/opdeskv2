@@ -257,7 +257,8 @@
     "notInPlan": "Nicht in Ihrem aktuellen Tarif enthalten",
     "moduleLockedTitle": "{label} ist nicht Teil Ihres aktuellen Tarifs",
     "moduleLockedDesc": "Diese Funktion ist vollständig gebaut und einsatzbereit — sie muss nur zu Ihrem Konto hinzugefügt werden. Upgraden Sie Ihren Tarif oder fügen Sie sie einzeln hinzu, um sie freizuschalten.",
-    "buyThisModule": "Dieses Modul Kaufen"
+    "buyThisModule": "Dieses Modul Kaufen",
+    "exportCsv": "CSV Exportieren"
   },
   "Staff": {
     "title": "Mitarbeiter",
@@ -832,7 +833,8 @@
     "lineItemsSubtotal": "Zwischensumme der Positionen",
     "subtotalFromLines": "Aus obigen Positionen berechnet",
     "currency": "Währung",
-    "currencyHint": "Preistabellen-Preise werden nicht automatisch umgerechnet — Beträge direkt in dieser Währung eingeben."
+    "currencyHint": "Preistabellen-Preise werden nicht automatisch umgerechnet — Beträge direkt in dieser Währung eingeben.",
+    "vatAmount": "MwSt.-Betrag"
   },
   "Quotations": {
     "title": "Angebote",

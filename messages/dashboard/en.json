@@ -257,7 +257,8 @@
     "notInPlan": "Not included in your current plan",
     "moduleLockedTitle": "{label} isn't part of your current plan",
     "moduleLockedDesc": "This feature is fully built and ready to use — it just needs to be added to your account. Upgrade your plan or add it individually to unlock it.",
-    "buyThisModule": "Buy This Module"
+    "buyThisModule": "Buy This Module",
+    "exportCsv": "Export CSV"
   },
   "Staff": {
     "title": "Staff Members",
@@ -832,7 +833,8 @@
     "lineItemsSubtotal": "Line items subtotal",
     "subtotalFromLines": "Calculated from line items above",
     "currency": "Currency",
-    "currencyHint": "Rate sheet prices don't auto-convert — enter amounts in this currency directly."
+    "currencyHint": "Rate sheet prices don't auto-convert — enter amounts in this currency directly.",
+    "vatAmount": "VAT Amount"
   },
   "Quotations": {
     "title": "Quotations",

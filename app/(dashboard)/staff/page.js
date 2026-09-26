@@ -13,7 +13,8 @@ import { useToast, ToastContainer } from '@/components/ui/Toast'
 import { LimitBanner } from '@/components/ui/LimitBanner'
 import { checkLimit } from '@/lib/limits'
 import { STAFF_TYPES } from '@/lib/constants'
-import { Plus, Mail, Phone } from 'lucide-react'
+import { Plus, Mail, Phone, Download } from 'lucide-react'
+import { exportToCSV } from '@/lib/csvExport'
 import Link from 'next/link'
 
 const emptyForm = {
@@ -68,6 +69,18 @@ export default function StaffPage() {
   const guidesLimit = checkLimit('guides', staff.filter(s => s.staff_type === 'guide').length, { profile, company })
   const staffTypeLabel = (val) => STAFF_TYPES.some(x => x.value === val) ? t(`types.${val}`) : val
 
+  function handleExportCSV() {
+    exportToCSV(staff, [
+      { key: 'full_name', label: t('fullName') },
+      { label: t('staffType'), format: r => t(`types.${r.staff_type}`) },
+      { label: t('employmentType'), format: r => t(`employment${r.employment_type?.charAt(0).toUpperCase()}${r.employment_type?.slice(1)}`) },
+      { key: 'phone', label: t('phone') },
+      { key: 'email', label: t('email') },
+      { key: 'start_date', label: t('startDate') },
+      { label: t('status'), format: r => tStatus(r.status) },
+    ], 'staff')
+  }
+
   return (
     <div>
       <ToastContainer toasts={toast.toasts} remove={toast.remove} />
@@ -77,9 +90,12 @@ export default function StaffPage() {
           <h1 className="page-title">{t('title')}</h1>
           <p className="page-subtitle">{staff.length} {staff.length === 1 ? t('staffMemberSingular') : t('staffMemberPlural')}</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
-          <Plus size={16} /> {t('addStaff')}
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button className="btn btn-outline" onClick={handleExportCSV}><Download size={16} /> {tCommon('exportCsv')}</button>
+          <button className="btn btn-primary" onClick={() => setModalOpen(true)}>
+            <Plus size={16} /> {t('addStaff')}
+          </button>
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap' }}>

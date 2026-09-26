@@ -257,7 +257,8 @@
     "notInPlan": "Nie ingesluit in jou huidige plan nie",
     "moduleLockedTitle": "{label} is nie deel van jou huidige plan nie",
     "moduleLockedDesc": "Hierdie kenmerk is ten volle gebou en gereed om te gebruik — dit hoef net by jou rekening gevoeg te word. Gradeer jou plan op of voeg dit individueel by om dit oop te sluit.",
-    "buyThisModule": "Koop Hierdie Module"
+    "buyThisModule": "Koop Hierdie Module",
+    "exportCsv": "Voer CSV Uit"
   },
   "Staff": {
     "title": "Personeellede",
@@ -832,7 +833,8 @@
     "lineItemsSubtotal": "Subtotaal van reëls",
     "subtotalFromLines": "Bereken vanaf reëls hierbo",
     "currency": "Geldeenheid",
-    "currencyHint": "Tarieflys-pryse skakel nie outomaties om nie — voer bedrae direk in hierdie geldeenheid in."
+    "currencyHint": "Tarieflys-pryse skakel nie outomaties om nie — voer bedrae direk in hierdie geldeenheid in.",
+    "vatAmount": "BTW-bedrag"
   },
   "Quotations": {
     "title": "Kwotasies",
