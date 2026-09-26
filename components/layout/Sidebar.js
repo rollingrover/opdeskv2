@@ -13,7 +13,7 @@ import {
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
   Shield, MapPin, Crosshair, LogOut, ChevronRight, Bed,
   ClipboardList, UserCheck, DollarSign, Clock, Plane,
-  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag
+  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail
 } from 'lucide-react'
 
 const ALL_NAV = [
@@ -78,6 +78,7 @@ const ALL_NAV = [
       { href:'/invoices/statements', icon: FileText, key:'clientStatements', module:'invoices' },
       { href:'/quotations',       icon: FileText,    key:'quotations',       module:'quotations', gate:'quotations' },
       { href:'/settings/rate-sheet', icon: FileText, key:'rateSheet',       module:'rate_sheet', gate:'rate_sheet' },
+      { href:'/settings/guest-journey', icon: Mail,  key:'guestJourney' },
       { href:'/checklists',       icon: ClipboardCheck, key:'checklists',     module:'checklists', gate:'checklists' },
       { href:'/reports',          icon: BarChart3,   key:'reports',          module:'reports' },
       { href:'/reports/commission', icon: BarChart3, key:'commissionReport', module:'commission_report', gate:'commission_reporting' },

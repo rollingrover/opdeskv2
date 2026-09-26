@@ -49,7 +49,8 @@
       "bookingWidget": "Booking Widget",
       "addons": "Add-ons",
       "publicProfile": "Public Profile",
-      "support": "Support"
+      "support": "Support",
+      "guestJourney": "Guest Journey"
     },
     "signOut": "Sign Out"
   },
@@ -1479,5 +1480,26 @@
     "statusCheckedOut": "Checked Out",
     "statusDecommissioned": "Decommissioned",
     "notesLabel": "Notes"
+  },
+  "GuestJourney": {
+    "title": "Guest Journey",
+    "subtitle": "Automatic emails at the right moment — confirmation, pre-arrival, and a review request after checkout.",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Guest journey settings saved",
+    "variablesHint": "Use {{guest_name}}, {{company_name}}, {{booking_type}}, {{start_date}}, and (for the review request) {{review_link}} anywhere in your message — they’ll be filled in automatically.",
+    "enabled": "Enabled",
+    "confirmationTitle": "Booking Confirmed",
+    "confirmationDesc": "Sent immediately when you mark a booking as confirmed.",
+    "prearrivalTitle": "Pre-Arrival Reminder",
+    "prearrivalDesc": "Sent automatically before the guest arrives.",
+    "daysBefore": "Days Before Arrival",
+    "postcheckoutTitle": "Post-Checkout Review Request",
+    "postcheckoutDesc": "Sent automatically after the guest checks out.",
+    "daysAfter": "Days After Checkout",
+    "reviewLink": "Review Link (Google, TripAdvisor, etc.)",
+    "reviewLinkHint": "Paste your Google Business or TripAdvisor review link — it’ll be included as {{review_link}} in the message.",
+    "subject": "Email Subject",
+    "message": "Message"
   }
 }

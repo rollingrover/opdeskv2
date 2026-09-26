@@ -49,7 +49,8 @@
       "bookingWidget": "Besprekingwidget",
       "addons": "Byvoegings",
       "publicProfile": "Openbare Profiel",
-      "support": "Ondersteuning"
+      "support": "Ondersteuning",
+      "guestJourney": "Gastereis"
     },
     "signOut": "Meld Af"
   },
@@ -1479,5 +1480,26 @@
     "statusCheckedOut": "Uitgeneem",
     "statusDecommissioned": "Buite Gebruik",
     "notesLabel": "Notas"
+  },
+  "GuestJourney": {
+    "title": "Gastereis",
+    "subtitle": "Outomatiese e-posse op die regte oomblik — bevestiging, voor-aankoms, en 'n resensieversoek na uitklaring.",
+    "save": "Stoor",
+    "saving": "Stoor tans…",
+    "saved": "Gastereis-instellings gestoor",
+    "variablesHint": "Gebruik {{guest_name}}, {{company_name}}, {{booking_type}}, {{start_date}}, en (vir die resensieversoek) {{review_link}} enige plek in jou boodskap — hulle sal outomaties ingevul word.",
+    "enabled": "Geaktiveer",
+    "confirmationTitle": "Bespreking Bevestig",
+    "confirmationDesc": "Gestuur onmiddellik wanneer jy 'n bespreking as bevestig merk.",
+    "prearrivalTitle": "Voor-Aankoms-Herinnering",
+    "prearrivalDesc": "Outomaties gestuur voordat die gas aankom.",
+    "daysBefore": "Dae Voor Aankoms",
+    "postcheckoutTitle": "Resensieversoek Na Uitklaring",
+    "postcheckoutDesc": "Outomaties gestuur nadat die gas uitklaar.",
+    "daysAfter": "Dae Na Uitklaring",
+    "reviewLink": "Resensieskakel (Google, TripAdvisor, ens.)",
+    "reviewLinkHint": "Plak jou Google Besigheid- of TripAdvisor-resensieskakel — dit sal ingesluit word as {{review_link}} in die boodskap.",
+    "subject": "E-posonderwerp",
+    "message": "Boodskap"
   }
 }

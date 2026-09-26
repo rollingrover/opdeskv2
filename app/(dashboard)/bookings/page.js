@@ -242,6 +242,11 @@ function BookingsContent() {
 
     setSaving(false)
     toast.success(editingId ? t('bookingUpdated') : t('bookingCreated'))
+    if (form.status === 'confirmed' && bookingId) {
+      fetch('/api/guest-journey/send-confirmation', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bookingId }),
+      }).catch(() => {}) // best-effort — the booking itself is already saved either way
+    }
     setModalOpen(false)
     setEditingId(null)
     setForm(emptyForm)

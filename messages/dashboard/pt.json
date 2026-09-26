@@ -49,7 +49,8 @@
       "bookingWidget": "Widget de Reservas",
       "addons": "Extras",
       "publicProfile": "Perfil Público",
-      "support": "Suporte"
+      "support": "Suporte",
+      "guestJourney": "Percurso do Hóspede"
     },
     "signOut": "Terminar Sessão"
   },
@@ -1479,5 +1480,26 @@
     "statusCheckedOut": "Retirada",
     "statusDecommissioned": "Desativada",
     "notesLabel": "Notas"
+  },
+  "GuestJourney": {
+    "title": "Percurso do Hóspede",
+    "subtitle": "Emails automáticos no momento certo — confirmação, pré-chegada, e um pedido de avaliação após o checkout.",
+    "save": "Guardar",
+    "saving": "A guardar…",
+    "saved": "Definições do percurso do hóspede guardadas",
+    "variablesHint": "Use {{guest_name}}, {{company_name}}, {{booking_type}}, {{start_date}}, e (para o pedido de avaliação) {{review_link}} em qualquer lugar da sua mensagem — serão preenchidos automaticamente.",
+    "enabled": "Ativado",
+    "confirmationTitle": "Reserva Confirmada",
+    "confirmationDesc": "Enviado imediatamente quando marca uma reserva como confirmada.",
+    "prearrivalTitle": "Lembrete Pré-Chegada",
+    "prearrivalDesc": "Enviado automaticamente antes da chegada do hóspede.",
+    "daysBefore": "Dias Antes da Chegada",
+    "postcheckoutTitle": "Pedido de Avaliação Após Checkout",
+    "postcheckoutDesc": "Enviado automaticamente após o checkout do hóspede.",
+    "daysAfter": "Dias Após o Checkout",
+    "reviewLink": "Link de Avaliação (Google, TripAdvisor, etc.)",
+    "reviewLinkHint": "Cole o seu link de avaliação do Google Business ou TripAdvisor — será incluído como {{review_link}} na mensagem.",
+    "subject": "Assunto do Email",
+    "message": "Mensagem"
   }
 }

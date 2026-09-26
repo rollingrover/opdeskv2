@@ -49,7 +49,8 @@
       "bookingWidget": "Buchungs-Widget",
       "addons": "Add-ons",
       "publicProfile": "Öffentliches Profil",
-      "support": "Support"
+      "support": "Support",
+      "guestJourney": "Gästereise"
     },
     "signOut": "Abmelden"
   },
@@ -1479,5 +1480,26 @@
     "statusCheckedOut": "Entnommen",
     "statusDecommissioned": "Außer Betrieb",
     "notesLabel": "Notizen"
+  },
+  "GuestJourney": {
+    "title": "Gästereise",
+    "subtitle": "Automatische E-Mails zum richtigen Zeitpunkt — Bestätigung, vor der Anreise und eine Bewertungsanfrage nach dem Check-out.",
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "saved": "Gästereise-Einstellungen gespeichert",
+    "variablesHint": "Verwenden Sie {{guest_name}}, {{company_name}}, {{booking_type}}, {{start_date}} und (für die Bewertungsanfrage) {{review_link}} überall in Ihrer Nachricht — sie werden automatisch ausgefüllt.",
+    "enabled": "Aktiviert",
+    "confirmationTitle": "Buchung Bestätigt",
+    "confirmationDesc": "Wird sofort gesendet, wenn Sie eine Buchung als bestätigt markieren.",
+    "prearrivalTitle": "Erinnerung vor Ankunft",
+    "prearrivalDesc": "Wird automatisch vor der Ankunft des Gastes gesendet.",
+    "daysBefore": "Tage vor Ankunft",
+    "postcheckoutTitle": "Bewertungsanfrage nach Check-out",
+    "postcheckoutDesc": "Wird automatisch nach dem Check-out des Gastes gesendet.",
+    "daysAfter": "Tage nach Check-out",
+    "reviewLink": "Bewertungslink (Google, TripAdvisor usw.)",
+    "reviewLinkHint": "Fügen Sie Ihren Google-Unternehmens- oder TripAdvisor-Bewertungslink ein — er wird als {{review_link}} in die Nachricht aufgenommen.",
+    "subject": "E-Mail-Betreff",
+    "message": "Nachricht"
   }
 }

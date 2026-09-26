@@ -49,7 +49,8 @@
       "bookingWidget": "Widget de Réservation",
       "addons": "Modules Complémentaires",
       "publicProfile": "Profil Public",
-      "support": "Assistance"
+      "support": "Assistance",
+      "guestJourney": "Parcours Client"
     },
     "signOut": "Déconnexion"
   },
@@ -1479,5 +1480,26 @@
     "statusCheckedOut": "Sortie",
     "statusDecommissioned": "Hors Service",
     "notesLabel": "Notes"
+  },
+  "GuestJourney": {
+    "title": "Parcours Client",
+    "subtitle": "E-mails automatiques au bon moment — confirmation, avant l'arrivée, et une demande d'avis après le départ.",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "saved": "Paramètres du parcours client enregistrés",
+    "variablesHint": "Utilisez {{guest_name}}, {{company_name}}, {{booking_type}}, {{start_date}}, et (pour la demande d'avis) {{review_link}} n'importe où dans votre message — ils seront remplis automatiquement.",
+    "enabled": "Activé",
+    "confirmationTitle": "Réservation Confirmée",
+    "confirmationDesc": "Envoyé immédiatement lorsque vous marquez une réservation comme confirmée.",
+    "prearrivalTitle": "Rappel Avant l'Arrivée",
+    "prearrivalDesc": "Envoyé automatiquement avant l'arrivée du client.",
+    "daysBefore": "Jours Avant l'Arrivée",
+    "postcheckoutTitle": "Demande d’Avis Après le Départ",
+    "postcheckoutDesc": "Envoyé automatiquement après le départ du client.",
+    "daysAfter": "Jours Après le Départ",
+    "reviewLink": "Lien d'Avis (Google, TripAdvisor, etc.)",
+    "reviewLinkHint": "Collez votre lien d'avis Google Business ou TripAdvisor — il sera inclus en tant que {{review_link}} dans le message.",
+    "subject": "Objet de l'E-mail",
+    "message": "Message"
   }
 }
