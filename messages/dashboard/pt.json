@@ -1350,7 +1350,21 @@
     "commissionPct": "Comissão %",
     "commissionHint": "Defina como 0 se esta venda não tiver comissão mas quiser continuar a monitorizá-la.",
     "isParkFee": "Esta é uma taxa de parque/entrada",
-    "isParkFeeHint": "Sugerido automaticamente ao gerar uma fatura a partir de uma reserva com uma contagem de residência correspondente."
+    "isParkFeeHint": "Sugerido automaticamente ao gerar uma fatura a partir de uma reserva com uma contagem de residência correspondente.",
+    "importCsv": "Importar de CSV",
+    "downloadTemplate": "Descarregar Modelo",
+    "importIntro": "Importe a sua lista de tarifas existente a partir de uma folha de cálculo em vez de digitar cada linha manualmente. Descarregue o modelo abaixo, preencha-o e carregue-o aqui.",
+    "dragDropHint": "Arraste um ficheiro CSV para aqui, ou clique para procurar",
+    "importPreviewSummary": "{valid} de {total} linhas parecem corretas e prontas para importar.",
+    "importChooseAnother": "Escolher outro ficheiro",
+    "importConfirm": "Importar {count} Itens",
+    "importSuccess": "{count} itens da lista de tarifas importados",
+    "importErrNoName": "Falta o nome",
+    "importErrNoBookingTypeMatch": "Nenhum tipo de reserva chamado \"{name}\" encontrado — deixe em branco ou corrija o nome",
+    "importErrBadResidency": "\"{value}\" não é uma residência válida — use local, sadc, ou international",
+    "importErrBadCategory": "\"{value}\" não é uma categoria de hóspede válida — use adult, child, ou infant",
+    "importErrBadTier": "\"{value}\" não é um nível de comércio válido — use rack, sto, ou net",
+    "importErrBadPrice": "\"{value}\" não é um preço válido"
   },
   "CommissionReport": {
     "title": "Relatório de Comissão",

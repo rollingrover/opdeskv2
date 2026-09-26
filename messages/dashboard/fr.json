@@ -1350,7 +1350,21 @@
     "commissionPct": "Commission %",
     "commissionHint": "Réglez sur 0 si cette vente ne comporte pas de commission mais que vous souhaitez quand même la suivre.",
     "isParkFee": "Ceci est un frais de parc/entrée",
-    "isParkFeeHint": "Suggéré automatiquement lors de la génération d'une facture à partir d'une réservation avec un nombre de résidence correspondant."
+    "isParkFeeHint": "Suggéré automatiquement lors de la génération d'une facture à partir d'une réservation avec un nombre de résidence correspondant.",
+    "importCsv": "Importer depuis un CSV",
+    "downloadTemplate": "Télécharger le Modèle",
+    "importIntro": "Importez votre grille tarifaire existante depuis un tableur plutôt que de saisir chaque ligne à la main. Téléchargez le modèle ci-dessous, remplissez-le, puis importez-le ici.",
+    "dragDropHint": "Glissez un fichier CSV ici, ou cliquez pour parcourir",
+    "importPreviewSummary": "{valid} lignes sur {total} semblent correctes et prêtes à être importées.",
+    "importChooseAnother": "Choisir un autre fichier",
+    "importConfirm": "Importer {count} Éléments",
+    "importSuccess": "{count} éléments de la grille tarifaire importés",
+    "importErrNoName": "Nom manquant",
+    "importErrNoBookingTypeMatch": "Aucun type de réservation nommé « {name} » trouvé — laissez vide ou corrigez le nom",
+    "importErrBadResidency": "« {value} » n’est pas une résidence valide — utilisez local, sadc ou international",
+    "importErrBadCategory": "« {value} » n’est pas une catégorie de client valide — utilisez adult, child ou infant",
+    "importErrBadTier": "« {value} » n’est pas un niveau tarifaire valide — utilisez rack, sto ou net",
+    "importErrBadPrice": "« {value} » n’est pas un prix valide"
   },
   "CommissionReport": {
     "title": "Rapport de Commission",

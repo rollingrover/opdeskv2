@@ -1350,7 +1350,21 @@
     "commissionPct": "Provision %",
     "commissionHint": "Auf 0 setzen, wenn dieser Verkauf keine Provision enthält, Sie ihn aber dennoch verfolgen möchten.",
     "isParkFee": "Dies ist eine Park-/Eintrittsgebühr",
-    "isParkFeeHint": "Wird automatisch vorgeschlagen, wenn eine Rechnung aus einer Buchung mit passender Wohnsitz-Anzahl erstellt wird."
+    "isParkFeeHint": "Wird automatisch vorgeschlagen, wenn eine Rechnung aus einer Buchung mit passender Wohnsitz-Anzahl erstellt wird.",
+    "importCsv": "Aus CSV Importieren",
+    "downloadTemplate": "Vorlage Herunterladen",
+    "importIntro": "Importieren Sie Ihre bestehende Preisliste aus einer Tabelle, anstatt jede Zeile von Hand einzutippen. Laden Sie die Vorlage unten herunter, füllen Sie sie aus und laden Sie sie hier hoch.",
+    "dragDropHint": "CSV-Datei hierher ziehen oder zum Durchsuchen klicken",
+    "importPreviewSummary": "{valid} von {total} Zeilen sehen gut aus und sind bereit zum Importieren.",
+    "importChooseAnother": "Andere Datei wählen",
+    "importConfirm": "{count} Einträge Importieren",
+    "importSuccess": "{count} Preislistenposten importiert",
+    "importErrNoName": "Name fehlt",
+    "importErrNoBookingTypeMatch": "Kein Buchungstyp namens „{name}\" gefunden — leer lassen oder Namen korrigieren",
+    "importErrBadResidency": "„{value}\" ist kein gültiger Wohnsitz — verwenden Sie local, sadc oder international",
+    "importErrBadCategory": "„{value}\" ist keine gültige Gästekategorie — verwenden Sie adult, child oder infant",
+    "importErrBadTier": "„{value}\" ist keine gültige Handelsstufe — verwenden Sie rack, sto oder net",
+    "importErrBadPrice": "„{value}\" ist kein gültiger Preis"
   },
   "CommissionReport": {
     "title": "Provisionsbericht",

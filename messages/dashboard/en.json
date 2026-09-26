@@ -1350,7 +1350,21 @@
     "commissionPct": "Commission %",
     "commissionHint": "Set to 0 if this sale carries no commission but you still want to track it.",
     "isParkFee": "This is a park/entry fee",
-    "isParkFeeHint": "Suggested automatically when generating an invoice from a booking with a matching residency count."
+    "isParkFeeHint": "Suggested automatically when generating an invoice from a booking with a matching residency count.",
+    "importCsv": "Import from CSV",
+    "downloadTemplate": "Download Template",
+    "importIntro": "Import your existing rate sheet from a spreadsheet instead of typing each line by hand. Download the template below, fill it in, and upload it here.",
+    "dragDropHint": "Drag a CSV file here, or click to browse",
+    "importPreviewSummary": "{valid} of {total} rows look good and are ready to import.",
+    "importChooseAnother": "Choose a different file",
+    "importConfirm": "Import {count} Items",
+    "importSuccess": "{count} rate sheet items imported",
+    "importErrNoName": "Missing a name",
+    "importErrNoBookingTypeMatch": "No booking type named \"{name}\" found — leave blank or fix the name",
+    "importErrBadResidency": "\"{value}\" isn’t a valid residency — use local, sadc, or international",
+    "importErrBadCategory": "\"{value}\" isn’t a valid guest category — use adult, child, or infant",
+    "importErrBadTier": "\"{value}\" isn’t a valid trade tier — use rack, sto, or net",
+    "importErrBadPrice": "\"{value}\" isn’t a valid price"
   },
   "CommissionReport": {
     "title": "Commission Report",

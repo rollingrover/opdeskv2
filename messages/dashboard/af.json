@@ -1350,7 +1350,21 @@
     "commissionPct": "Kommissie %",
     "commissionHint": "Stel op 0 as hierdie verkoop geen kommissie dra nie maar jy wil dit steeds opspoor.",
     "isParkFee": "Dit is 'n park-/toegangsfooi",
-    "isParkFeeHint": "Word outomaties voorgestel wanneer 'n faktuur van 'n bespreking met 'n passende verblyfstatus-telling gegenereer word."
+    "isParkFeeHint": "Word outomaties voorgestel wanneer 'n faktuur van 'n bespreking met 'n passende verblyfstatus-telling gegenereer word.",
+    "importCsv": "Voer vanaf CSV In",
+    "downloadTemplate": "Laai Sjabloon Af",
+    "importIntro": "Voer jou bestaande tarieflys vanaf 'n sigblad in, in plaas daarvan om elke lyn met die hand te tik. Laai die sjabloon hieronder af, vul dit in, en laai dit hier op.",
+    "dragDropHint": "Sleep 'n CSV-lêer hierheen, of klik om te blaai",
+    "importPreviewSummary": "{valid} van {total} rye lyk reg en is gereed om in te voer.",
+    "importChooseAnother": "Kies 'n ander lêer",
+    "importConfirm": "Voer {count} Items In",
+    "importSuccess": "{count} tarieflysitems ingevoer",
+    "importErrNoName": "Naam ontbreek",
+    "importErrNoBookingTypeMatch": "Geen besprekingtipe genaamd \"{name}\" gevind nie — los oop of maak die naam reg",
+    "importErrBadResidency": "\"{value}\" is nie 'n geldige verblyfstatus nie — gebruik local, sadc, of international",
+    "importErrBadCategory": "\"{value}\" is nie 'n geldige gastekategorie nie — gebruik adult, child, of infant",
+    "importErrBadTier": "\"{value}\" is nie 'n geldige handelsvlak nie — gebruik rack, sto, of net",
+    "importErrBadPrice": "\"{value}\" is nie 'n geldige prys nie"
   },
   "CommissionReport": {
     "title": "Kommissieverslag",
