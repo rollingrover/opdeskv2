@@ -45,19 +45,23 @@ function SARevenueOverview() {
 
   // Real MRR: sum each company's own linked package price (accurate even if
   // two companies on the same tier were granted custom pricing historically).
-  const liveMRR = companies.reduce((s, c) => s + (Number(c.package_monthly_price) || 0), 0);
+  // Comped companies are excluded — they're on a real paid tier for module
+  // access, but aren't actually paying, so counting them here would claim
+  // revenue that was never collected.
+  const payingCompanies = companies.filter(c => !c.comped);
+  const liveMRR = payingCompanies.reduce((s, c) => s + (Number(c.package_monthly_price) || 0), 0);
   const liveARR = liveMRR * 12;
   const byTier = { free: 0, basic: 0, standard: 0, professional: 0, enterprise: 0 };
-  
-  companies.forEach(c => {
+
+  payingCompanies.forEach(c => {
     byTier[c.subscription_tier || 'free']++;
   });
-  
-  const paying = companies.filter(c => c.subscription_tier !== 'free').length;
+
+  const paying = payingCompanies.filter(c => c.subscription_tier !== 'free').length;
   const churned = companies.filter(c => (c.account_status || 'active') === 'churned').length;
   const avgRevPerPaying = paying > 0 ? Math.round(liveMRR / paying) : 0;
   const stillFree = byTier.free || 0;
-  const conversionRate = companies.length > 0 ? Math.round((paying / companies.length) * 100) : 0;
+  const conversionRate = payingCompanies.length > 0 ? Math.round((paying / payingCompanies.length) * 100) : 0;
 
   const cardStyle = { background: '#1a1a1a', borderRadius: 12, padding: '16px 20px', border: '1px solid #222' };
   const labelStyle = { color: '#6b7280', fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 };

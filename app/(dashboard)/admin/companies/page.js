@@ -40,9 +40,11 @@ function SACompaniesList() {
   // package_monthly_price comes straight from sa_get_all_companies, joined
   // live against marketing_packages — not a cached/stale lookup, so this
   // total always matches whatever price is actually set in Marketing
-  // Packages right now.
-  const mrr = companies.reduce((s, c) => s + (Number(c.package_monthly_price) || 0), 0)
-  const paying = companies.filter(c => c.subscription_tier && c.subscription_tier !== 'free' && c.subscription_tier !== 'explorer').length
+  // Packages right now. Comped companies are excluded from both figures —
+  // they're on a real tier for module access, but they aren't actually
+  // paying, so counting them here would claim revenue never collected.
+  const mrr = companies.reduce((s, c) => s + (c.comped ? 0 : Number(c.package_monthly_price) || 0), 0)
+  const paying = companies.filter(c => !c.comped && c.subscription_tier && c.subscription_tier !== 'free' && c.subscription_tier !== 'explorer').length
 
   const inputStyle = { background: '#1a1a1a', border: '1px solid #333', color: 'white', borderRadius: 8, padding: '9px 14px', fontSize: 13 }
 
