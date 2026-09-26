@@ -989,7 +989,13 @@
       "delivery": "Logistiek & Ondersteuningsdienste",
       "river_cruise": "Bootkruisvaarte / Rivier, Riviermonding & Dam",
       "hr_bureau": "HR-diensteagentskap"
-    }
+    },
+    "bankingDetails": "Bankbesonderhede",
+    "bankingDetailsDesc": "Vertoon op fakture as betalingsinstruksies vir kliënte wat per EFT betaal.",
+    "bankName": "Bank Naam",
+    "bankAccountType": "Rekeningtipe",
+    "bankAccountNumber": "Rekeningnommer",
+    "bankBranchCode": "Takkode"
   },
   "SettingsAddons": {
     "title": "Byvoegings",

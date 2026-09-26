@@ -989,7 +989,13 @@
       "delivery": "Logistik & Support-Dienste",
       "river_cruise": "Bootskreuzfahrten / Fluss, Ästuar & Stausee",
       "hr_bureau": "HR-Dienstleistungsagentur"
-    }
+    },
+    "bankingDetails": "Bankdaten",
+    "bankingDetailsDesc": "Wird auf Rechnungen als Zahlungsanweisung für Kunden angezeigt, die per Überweisung zahlen.",
+    "bankName": "Bankname",
+    "bankAccountType": "Kontoart",
+    "bankAccountNumber": "Kontonummer",
+    "bankBranchCode": "Bankleitzahl"
   },
   "SettingsAddons": {
     "title": "Add-ons",

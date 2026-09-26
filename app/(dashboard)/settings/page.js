@@ -19,6 +19,7 @@ export default function SettingsPage() {
     name: '', operator_type: 'safari', currency: 'ZAR', language: 'en',
     country: 'ZA', timezone: 'Africa/Johannesburg', billing_email: '', phone: '',
     bookkeeper_email: '', address: '', vat_number: '', registration_number: '', website: '',
+    bank_name: '', bank_account_number: '', bank_branch_code: '', bank_account_type: '',
   })
   const [saving, setSaving] = useState(false)
   const [uploadingLogo, setUploadingLogo] = useState(false)
@@ -59,6 +60,8 @@ export default function SettingsPage() {
       bookkeeper_email: form.bookkeeper_email || null,
       address: form.address || null, vat_number: form.vat_number || null,
       registration_number: form.registration_number || null, website: form.website || null,
+      bank_name: form.bank_name || null, bank_account_number: form.bank_account_number || null,
+      bank_branch_code: form.bank_branch_code || null, bank_account_type: form.bank_account_type || null,
     }).eq('id', company.id)
     setSaving(false)
     if (error) { toast.error(error.message); return }
@@ -135,6 +138,17 @@ export default function SettingsPage() {
                 <Input label={t('website')} placeholder="https://" value={form.website || ''} onChange={e => setForm({ ...form, website: e.target.value })} />
               </div>
               <Input label={t('address')} value={form.address || ''} onChange={e => setForm({ ...form, address: e.target.value })} />
+
+              <label className="label" style={{ marginTop: '0.75rem' }}>{t('bankingDetails')}</label>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
+                {t('bankingDetailsDesc')}
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 1rem' }}>
+                <Input label={t('bankName')} value={form.bank_name || ''} onChange={e => setForm({ ...form, bank_name: e.target.value })} />
+                <Input label={t('bankAccountType')} value={form.bank_account_type || ''} onChange={e => setForm({ ...form, bank_account_type: e.target.value })} />
+                <Input label={t('bankAccountNumber')} value={form.bank_account_number || ''} onChange={e => setForm({ ...form, bank_account_number: e.target.value })} />
+                <Input label={t('bankBranchCode')} value={form.bank_branch_code || ''} onChange={e => setForm({ ...form, bank_branch_code: e.target.value })} />
+              </div>
             </div>
           )}
           {!needsCompany && company && (

@@ -989,7 +989,13 @@
       "delivery": "Logistics & Support Services",
       "river_cruise": "Boat Cruises / River, Estuary & Dam",
       "hr_bureau": "HR Services Bureau"
-    }
+    },
+    "bankingDetails": "Banking Details",
+    "bankingDetailsDesc": "Shown on invoices as payment instructions for clients paying by EFT.",
+    "bankName": "Bank Name",
+    "bankAccountType": "Account Type",
+    "bankAccountNumber": "Account Number",
+    "bankBranchCode": "Branch Code"
   },
   "SettingsAddons": {
     "title": "Add-ons",

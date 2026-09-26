@@ -989,7 +989,13 @@
       "delivery": "Logística & Serviços de Apoio",
       "river_cruise": "Cruzeiros de Barco / Rio, Estuário e Barragem",
       "hr_bureau": "Agência de Serviços de RH"
-    }
+    },
+    "bankingDetails": "Dados Bancários",
+    "bankingDetailsDesc": "Apresentados nas faturas como instruções de pagamento para clientes que pagam por transferência.",
+    "bankName": "Nome do Banco",
+    "bankAccountType": "Tipo de Conta",
+    "bankAccountNumber": "Número de Conta",
+    "bankBranchCode": "Código de Agência"
   },
   "SettingsAddons": {
     "title": "Extras",

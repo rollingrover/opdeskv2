@@ -989,7 +989,13 @@
       "delivery": "Logistique & Services de Soutien",
       "river_cruise": "Croisières en Bateau / Rivière, Estuaire & Barrage",
       "hr_bureau": "Agence de Services RH"
-    }
+    },
+    "bankingDetails": "Coordonnées Bancaires",
+    "bankingDetailsDesc": "Affichées sur les factures comme instructions de paiement pour les clients réglant par virement.",
+    "bankName": "Nom de la Banque",
+    "bankAccountType": "Type de Compte",
+    "bankAccountNumber": "Numéro de Compte",
+    "bankBranchCode": "Code d'Agence"
   },
   "SettingsAddons": {
     "title": "Modules Complémentaires",
