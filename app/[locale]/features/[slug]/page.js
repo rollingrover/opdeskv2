@@ -48,14 +48,23 @@ export default async function FeatureDetailPage({ params }) {
   const tGroups = await getTranslations('Features.groups')
   const tFeatures = await getTranslations('Features')
 
-  // Structured data helps search engines understand this is a specific
-  // product feature page, not generic marketing copy.
+  // SoftwareApplication is the correct schema type here, not Product —
+  // Product is meant for purchasable e-commerce items and requires offers,
+  // review, or aggregateRating to validate (Search Console flagged this as
+  // a critical structured-data error). Fabricating a review count or
+  // rating to satisfy that would violate Google's structured data
+  // guidelines; the honest fix is the schema type built for software.
+  // The offers block is genuine, not a placeholder — OpDesk does have a
+  // real free starting tier.
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@type': 'SoftwareApplication',
     name: `OpDesk — ${content.title}`,
     description: content.metaDescription,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
     brand: { '@type': 'Brand', name: 'OpDesk' },
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'ZAR' },
   }
 
   return (
