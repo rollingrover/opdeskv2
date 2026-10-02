@@ -7,7 +7,7 @@ export const C = {
   muted: '#8a8a8a', gold: '#D4A853', green: '#22c55e', red: '#ef4444', blue: '#3b82f6', amber: '#f59e0b',
 }
 
-export const PLAN_PRICES = { premium: 249, featured: 399 } // keep in step with lib/directory.js
+export { FOUNDING, INCLUDED_CATEGORIES, currentPrices, planAmount, allowedCategories, MAX_EXTRA_CATEGORIES } from '@/lib/directoryPricing'
 
 export const CATEGORY_LABELS = {
   stay: 'Stay', tours: 'Tours & safaris', wildlife: 'Wildlife & parks', ocean: 'Diving & ocean',

@@ -1,6 +1,6 @@
 'use client'
 import { useMemo, useState } from 'react'
-import { C, CATEGORY_LABELS, BILLING_COLORS, PLAN_PRICES, Btn, Pill, Card, input, dirAction } from './ui'
+import { C, CATEGORY_LABELS, BILLING_COLORS, Btn, Pill, Card, input, dirAction, currentPrices, allowedCategories } from './ui'
 
 const TIERS = ['community', 'basic', 'premium', 'featured']
 
@@ -30,7 +30,7 @@ export default function ListingsTab({ listings, billingById, verifiedById, enqui
     let paid = 0, comped = 0, mrr = 0
     for (const l of listings) {
       const b = billingById[l.id]
-      if (b?.billing_status === 'paid') { paid++; mrr += PLAN_PRICES[b.plan || l.tier] || 0 }
+      if (b?.billing_status === 'paid') { paid++; mrr += Number(b.locked_amount) || currentPrices()[b.plan || l.tier] || 0 }
       if (b?.billing_status === 'comped') comped++
     }
     return { total: listings.length, published: listings.filter(l => l.published).length, paid, comped, mrr }
@@ -103,7 +103,10 @@ export default function ListingsTab({ listings, billingById, verifiedById, enqui
                   <td style={{ padding: '10px 12px' }}>
                     <div style={{ color: 'white', fontWeight: 600 }}>{l.name}</div>
                     <div style={{ color: C.muted, fontSize: 12 }}>
-                      {CATEGORY_LABELS[l.category] || l.category} · {l.town || l.province || '—'}
+                      {(l.categories?.length ? l.categories : [l.category]).map(c => CATEGORY_LABELS[c] || c).join(' · ')} · {l.town || l.province || '—'}
+                      {(l.categories?.length || 1) > allowedCategories(l.tier, billingById[l.id]?.extra_categories) && (
+                        <span style={{ color: C.amber }}> · over category allowance</span>
+                      )}
                       {l.claimed && <span style={{ color: C.gold }}> · claimed</span>}
                     </div>
                   </td>
@@ -132,6 +135,11 @@ export default function ListingsTab({ listings, billingById, verifiedById, enqui
                   </td>
                   <td style={{ padding: '10px 12px' }}>
                     <Pill color={BILLING_COLORS[status]}>{status}{b?.plan && status === 'paid' ? ` · ${b.plan}` : ''}</Pill>
+                    {b?.founding && status === 'paid' && (
+                      <div style={{ color: C.gold, fontSize: 11, marginTop: 3 }}>
+                        founding R{Number(b.locked_amount) || '—'}{b.lock_until ? ` until ${b.lock_until}` : ''}
+                      </div>
+                    )}
                     {b?.payment_failed_at && <div style={{ color: C.red, fontSize: 11, marginTop: 3 }}>payment failed</div>}
                   </td>
                   <td style={{ padding: '10px 12px', fontSize: 12 }}>

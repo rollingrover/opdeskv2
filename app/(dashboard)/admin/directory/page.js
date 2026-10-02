@@ -1,8 +1,10 @@
 'use client'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { createClient } from '@/lib/supabase/client'
 import { useToast, ToastContainer } from '@/components/ui/Toast'
+import { PageLoader } from '@/components/ui/Spinner'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Shield } from 'lucide-react'
 import { C, Btn, Card, Pill, fmtDate } from '@/components/admin/directory/ui'
@@ -17,7 +19,12 @@ import LeadsTab from '@/components/admin/directory/LeadsTab'
 function DirectoryAdmin() {
   const supabase = createClient()
   const toast = useToast()
-  const [tab, setTab] = useState('listings')
+  // Tab lives in the URL (?tab=leads) so sidebar links can deep-link to it.
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const TABS = ['listings', 'leads', 'claims', 'enquiries']
+  const tab = TABS.includes(searchParams.get('tab')) ? searchParams.get('tab') : 'listings'
+  const setTab = k => router.replace(k === 'listings' ? '/admin/directory' : `/admin/directory?tab=${k}`, { scroll: false })
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState({ listings: [], billing: [], claims: [], leads: [], companies: [], enquiries: [], verified: [] })
   const [drawer, setDrawer] = useState(null) // { listing, prefill, lead }
@@ -162,5 +169,11 @@ export default function Page() {
       </div>
     )
   }
-  return <DirectoryAdmin />
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <DirectoryAdmin />
+    </Suspense>
+  )
 }
+
+export const dynamic = 'force-dynamic'

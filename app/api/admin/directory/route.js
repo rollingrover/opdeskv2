@@ -3,8 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { sendEmail } from '@/lib/email'
 import { buildPaymentUrl } from '@/lib/payfast'
 import {
-  BILLING_STATUSES, DIRECTORY_PLANS, LEAD_STATUSES, LISTING_CATEGORIES, LISTING_TIERS,
-  generateToken, listingUrl, ownerEmailHtml, paymentLinkEmailHtml, revalidateDirectory, siteUrlFor, slugify,
+  BILLING_STATUSES, LEAD_STATUSES, LISTING_CATEGORIES, LISTING_TIERS, MAX_EXTRA_CATEGORIES, PLAN_LABELS,
+  generateToken, listingUrl, ownerEmailHtml, paymentLinkEmailHtml, planAmount, revalidateDirectory, siteUrlFor, slugify,
 } from '@/lib/directory'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://opdesk.app'
@@ -17,7 +17,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://opdesk.app'
 const LISTING_FIELDS = [
   'name', 'category', 'summary', 'description', 'town', 'province', 'lat', 'lng', 'phone', 'whatsapp',
   'email', 'website_url', 'photo_url', 'price_from', 'tier', 'sites', 'published', 'claimed',
-  'company_id', 'partner_source',
+  'company_id', 'partner_source', 'categories',
 ]
 
 function pickListing(input) {
@@ -31,6 +31,11 @@ function pickListing(input) {
   }
   if ('tier' in out && !LISTING_TIERS.includes(out.tier)) throw new Error('Invalid tier')
   if ('category' in out && !LISTING_CATEGORIES.includes(out.category)) throw new Error('Invalid category')
+  if ('categories' in out) {
+    // Primary category stays first; the DB trigger enforces that too.
+    const list = Array.from(new Set((out.categories || []).filter(c => LISTING_CATEGORIES.includes(c))))
+    out.categories = list
+  }
   if ('sites' in out) {
     const sites = (out.sites || []).filter(s => s === 'zatours' || s === 'route22')
     if (!sites.length) throw new Error('A listing must be on at least one site')
@@ -116,6 +121,14 @@ export async function POST(request) {
         const patch = { billing_status: body.billing_status }
         if ('paid_until' in body) patch.paid_until = body.paid_until || null
         if ('source' in body && ['direct', 'opdesk_bundle', 'partner'].includes(body.source)) patch.source = body.source
+        if ('extra_categories' in body) {
+          const n = Number(body.extra_categories)
+          if (!Number.isInteger(n) || n < 0 || n > MAX_EXTRA_CATEGORIES) throw new Error('Extra categories must be 0–6')
+          patch.extra_categories = n
+        }
+        if ('founding' in body) patch.founding = !!body.founding
+        if ('locked_amount' in body) patch.locked_amount = body.locked_amount === '' || body.locked_amount == null ? null : Number(body.locked_amount)
+        if ('lock_until' in body) patch.lock_until = body.lock_until || null
         await upsertBilling(supabase, listing.id, patch)
         return NextResponse.json({ ok: true })
       }
@@ -176,20 +189,21 @@ export async function POST(request) {
         // DIR-{listingId}-{plan}-{timestamp}; the ITN handler upgrades the
         // listing when PayFast confirms the first payment.
         const plan = body.plan
-        if (!DIRECTORY_PLANS[plan]) throw new Error('Pick Premium or Featured')
+        if (!PLAN_LABELS[plan]) throw new Error('Pick Premium or Featured')
+        const { amount, founding, extras } = planAmount(plan, body.extraCategories)
         const listing = await getListing(supabase, body.listingId)
         const email = String(body.email || '').trim()
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('A valid billing email is required')
         const name = String(body.name || '').trim()
         const [nameFirst, ...rest] = name.split(' ')
         const mPaymentId = `DIR-${listing.id}-${plan}-${Date.now()}`
-        const { amount, label } = DIRECTORY_PLANS[plan]
+        const label = PLAN_LABELS[plan]
         const site = siteUrlFor(listing)
 
         const paymentUrl = buildPaymentUrl({
           amount,
           itemName: `${site.includes('zatours') ? 'ZAtours' : 'Route22'} ${label} — ${listing.name}`.slice(0, 100),
-          itemDescription: `Monthly ${label.toLowerCase()} for ${listing.name}. No commission or per-booking fees.`.slice(0, 255),
+          itemDescription: `Monthly ${label.toLowerCase()} for ${listing.name}${extras ? ` incl. ${extras} extra categor${extras === 1 ? 'y' : 'ies'}` : ''}${founding ? ' — founding price, locked 3 years' : ''}. No commission.`.slice(0, 255),
           mPaymentId,
           nameFirst: nameFirst || listing.name,
           nameLast: rest.join(' ') || '',
@@ -201,7 +215,11 @@ export async function POST(request) {
           cycleFrequency: 'monthly',
         })
 
-        await upsertBilling(supabase, listing.id, { payfast_m_payment_id: mPaymentId, plan, owner_email: email })
+        // Quote recorded now; the founding lock itself starts on first payment (ITN).
+        await upsertBilling(supabase, listing.id, {
+          payfast_m_payment_id: mPaymentId, plan, owner_email: email,
+          extra_categories: extras, locked_amount: amount, founding,
+        })
         if (body.leadId) {
           await supabase.from('dir_business_enquiries')
             .update({ payment_link: paymentUrl, listing_id: listing.id, status: 'contacted' })
@@ -209,11 +227,11 @@ export async function POST(request) {
         }
         let emailed = false
         if (body.sendEmail) {
-          const { subject, html } = paymentLinkEmailHtml({ listing, plan, paymentUrl, contactName: name })
+          const { subject, html } = paymentLinkEmailHtml({ listing, plan, amount, extras, founding, paymentUrl, contactName: name })
           const sent = await sendEmail({ to: email, subject, html })
           emailed = !sent?.error && !sent?.skipped
         }
-        return NextResponse.json({ ok: true, paymentUrl, emailed })
+        return NextResponse.json({ ok: true, paymentUrl, emailed, amount, founding })
       }
 
       case 'revalidate': {

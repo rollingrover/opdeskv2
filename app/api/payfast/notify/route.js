@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { verifyItnSignature, confirmWithPayfast } from '@/lib/payfast'
 import { createServiceClient } from '@/lib/supabase/service'
-import { revalidateDirectory } from '@/lib/directory'
+import { revalidateDirectory, addYears, FOUNDING } from '@/lib/directory'
 
 const TRIAL_DAYS = 30
 
@@ -175,6 +175,9 @@ async function handleDirectoryPayment(supabase, row, postData, mPaymentId) {
     const { error } = await supabase.from('dir_billing').update({
       billing_status: 'paid', plan, payfast_token: postData.token || row.payfast_token,
       last_paid_at: now.toISOString(), paid_until: paidUntil, payment_failed_at: null,
+      // Founding lock runs 3 years from the first successful payment.
+      ...(row.founding && !row.lock_until ? { lock_until: addYears(now, FOUNDING.lockYears) } : {}),
+      ...(!row.locked_amount && postData.amount_gross ? { locked_amount: Number(postData.amount_gross) } : {}),
       updated_at: now.toISOString(),
     }).eq('id', row.id)
     if (error) return { status: 500, outcome: 'error', error: error.message }

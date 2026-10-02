@@ -13,7 +13,7 @@ import {
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
   Shield, MapPin, Crosshair, LogOut, ChevronRight, Bed,
   ClipboardList, UserCheck, DollarSign, Clock, Plane,
-  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail, Inbox
+  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail, Inbox, ExternalLink
 } from 'lucide-react'
 
 const ALL_NAV = [
@@ -99,11 +99,47 @@ const ALL_NAV = [
   },
 ]
 
+// OpDesk Admin workspace (superadmins only), grouped by job rather than one
+// long list. Directory items deep-link to tabs on /admin/directory.
+const ROUTE22_ADMIN = `${(process.env.NEXT_PUBLIC_ROUTE22_URL || 'https://www.route22zululand.co.za').replace(/\/+$/, '')}/admin`
+const ADMIN_NAV = [
+  { label: 'Overview', items: [
+    { href: '/admin', icon: LayoutDashboard, label: 'Admin home', exact: true },
+    { href: '/admin/revenue', icon: TrendingUp, label: 'Revenue' },
+  ] },
+  { label: 'Directory', items: [
+    { href: '/admin/directory', icon: Globe, label: 'Listings & billing', exact: true },
+    { href: '/admin/directory?tab=leads', icon: Briefcase, label: 'Business leads' },
+    { href: '/admin/directory?tab=claims', icon: UserCheck, label: 'Claims' },
+    { href: '/admin/directory?tab=enquiries', icon: Inbox, label: 'Guest enquiries' },
+    { href: ROUTE22_ADMIN, icon: Package, label: 'CSV import (old panel)' },
+  ] },
+  { label: 'Customers & billing', items: [
+    { href: '/admin/companies', icon: Shield, label: 'Companies' },
+    { href: '/admin/opdesk-invoices', icon: FileText, label: 'OpDesk Invoices' },
+    { href: '/admin/discounts', icon: Tag, label: 'Discount Codes' },
+    { href: '/admin/affiliates', icon: Star, label: 'Affiliates' },
+    { href: '/admin/pricing', icon: DollarSign, label: 'Add-on Pricing' },
+    { href: '/admin/packages', icon: FileText, label: 'Marketing Packages' },
+  ] },
+  { label: 'RollingRover', items: [
+    { href: '/admin/rollingrover', icon: Briefcase, label: 'RollingRover' },
+  ] },
+  { label: 'Support & system', items: [
+    { href: '/admin/support', icon: HelpCircle, label: 'Support Queue' },
+    { href: '/admin/community-contributions', icon: Star, label: 'Community Contributions' },
+    { href: '/admin/system', icon: Settings, label: 'System' },
+  ] },
+]
+
 export function Sidebar({ mobileOpen, onClose }) {
   const t = useTranslations('Sidebar')
   const pathname = usePathname()
   const router = useRouter()
   const { company, profile, signOut, reload } = useAuth()
+  // Superadmins see either their own business menu or the OpDesk Admin menu,
+  // never both: admin mode is simply being under /admin.
+  const adminMode = !!profile?.is_superadmin && pathname.startsWith('/admin')
   const operatorType = company?.operator_type || 'safari'
   const allowed = OPERATOR_MODULES[operatorType] || []
 
@@ -207,9 +243,31 @@ export function Sidebar({ mobileOpen, onClose }) {
           )}
         </div>
 
+        {/* Workspace switch — superadmins only. Admin mode is simply "you're
+            under /admin", so links, refreshes and the back button all keep
+            the right menu without any stored state. */}
+        {profile?.is_superadmin && (
+          <div style={{ display: 'flex', gap: 4, margin: '0 0.75rem 0.5rem', padding: 3, borderRadius: 8, background: 'rgba(255,255,255,0.06)' }}>
+            {[
+              { href: '/dashboard', label: company?.name || 'My business', on: !adminMode },
+              { href: '/admin', label: 'OpDesk Admin', on: adminMode },
+            ].map(w => (
+              <Link key={w.href} href={w.href} onClick={onClose}
+                style={{
+                  flex: 1, textAlign: 'center', padding: '0.4rem 0.5rem', borderRadius: 6, fontSize: '0.75rem', fontWeight: 700,
+                  textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                  background: w.on ? 'var(--gold, #D4A853)' : 'transparent',
+                  color: w.on ? '#1a1a1a' : 'rgba(255,255,255,0.65)',
+                }}>
+                {w.label}
+              </Link>
+            ))}
+          </div>
+        )}
+
         {/* Nav */}
         <nav className="sidebar-nav">
-          {ALL_NAV.map(group => {
+          {!adminMode && ALL_NAV.map(group => {
             const visibleItems = group.items.filter(isVisible)
             if (!visibleItems.length) return null
             return (
@@ -230,36 +288,29 @@ export function Sidebar({ mobileOpen, onClose }) {
             )
           })}
 
-          {profile?.is_superadmin && (
-            <div>
-              {/* Superadmin section deliberately stays in English — this is
-                  OpDesk's own team using it, not customers, so translating
-                  it isn't worth the effort relative to everything else. */}
-              <div className="sidebar-section-label">Superadmin</div>
-              {[
-                { href:'/admin/revenue',   icon: TrendingUp, label:'Revenue' },
-                { href:'/admin/companies', icon: Shield, label:'Companies' },
-                { href:'/admin/directory', icon: Globe, label:'Directory' },
-                { href:'/admin/pricing',   icon: DollarSign, label:'Add-on Pricing' },
-                { href:'/admin/packages',  icon: FileText, label:'Marketing Packages' },
-                { href:'/admin/community-contributions', icon: Star, label:'Community Contributions' },
-                { href:'/admin/opdesk-invoices', icon: FileText, label:'OpDesk Invoices' },
-                { href:'/admin/affiliates', icon: Star, label:'Affiliates' },
-                { href:'/admin/discounts', icon: FileText, label:'Discount Codes' },
-                { href:'/admin/support',   icon: HelpCircle, label:'Support Queue' },
-                { href:'/admin/system',    icon: Settings, label:'System' },
-                { href:'/admin/rollingrover', icon: Briefcase, label:'RollingRover' },
-              ].map(item => {
+          {adminMode && ADMIN_NAV.map(group => (
+            <div key={group.label}>
+              {/* Admin workspace stays in English — OpDesk's own team only. */}
+              <div className="sidebar-section-label">{group.label}</div>
+              {group.items.map(item => {
                 const Icon = item.icon
-                const active = pathname.startsWith(item.href)
-                return (
+                const [itemPath, itemQuery] = item.href.split('?')
+                const active = itemQuery
+                  ? false
+                  : item.exact ? pathname === itemPath : pathname.startsWith(itemPath)
+                const external = item.href.startsWith('http')
+                return external ? (
+                  <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className="nav-item" onClick={onClose}>
+                    <Icon size={16} /><span style={{ flex: 1 }}>{item.label}</span><ExternalLink size={12} />
+                  </a>
+                ) : (
                   <Link key={item.href} href={item.href} className={`nav-item${active ? ' active' : ''}`} onClick={onClose}>
                     <Icon size={16} /><span>{item.label}</span>
                   </Link>
                 )
               })}
             </div>
-          )}
+          ))}
         </nav>
 
         {/* Footer */}

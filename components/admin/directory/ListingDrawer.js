@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react'
-import { C, CATEGORY_LABELS, BILLING_COLORS, PLAN_PRICES, Btn, Pill, input, label, dirAction, fmtDate } from './ui'
+import { C, CATEGORY_LABELS, BILLING_COLORS, FOUNDING, Btn, Pill, input, label, dirAction, fmtDate, planAmount, allowedCategories, MAX_EXTRA_CATEGORIES } from './ui'
 
 const EMPTY = {
-  name: '', category: 'stay', town: '', province: 'KwaZulu-Natal', summary: '', description: '', phone: '',
+  name: '', category: 'stay', categories: [], town: '', province: 'KwaZulu-Natal', summary: '', description: '', phone: '',
   whatsapp: '', email: '', website_url: '', photo_url: '', lat: '', lng: '', tier: 'community',
   sites: ['zatours'], published: false, claimed: false, company_id: '', partner_source: '',
 }
@@ -33,15 +33,19 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
     return {
       ...EMPTY, ...Object.fromEntries(Object.entries(src).filter(([k]) => k in EMPTY).map(([k, v]) => [k, v ?? ''])),
       sites: src.sites?.length ? src.sites : ['zatours'],
+      categories: src.categories?.length ? src.categories : [src.category || 'stay'],
     }
   })
   const [saving, setSaving] = useState(false)
   const [bill, setBill] = useState(() => ({
     billing_status: billing?.billing_status || 'free', paid_until: billing?.paid_until || '', source: billing?.source || 'direct',
+    extra_categories: billing?.extra_categories || 0, founding: !!billing?.founding,
+    locked_amount: billing?.locked_amount ?? '', lock_until: billing?.lock_until || '',
   }))
   const [ownerEmail, setOwnerEmail] = useState(() => billing?.owner_email || listing?.email || lead?.email || '')
   const [pay, setPay] = useState(() => ({
     plan: lead?.interest === 'featured' || listing?.tier === 'featured' ? 'featured' : 'premium',
+    extraCategories: billing?.extra_categories || 0,
     name: lead?.contact || '', email: lead?.email || billing?.owner_email || listing?.email || '', sendEmail: true,
   }))
   const [payUrl, setPayUrl] = useState(() => lead?.payment_link || '')
@@ -52,7 +56,8 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
   async function save() {
     setSaving(true)
     try {
-      const fields = { ...form, company_id: form.company_id || null }
+      const categories = [form.category, ...form.categories.filter(c => c !== form.category)]
+      const fields = { ...form, categories, company_id: form.company_id || null }
       if (creating) {
         const r = await dirAction('create_listing', { fields, leadId: lead?.id })
         toast.success(`Listing created (${r.slug})`)
@@ -136,6 +141,26 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
               </select>
             </label>
           </div>
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ ...label, marginBottom: 6 }}>
+              Categories — primary first ({form.categories.length} of {allowedCategories(form.tier, bill.extra_categories)} allowed for {form.tier}
+              {bill.extra_categories ? ` + ${bill.extra_categories} extra` : ''})
+            </div>
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', color: C.text, fontSize: 13 }}>
+              {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
+                <label key={k} style={{ display: 'flex', gap: 6, alignItems: 'center', opacity: k === form.category ? 0.6 : 1 }}>
+                  <input type="checkbox" checked={k === form.category || form.categories.includes(k)} disabled={k === form.category}
+                    onChange={e => setForm(f => ({ ...f, categories: e.target.checked ? [...f.categories, k] : f.categories.filter(x => x !== k) }))} />
+                  {v}{k === form.category ? ' (primary)' : ''}
+                </label>
+              ))}
+            </div>
+            {form.categories.filter(c => c !== form.category).length + 1 > allowedCategories(form.tier, bill.extra_categories) && (
+              <p style={{ color: C.amber, fontSize: 12, margin: '6px 0 0' }}>
+                More categories than this plan includes — add extra categories under Billing / the payment link, or untick some.
+              </p>
+            )}
+          </div>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', color: C.text, fontSize: 13, marginBottom: 12 }}>
             {[['zatours', 'ZAtours'], ['route22', 'Route22']].map(([s, l]) => (
               <label key={s} style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
@@ -154,7 +179,8 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
             <Section title="Billing" right={<Pill color={BILLING_COLORS[bill.billing_status]}>{bill.billing_status}</Pill>}>
               {billing?.plan && (
                 <p style={{ color: C.muted, fontSize: 12, margin: '0 0 10px' }}>
-                  Plan: <strong style={{ color: C.text }}>{billing.plan}</strong> (R{PLAN_PRICES[billing.plan]}/mo)
+                  Plan: <strong style={{ color: C.text }}>{billing.plan}</strong>{billing.locked_amount ? ` (R${Number(billing.locked_amount)}/mo)` : ''}
+                  {billing.founding && <span style={{ color: C.gold }}> · founding{billing.lock_until ? `, locked until ${billing.lock_until}` : ' (lock starts at first payment)'}</span>}
                   {billing.last_paid_at && <> · last paid {fmtDate(billing.last_paid_at)}</>}
                   {billing.payfast_token && <> · PayFast subscription active</>}
                   {billing.payment_failed_at && <span style={{ color: C.red }}> · payment failed {fmtDate(billing.payment_failed_at)}</span>}
@@ -173,6 +199,19 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
                   </select>
                 </label>
               </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 10, marginBottom: 10 }}>
+                <label style={label}>Extra categories
+                  <input type="number" min={0} max={MAX_EXTRA_CATEGORIES} style={input} value={bill.extra_categories}
+                    onChange={e => setBill(b => ({ ...b, extra_categories: Number(e.target.value) || 0 }))} />
+                </label>
+                <label style={label}>Locked R/mo<input style={input} value={bill.locked_amount} onChange={e => setBill(b => ({ ...b, locked_amount: e.target.value }))} /></label>
+                <label style={label}>Lock until<input type="date" style={input} value={bill.lock_until || ''} onChange={e => setBill(b => ({ ...b, lock_until: e.target.value }))} /></label>
+                <label style={{ ...label, justifyContent: 'flex-end' }}>
+                  <span style={{ display: 'flex', gap: 6, alignItems: 'center', color: C.text, textTransform: 'none', fontSize: 13 }}>
+                    <input type="checkbox" checked={bill.founding} onChange={e => setBill(b => ({ ...b, founding: e.target.checked }))} />Founding
+                  </span>
+                </label>
+              </div>
               <p style={{ color: C.muted, fontSize: 12, margin: '0 0 10px' }}>
                 PayFast payments set this automatically. Use manual changes for comped listings and corrections.
               </p>
@@ -185,16 +224,32 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
               <p style={{ color: C.muted, fontSize: 12, margin: '0 0 10px' }}>
                 Monthly recurring subscription. When PayFast confirms the first payment the listing is published at the plan&apos;s tier, billing becomes paid and any open lead is marked won.
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 10 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                 <label style={label}>Plan
                   <select style={input} value={pay.plan} onChange={e => setPay(p => ({ ...p, plan: e.target.value }))}>
-                    <option value="premium">Premium — R{PLAN_PRICES.premium}/mo</option>
-                    <option value="featured">Featured — R{PLAN_PRICES.featured}/mo</option>
+                    <option value="premium">Premium — R{planAmount('premium').base}/mo</option>
+                    <option value="featured">Featured — R{planAmount('featured').base}/mo</option>
                   </select>
+                </label>
+                <label style={label}>Extra categories
+                  <input type="number" min={0} max={MAX_EXTRA_CATEGORIES} style={input} value={pay.extraCategories}
+                    onChange={e => setPay(p => ({ ...p, extraCategories: Number(e.target.value) || 0 }))} />
                 </label>
                 <label style={label}>Contact name<input style={input} value={pay.name} onChange={e => setPay(p => ({ ...p, name: e.target.value }))} /></label>
                 <label style={label}>Billing email<input style={input} value={pay.email} onChange={e => setPay(p => ({ ...p, email: e.target.value }))} /></label>
               </div>
+              {(() => {
+                const q = planAmount(pay.plan, pay.extraCategories)
+                return (
+                  <p style={{ color: C.text, fontSize: 13, margin: '0 0 10px' }}>
+                    Total <strong style={{ color: 'white' }}>R{q.amount}/month</strong>
+                    {q.extras ? ` (R${q.base} + ${q.extras} × R${q.extraPrice})` : ''}
+                    {q.founding
+                      ? <span style={{ color: C.gold }}> · founding price, locked {FOUNDING.lockYears} years from first payment (offer closes {FOUNDING.deadlineLabel})</span>
+                      : ' · standard price'}
+                  </p>
+                )
+              })()}
               <label style={{ display: 'flex', gap: 6, alignItems: 'center', color: C.text, fontSize: 13, marginBottom: 10 }}>
                 <input type="checkbox" checked={pay.sendEmail} onChange={e => setPay(p => ({ ...p, sendEmail: e.target.checked }))} />
                 Email the link to the business
@@ -202,7 +257,7 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
               <Btn kind="gold" disabled={working === 'pay' || !pay.email} onClick={() => run('pay', async () => {
                 const r = await dirAction('payment_link', { listingId: listing.id, leadId: lead?.id, ...pay })
                 setPayUrl(r.paymentUrl)
-                toast.success(r.emailed ? 'Payment link generated and emailed' : 'Payment link generated')
+                toast.success(`${r.emailed ? 'Payment link generated and emailed' : 'Payment link generated'} — R${r.amount}/month${r.founding ? ' (founding)' : ''}`)
                 await onSaved(true)
               })}>{working === 'pay' ? 'Generating…' : 'Generate payment link'}</Btn>
               {payUrl && (
