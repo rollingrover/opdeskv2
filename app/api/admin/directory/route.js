@@ -276,6 +276,37 @@ export async function POST(request) {
         return NextResponse.json({ ok: true, paymentUrl, emailed, amount, founding, memberRate: priceKey !== plan })
       }
 
+      case 'delete_listings': {
+        // Permanently removes listings that never went live (e.g. imported
+        // businesses that didn't reply to the consent request). Guard rails:
+        // only unpublished drafts with no payments, no OpDesk link and no
+        // guest enquiries — anything else should be unpublished instead.
+        const ids = Array.from(new Set((body.ids || []).filter(x => typeof x === 'string'))).slice(0, 200)
+        if (!ids.length) throw new Error('Nothing selected')
+        const [{ data: rows }, { data: bills }, { data: enq }] = await Promise.all([
+          supabase.from('dir_listings').select('id, slug, name, published, company_id').in('id', ids),
+          supabase.from('dir_billing').select('entity_id, billing_status').eq('entity_type', 'listing').in('entity_id', ids),
+          supabase.from('dir_enquiries').select('listing_id').in('listing_id', ids),
+        ])
+        const paid = new Set((bills || []).filter(b => ['paid', 'comped'].includes(b.billing_status)).map(b => b.entity_id))
+        const hasEnq = new Set((enq || []).map(e => e.listing_id))
+        const skipped = []
+        const deletable = []
+        for (const l of rows || []) {
+          const reason = l.published ? 'published' : l.company_id ? 'linked to OpDesk' : paid.has(l.id) ? 'paid or comped' : hasEnq.has(l.id) ? 'has guest enquiries' : null
+          if (reason) skipped.push(`${l.name} (${reason})`)
+          else deletable.push(l)
+        }
+        if (deletable.length) {
+          const delIds = deletable.map(l => l.id)
+          await supabase.from('dir_billing').delete().eq('entity_type', 'listing').in('entity_id', delIds)
+          const { error } = await supabase.from('dir_listings').delete().in('id', delIds)
+          if (error) throw new Error(error.message)
+          console.info('[directory] deleted listings', deletable.map(l => l.slug).join(', '))
+        }
+        return NextResponse.json({ ok: true, deleted: deletable.length, skipped })
+      }
+
       case 'update_package': {
         const patch = {}
         for (const k of ['founding_price', 'standard_price', 'included_categories', 'min_quantity']) {

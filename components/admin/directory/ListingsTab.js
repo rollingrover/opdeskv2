@@ -11,6 +11,21 @@ export default function ListingsTab({ listings, billingById, verifiedById, enqui
   const [pub, setPub] = useState('all')
   const [bill, setBill] = useState('all')
   const [busy, setBusy] = useState(null)
+  const [selected, setSelected] = useState(() => new Set())
+  const toggleSel = id => setSelected(s => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
+
+  async function deleteSelected() {
+    const names = listings.filter(l => selected.has(l.id)).map(l => l.name)
+    if (!names.length) return
+    const typed = prompt(`Permanently delete ${names.length} draft listing(s)?\n\n${names.slice(0, 15).join('\n')}${names.length > 15 ? '\n…' : ''}\n\nThis can't be undone. Type DELETE to confirm.`)
+    if (typed !== 'DELETE') return
+    try {
+      const r = await dirAction('delete_listings', { ids: Array.from(selected) })
+      toast.success(`Deleted ${r.deleted} listing(s)${r.skipped.length ? ` — kept ${r.skipped.length}: ${r.skipped.join('; ')}` : ''}`)
+      setSelected(new Set())
+      await reload()
+    } catch (e) { toast.error(e.message) }
+  }
 
   const companyName = useMemo(() => Object.fromEntries(companies.map(c => [c.id, c.name])), [companies])
 
@@ -82,6 +97,11 @@ export default function ListingsTab({ listings, billingById, verifiedById, enqui
         </select>
         <span style={{ color: C.muted, fontSize: 12 }}>{rows.length} shown</span>
         <span style={{ flex: 1 }} />
+        {selected.size > 0 && (
+          <Btn kind="danger" onClick={deleteSelected} title="Only unpublished drafts with no payments, OpDesk link or guest enquiries are deleted">
+            Delete {selected.size} selected
+          </Btn>
+        )}
         <Btn kind="gold" onClick={onCreate}>+ Add listing</Btn>
       </div>
 
@@ -89,7 +109,7 @@ export default function ListingsTab({ listings, billingById, verifiedById, enqui
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr style={{ color: C.muted, fontSize: 11, textTransform: 'uppercase', letterSpacing: 0.4, textAlign: 'left' }}>
-              {['Listing', 'Tier', 'Sites', 'Live', 'Billing', 'OpDesk', 'Enq.', ''].map(h => (
+              {['', 'Listing', 'Tier', 'Sites', 'Live', 'Billing', 'OpDesk', 'Enq.', ''].map(h => (
                 <th key={h} style={{ padding: '10px 12px', borderBottom: `1px solid ${C.line}`, fontWeight: 600 }}>{h}</th>
               ))}
             </tr>
@@ -100,6 +120,12 @@ export default function ListingsTab({ listings, billingById, verifiedById, enqui
               const status = b?.billing_status || 'free'
               return (
                 <tr key={l.id} style={{ borderBottom: `1px solid ${C.line}`, opacity: busy === l.id ? 0.5 : 1 }}>
+                  <td style={{ padding: '10px 0 10px 12px', width: 24 }}>
+                    {/* Only drafts can be selected for deletion */}
+                    {!l.published && (
+                      <input type="checkbox" checked={selected.has(l.id)} onChange={() => toggleSel(l.id)} title="Select draft for deletion" />
+                    )}
+                  </td>
                   <td style={{ padding: '10px 12px' }}>
                     <div style={{ color: 'white', fontWeight: 600 }}>{l.name}</div>
                     <div style={{ color: C.muted, fontSize: 12 }}>
@@ -157,7 +183,7 @@ export default function ListingsTab({ listings, billingById, verifiedById, enqui
               )
             })}
             {rows.length === 0 && (
-              <tr><td colSpan={8} style={{ padding: 24, color: C.muted, textAlign: 'center' }}>No listings match these filters.</td></tr>
+              <tr><td colSpan={9} style={{ padding: 24, color: C.muted, textAlign: 'center' }}>No listings match these filters.</td></tr>
             )}
           </tbody>
         </table>

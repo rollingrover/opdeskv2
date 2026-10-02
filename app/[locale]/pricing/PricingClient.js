@@ -18,7 +18,6 @@ import { MODULE_LABELS, GATED_MODULES, CURRENCIES } from '@/lib/constants'
 // alongside the real ZAR price, never as the actual amount charged
 // (billing always happens in ZAR via PayFast). Update this figure
 // periodically; it drifts, and "approx." labeling is what makes that okay.
-const ZAR_TO_USD_RATE = 0.059 // ≈ R17.00 = $1 — approximate as of late Sept 2026
 const APPROX_RATE_NOTE_DATE = 'September 2026'
 
 function getComparisonRows() {
@@ -67,6 +66,7 @@ export default function PricingClient() {
   const [currency] = useState('ZAR')
   const [loading, setLoading] = useState(true)
   const [detectedCurrency, setDetectedCurrency] = useState(null)
+  const [fxRate, setFxRate] = useState(null) // units of detectedCurrency per R1 (fx_rates, refreshed daily)
 
   useEffect(() => {
     const supabase = createClient()
@@ -77,14 +77,15 @@ export default function PricingClient() {
       setAddons(a || [])
       setLoading(false)
     })()
-    // Rough, best-effort region detection via Vercel's geo headers (see
-    // /api/geo) — used only to show an informational note about which
-    // currency the visitor's region likely uses. Never used to convert the
-    // displayed price itself: doing that responsibly needs a live exchange
-    // rate source, which isn't part of this build, and a stale hardcoded
-    // conversion rate would be actively misleading on a pricing page.
-    fetch('/api/geo').then(r => r.json()).then(d => {
-      if (d.currency && d.currency !== 'ZAR') setDetectedCurrency(d.currency)
+    // Best-effort region detection via Vercel's geo headers (/api/geo). If
+    // the visitor's region uses another currency, show an approximate "≈"
+    // amount using fx_rates (refreshed daily by /api/cron/fx-rates).
+    // Billing is always in ZAR.
+    fetch('/api/geo').then(r => r.json()).then(async d => {
+      if (!d.currency || d.currency === 'ZAR') return
+      setDetectedCurrency(d.currency)
+      const { data: fx } = await supabase.from('fx_rates').select('rate').eq('code', d.currency).maybeSingle()
+      if (fx?.rate) setFxRate(Number(fx.rate))
     }).catch(() => {})
   }, [])
 
@@ -164,9 +165,9 @@ export default function PricingClient() {
                         <span style={{ color: 'var(--gray-400)' }}> · {t('standardAfter', { price: `${p.currency || currency} ${Number(p.monthly_price).toLocaleString()}` })}</span>
                       </div>
                     )}
-                    {detectedCurrencyInfo && p.monthly_price > 0 && (
-                      <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '0.125rem' }}>
-                        ≈ ${Math.round((annual ? Math.round(p.annual_price / 12) : p.monthly_price) * ZAR_TO_USD_RATE).toLocaleString()} USD
+                    {detectedCurrencyInfo && fxRate && p.monthly_price > 0 && (
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '0.125rem' }} title="Approximate — billed in ZAR. Rates by Exchange Rate API">
+                        ≈ {detectedCurrencyInfo.symbol}{Math.round((annual ? Math.round(p.annual_price / 12) : p.monthly_price) * fxRate).toLocaleString()} {detectedCurrencyInfo.code}
                       </div>
                     )}
                   </div>
