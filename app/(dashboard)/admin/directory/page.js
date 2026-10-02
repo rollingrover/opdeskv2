@@ -12,6 +12,8 @@ import ListingsTab from '@/components/admin/directory/ListingsTab'
 import ListingDrawer from '@/components/admin/directory/ListingDrawer'
 import ClaimsTab from '@/components/admin/directory/ClaimsTab'
 import LeadsTab from '@/components/admin/directory/LeadsTab'
+import RoutesTab from '@/components/admin/directory/RoutesTab'
+import PackagesTab from '@/components/admin/directory/PackagesTab'
 
 // Superadmin: ZAtours + Route22 directory (shared dir_* tables). Reads use
 // the signed-in superadmin's session (RLS); writes go through
@@ -22,31 +24,35 @@ function DirectoryAdmin() {
   // Tab lives in the URL (?tab=leads) so sidebar links can deep-link to it.
   const router = useRouter()
   const searchParams = useSearchParams()
-  const TABS = ['listings', 'leads', 'claims', 'enquiries']
+  const TABS = ['listings', 'leads', 'claims', 'routes', 'packages', 'enquiries']
   const tab = TABS.includes(searchParams.get('tab')) ? searchParams.get('tab') : 'listings'
   const setTab = k => router.replace(k === 'listings' ? '/admin/directory' : `/admin/directory?tab=${k}`, { scroll: false })
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState({ listings: [], billing: [], claims: [], leads: [], companies: [], enquiries: [], verified: [] })
+  const [data, setData] = useState({ listings: [], billing: [], claims: [], leads: [], companies: [], enquiries: [], verified: [], routes: [], routeMembers: [], packages: [] })
   const [drawer, setDrawer] = useState(null) // { listing, prefill, lead }
 
   // Fetch only (no state writes) so the mount effect can apply results in a
   // promise callback rather than synchronously inside the effect.
   const fetchAll = useCallback(async () => {
-    const [listings, billing, claims, leads, companies, enquiries, verified] = await Promise.all([
+    const [listings, billing, claims, leads, companies, enquiries, verified, routes, routeMembers, packages] = await Promise.all([
       supabase.from('dir_listings').select('*').order('name'),
-      supabase.from('dir_billing').select('*').eq('entity_type', 'listing'),
+      supabase.from('dir_billing').select('*').in('entity_type', ['listing', 'route']),
       supabase.from('dir_claims').select('*').order('created_at', { ascending: false }),
       supabase.from('dir_business_enquiries').select('*').order('created_at', { ascending: false }),
       supabase.from('companies').select('id, name').order('name'),
       supabase.from('dir_enquiries').select('id, listing_id, site, name, email, status, date_from, date_to, guests, created_at').order('created_at', { ascending: false }).limit(200),
       supabase.from('dir_public_listings').select('id, verified'),
+      supabase.from('dir_routes').select('*').order('name'),
+      supabase.from('dir_route_members').select('route_id, listing_id'),
+      supabase.from('dir_packages').select('*').order('sort_order'),
     ])
-    const firstErr = [listings, billing, claims, leads, companies, enquiries, verified].find(r => r.error)
+    const firstErr = [listings, billing, claims, leads, companies, enquiries, verified, routes, routeMembers, packages].find(r => r.error)
     return {
       error: firstErr?.error?.message,
       data: {
         listings: listings.data || [], billing: billing.data || [], claims: claims.data || [], leads: leads.data || [],
         companies: companies.data || [], enquiries: enquiries.data || [], verified: verified.data || [],
+        routes: routes.data || [], routeMembers: routeMembers.data || [], packages: packages.data || [],
       },
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -66,7 +72,8 @@ function DirectoryAdmin() {
   }, [fetchAll, apply])
 
   const listingsById = useMemo(() => Object.fromEntries(data.listings.map(l => [l.id, l])), [data.listings])
-  const billingById = useMemo(() => Object.fromEntries(data.billing.map(b => [b.entity_id, b])), [data.billing])
+  const billingById = useMemo(() => Object.fromEntries(data.billing.filter(b => b.entity_type === 'listing').map(b => [b.entity_id, b])), [data.billing])
+  const billingByRoute = useMemo(() => Object.fromEntries(data.billing.filter(b => b.entity_type === 'route').map(b => [b.entity_id, b])), [data.billing])
   const verifiedById = useMemo(() => Object.fromEntries(data.verified.map(v => [v.id, v.verified])), [data.verified])
   const enquiryCounts = useMemo(() => {
     const m = {}; for (const e of data.enquiries) m[e.listing_id] = (m[e.listing_id] || 0) + 1; return m
@@ -83,6 +90,8 @@ function DirectoryAdmin() {
     ['listings', `Listings (${data.listings.length})`],
     ['leads', `Business leads${openLeads ? ` · ${openLeads} open` : ''}`],
     ['claims', `Claims${openClaims ? ` · ${openClaims} open` : ''}`],
+    ['routes', `Routes (${data.routes.length})`],
+    ['packages', 'Packages & prices'],
     ['enquiries', `Guest enquiries${newEnq ? ` · ${newEnq} new` : ''}`],
   ]
 
@@ -122,6 +131,11 @@ function DirectoryAdmin() {
               })} />
           )}
           {tab === 'claims' && <ClaimsTab claims={data.claims} listingsById={listingsById} reload={load} toast={toast} />}
+          {tab === 'routes' && (
+            <RoutesTab routes={data.routes} members={data.routeMembers} listings={data.listings} billingByRoute={billingByRoute}
+              packages={data.packages} reload={load} toast={toast} />
+          )}
+          {tab === 'packages' && <PackagesTab packages={data.packages} reload={load} toast={toast} />}
           {tab === 'enquiries' && (
             <Card style={{ overflowX: 'auto' }}>
               <p style={{ color: C.muted, fontSize: 12, padding: '12px 12px 0', margin: 0 }}>
@@ -152,7 +166,7 @@ function DirectoryAdmin() {
 
       {drawer && (
         <ListingDrawer key={`${drawer.listing?.id || 'new'}-${drawer.lead?.id || ''}`} listing={drawerListing} prefill={drawer.prefill} lead={drawer.lead}
-          billing={drawerListing ? billingById[drawerListing.id] : null} companies={data.companies}
+          billing={drawerListing ? billingById[drawerListing.id] : null} companies={data.companies} packages={data.packages}
           onClose={() => setDrawer(null)} onSaved={load} toast={toast} />
       )}
     </div>

@@ -3,8 +3,9 @@ import { createClient } from '@/lib/supabase/server'
 import { sendEmail } from '@/lib/email'
 import { buildPaymentUrl } from '@/lib/payfast'
 import {
-  BILLING_STATUSES, LEAD_STATUSES, LISTING_CATEGORIES, LISTING_TIERS, MAX_EXTRA_CATEGORIES, PLAN_LABELS,
-  generateToken, listingUrl, ownerEmailHtml, paymentLinkEmailHtml, planAmount, revalidateDirectory, siteUrlFor, slugify,
+  BILLING_STATUSES, DIRECTORY_PLAN_LABELS, LEAD_STATUSES, LISTING_CATEGORIES, LISTING_TIERS, MAX_EXTRA_CATEGORIES, PLAN_LABELS,
+  ZATOURS_URL, generateToken, isFoundingOpen, listingUrl, ownerEmailHtml, paymentLinkEmailHtml, planAmount, priceOf,
+  revalidateDirectory, siteUrlFor, slugify,
 } from '@/lib/directory'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://opdesk.app'
@@ -45,6 +46,37 @@ function pickListing(input) {
     const n = Number(out[k]); if (Number.isNaN(n)) throw new Error(`Invalid ${k}`); out[k] = n
   }
   for (const k of ['published', 'claimed']) if (k in out) out[k] = !!out[k]
+  return out
+}
+
+async function loadPackages(supabase) {
+  const { data } = await supabase.from('dir_packages').select('*')
+  return data || []
+}
+
+const ROUTE_FIELDS = ['name', 'kind', 'summary', 'description', 'region', 'country', 'website_url', 'contact_email',
+  'logo_url', 'path', 'package_key', 'company_id', 'sites', 'published']
+function pickRoute(input) {
+  const out = {}
+  for (const k of ROUTE_FIELDS) {
+    if (!(k in input)) continue
+    let v = input[k]
+    if (typeof v === 'string') v = v.trim()
+    if (v === '' && k !== 'name') v = null
+    out[k] = v
+  }
+  if ('kind' in out && !['route', 'association'].includes(out.kind)) throw new Error('Invalid kind')
+  if ('package_key' in out && out.package_key && !['route_hub', 'route_hub_plus'].includes(out.package_key)) throw new Error('Invalid package')
+  if ('sites' in out) {
+    out.sites = (out.sites || []).filter(x => x === 'zatours' || x === 'route22')
+    if (!out.sites.length) throw new Error('A route must be on at least one site')
+  }
+  if ('path' in out) {
+    const pts = Array.isArray(out.path) ? out.path : []
+    out.path = pts.filter(p => Array.isArray(p) && p.length === 2 && p.every(n => Number.isFinite(Number(n))))
+      .map(([a, b]) => [Number(a), Number(b)]).slice(0, 500)
+  }
+  if ('published' in out) out.published = !!out.published
   return out
 }
 
@@ -190,14 +222,24 @@ export async function POST(request) {
         // listing when PayFast confirms the first payment.
         const plan = body.plan
         if (!PLAN_LABELS[plan]) throw new Error('Pick Premium or Featured')
-        const { amount, founding, extras } = planAmount(plan, body.extraCategories)
         const listing = await getListing(supabase, body.listingId)
+        const table = await loadPackages(supabase)
+        // Premium for members of a Route Hub Plus route bills at the member rate.
+        let priceKey = plan
+        if (plan === 'premium') {
+          const { data: memberOf } = await supabase.from('dir_route_members')
+            .select('dir_routes!inner(package_key, published)').eq('listing_id', listing.id)
+          if ((memberOf || []).some(m => m.dir_routes?.package_key === 'route_hub_plus' && m.dir_routes?.published)) {
+            priceKey = 'route_member_premium'
+          }
+        }
+        const { amount, founding, extras } = planAmount(plan, body.extraCategories, new Date(), table, priceKey)
         const email = String(body.email || '').trim()
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('A valid billing email is required')
         const name = String(body.name || '').trim()
         const [nameFirst, ...rest] = name.split(' ')
         const mPaymentId = `DIR-${listing.id}-${plan}-${Date.now()}`
-        const label = PLAN_LABELS[plan]
+        const label = DIRECTORY_PLAN_LABELS[priceKey] || PLAN_LABELS[plan]
         const site = siteUrlFor(listing)
 
         const paymentUrl = buildPaymentUrl({
@@ -217,7 +259,7 @@ export async function POST(request) {
 
         // Quote recorded now; the founding lock itself starts on first payment (ITN).
         await upsertBilling(supabase, listing.id, {
-          payfast_m_payment_id: mPaymentId, plan, owner_email: email,
+          payfast_m_payment_id: mPaymentId, plan: priceKey, owner_email: email,
           extra_categories: extras, locked_amount: amount, founding,
         })
         if (body.leadId) {
@@ -231,7 +273,121 @@ export async function POST(request) {
           const sent = await sendEmail({ to: email, subject, html })
           emailed = !sent?.error && !sent?.skipped
         }
-        return NextResponse.json({ ok: true, paymentUrl, emailed, amount, founding })
+        return NextResponse.json({ ok: true, paymentUrl, emailed, amount, founding, memberRate: priceKey !== plan })
+      }
+
+      case 'update_package': {
+        const patch = {}
+        for (const k of ['founding_price', 'standard_price', 'included_categories', 'min_quantity']) {
+          if (k in body) {
+            const v = body[k] === '' || body[k] == null ? null : Number(body[k])
+            if (v !== null && (!Number.isFinite(v) || v < 0)) throw new Error(`Invalid ${k}`)
+            if (v === null && (k === 'founding_price' || k === 'standard_price')) throw new Error('Prices are required')
+            patch[k] = v
+          }
+        }
+        if ('name' in body) patch.name = String(body.name || '').trim() || undefined
+        if ('description' in body) patch.description = String(body.description || '').trim() || null
+        if ('active' in body) patch.active = !!body.active
+        if ('features' in body) {
+          patch.features = (Array.isArray(body.features) ? body.features : String(body.features || '').split('\n'))
+            .map(f => String(f).trim()).filter(Boolean).slice(0, 12)
+        }
+        const { error } = await supabase.from('dir_packages').update(patch).eq('key', body.key)
+        if (error) throw new Error(error.message)
+        await revalidateDirectory([])
+        return NextResponse.json({ ok: true })
+      }
+
+      case 'create_route': {
+        const fields = pickRoute(body.fields || {})
+        if (!fields.name) throw new Error('Route name is required')
+        let slug = slugify(fields.name)
+        for (let i = 2; i < 50; i++) {
+          const { data } = await supabase.from('dir_routes').select('id').eq('slug', slug).maybeSingle()
+          if (!data) break
+          slug = `${slugify(fields.name)}-${i}`
+        }
+        const { data, error } = await supabase.from('dir_routes')
+          .insert([{ sites: ['zatours'], published: false, ...fields, slug }]).select('id, slug').single()
+        if (error) throw new Error(error.message)
+        if (body.leadId) await supabase.from('dir_business_enquiries').update({ status: 'contacted' }).eq('id', body.leadId)
+        await revalidateDirectory([])
+        return NextResponse.json({ ok: true, id: data.id, slug: data.slug })
+      }
+
+      case 'update_route': {
+        const patch = pickRoute(body.patch || {})
+        const { error } = await supabase.from('dir_routes').update(patch).eq('id', body.id)
+        if (error) throw new Error(error.message)
+        await revalidateDirectory([])
+        return NextResponse.json({ ok: true })
+      }
+
+      case 'set_route_members': {
+        const ids = Array.from(new Set((body.listingIds || []).filter(x => typeof x === 'string')))
+        const { error: delErr } = await supabase.from('dir_route_members').delete().eq('route_id', body.routeId)
+        if (delErr) throw new Error(delErr.message)
+        if (ids.length) {
+          const { error } = await supabase.from('dir_route_members').insert(ids.map(listing_id => ({ route_id: body.routeId, listing_id })))
+          if (error) throw new Error(error.message)
+        }
+        await revalidateDirectory([])
+        return NextResponse.json({ ok: true, members: ids.length })
+      }
+
+      case 'route_payment_link': {
+        // Route Hub / Hub Plus monthly subscription, or an association paying
+        // Premium for N members (association_bulk_premium x quantity).
+        const plan = body.plan
+        if (!['route_hub', 'route_hub_plus', 'association_bulk_premium'].includes(plan)) throw new Error('Pick a route package')
+        const { data: route } = await supabase.from('dir_routes').select('*').eq('id', body.routeId).maybeSingle()
+        if (!route) throw new Error('Route not found')
+        const email = String(body.email || '').trim()
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('A valid billing email is required')
+        const table = await loadPackages(supabase)
+        const pkgRow = table.find(t => t.key === plan)
+        const minQty = plan === 'association_bulk_premium' ? (pkgRow?.min_quantity || 10) : 1
+        const quantity = plan === 'association_bulk_premium' ? Math.max(minQty, Number(body.quantity) || 0) : 1
+        const unit = priceOf(plan, table)
+        const amount = unit * quantity
+        const founding = isFoundingOpen()
+        const name = String(body.name || '').trim()
+        const [nameFirst, ...rest] = name.split(' ')
+        const mPaymentId = `DIR-${route.id}-${plan}-${Date.now()}`
+        const label = DIRECTORY_PLAN_LABELS[plan]
+        const paymentUrl = buildPaymentUrl({
+          amount,
+          itemName: `ZAtours ${label} — ${route.name}`.slice(0, 100),
+          itemDescription: `Monthly ${label}${quantity > 1 ? ` for ${quantity} members` : ''}${founding ? ' — founding price, locked 3 years' : ''}. No commission.`.slice(0, 255),
+          mPaymentId,
+          nameFirst: nameFirst || route.name,
+          nameLast: rest.join(' ') || '',
+          emailAddress: email,
+          returnUrl: `${ZATOURS_URL}/routes/${route.slug}?upgraded=1`,
+          cancelUrl: `${ZATOURS_URL}/list-your-business#routes`,
+          notifyUrl: `${SITE_URL}/api/payfast/notify`,
+          recurring: true,
+          cycleFrequency: 'monthly',
+        })
+        await supabase.from('dir_billing').upsert({
+          entity_type: 'route', entity_id: route.id, payfast_m_payment_id: mPaymentId, plan, owner_email: email,
+          quantity, locked_amount: amount, founding, updated_at: new Date().toISOString(),
+        }, { onConflict: 'entity_type,entity_id' })
+        let emailed = false
+        if (body.sendEmail) {
+          const sent = await sendEmail({
+            to: email,
+            subject: `Your ZAtours ${label} — payment link`,
+            html: `<p>Hi ${name || ''},</p>
+              <p>Thanks for choosing <strong>${label}</strong> for <strong>${route.name}</strong>: R${amount} per month${quantity > 1 ? ` (${quantity} members × R${unit})` : ''}.</p>
+              ${founding ? '<p><strong>Founding price:</strong> locked for 3 years from your first payment.</p>' : ''}
+              <p><a href="${paymentUrl}">Pay R${amount}/month securely with PayFast</a> — your route goes live as soon as the payment is confirmed.</p>
+              <p style="color:#666">No commission, no per-booking fees.</p>`,
+          })
+          emailed = !sent?.error && !sent?.skipped
+        }
+        return NextResponse.json({ ok: true, paymentUrl, amount, founding, quantity, emailed })
       }
 
       case 'revalidate': {

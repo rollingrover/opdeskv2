@@ -167,13 +167,16 @@ async function handleDirectoryPayment(supabase, row, postData, mPaymentId) {
   }
   const status = postData.payment_status
   const now = new Date()
+  if (row.entity_type === 'route') return handleRoutePayment(supabase, row, postData, status)
+
   const { data: listing } = await supabase.from('dir_listings').select('id, slug, tier, claimed').eq('id', row.entity_id).maybeSingle()
 
   if (status === 'COMPLETE') {
     const paidUntil = new Date(now.getTime() + 35 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) // monthly cycle + buffer
-    const plan = row.plan || (mPaymentId.split('-')[6] === 'featured' ? 'featured' : 'premium')
+    const plan = row.plan === 'featured' || mPaymentId.split('-')[6] === 'featured' ? 'featured' : 'premium'
+    const billedPlan = row.plan || plan
     const { error } = await supabase.from('dir_billing').update({
-      billing_status: 'paid', plan, payfast_token: postData.token || row.payfast_token,
+      billing_status: 'paid', plan: billedPlan, payfast_token: postData.token || row.payfast_token,
       last_paid_at: now.toISOString(), paid_until: paidUntil, payment_failed_at: null,
       // Founding lock runs 3 years from the first successful payment.
       ...(row.founding && !row.lock_until ? { lock_until: addYears(now, FOUNDING.lockYears) } : {}),
@@ -203,6 +206,48 @@ async function handleDirectoryPayment(supabase, row, postData, mPaymentId) {
 
   // Failed charge: flag it, don't downgrade yet (same grace as SaaS accounts).
   // The daily directory-billing cron lapses it once paid_until has passed.
+  await supabase.from('dir_billing').update({ payment_failed_at: now.toISOString(), updated_at: now.toISOString() }).eq('id', row.id)
+  return { status: 200, outcome: 'payment_failed' }
+}
+
+// Route Hub / association payments (dir_billing.entity_type = 'route').
+async function handleRoutePayment(supabase, row, postData, status) {
+  const now = new Date()
+  const { data: route } = await supabase.from('dir_routes').select('id, slug').eq('id', row.entity_id).maybeSingle()
+  if (status === 'COMPLETE') {
+    const paidUntil = new Date(now.getTime() + 35 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
+    const { error } = await supabase.from('dir_billing').update({
+      billing_status: 'paid', payfast_token: postData.token || row.payfast_token,
+      last_paid_at: now.toISOString(), paid_until: paidUntil, payment_failed_at: null,
+      ...(row.founding && !row.lock_until ? { lock_until: addYears(now, FOUNDING.lockYears) } : {}),
+      ...(!row.locked_amount && postData.amount_gross ? { locked_amount: Number(postData.amount_gross) } : {}),
+      updated_at: now.toISOString(),
+    }).eq('id', row.id)
+    if (error) return { status: 500, outcome: 'error', error: error.message }
+    if (route) {
+      if (row.plan === 'route_hub' || row.plan === 'route_hub_plus') {
+        await supabase.from('dir_routes').update({ published: true, package_key: row.plan }).eq('id', route.id)
+      }
+      if (row.plan === 'association_bulk_premium') {
+        // Association pays Premium for its members: lift free members to Premium.
+        const { data: members } = await supabase.from('dir_route_members').select('listing_id').eq('route_id', route.id)
+        const ids = (members || []).map(m => m.listing_id)
+        if (ids.length) {
+          await supabase.from('dir_listings').update({ tier: 'premium', published: true })
+            .in('id', ids).in('tier', ['community', 'basic'])
+        }
+      }
+      await supabase.from('dir_business_enquiries').update({ status: 'won' })
+        .eq('interest', 'route_hub').eq('email', row.owner_email || '').in('status', ['new', 'contacted'])
+      await revalidateDirectory([])
+    }
+    return { status: 200, outcome: 'success' }
+  }
+  if (status === 'CANCELLED') {
+    // Keep the route page and members as they are; flag for the admin.
+    await supabase.from('dir_billing').update({ billing_status: 'lapsed', updated_at: now.toISOString() }).eq('id', row.id)
+    return { status: 200, outcome: 'cancelled' }
+  }
   await supabase.from('dir_billing').update({ payment_failed_at: now.toISOString(), updated_at: now.toISOString() }).eq('id', row.id)
   return { status: 200, outcome: 'payment_failed' }
 }

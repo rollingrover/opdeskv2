@@ -111,6 +111,8 @@ const ADMIN_NAV = [
     { href: '/admin/directory', icon: Globe, label: 'Listings & billing', exact: true },
     { href: '/admin/directory?tab=leads', icon: Briefcase, label: 'Business leads' },
     { href: '/admin/directory?tab=claims', icon: UserCheck, label: 'Claims' },
+    { href: '/admin/directory?tab=routes', icon: MapPin, label: 'Routes & associations' },
+    { href: '/admin/directory?tab=packages', icon: Tag, label: 'Packages & prices' },
     { href: '/admin/directory?tab=enquiries', icon: Inbox, label: 'Guest enquiries' },
     { href: ROUTE22_ADMIN, icon: Package, label: 'CSV import (old panel)' },
   ] },

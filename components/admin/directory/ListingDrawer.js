@@ -24,7 +24,7 @@ function Section({ title, children, right }) {
 
 // Side panel for one listing: details, billing, owner edit link, PayFast plan link.
 // `listing` null + `prefill` = create mode (optionally from a business lead).
-export default function ListingDrawer({ listing, prefill, lead, billing, companies, onClose, onSaved, toast }) {
+export default function ListingDrawer({ listing, prefill, lead, billing, companies, packages, onClose, onSaved, toast }) {
   const creating = !listing
   // Initialised once from props — the parent remounts this panel (key) when a
   // different listing or lead is opened.
@@ -227,8 +227,8 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                 <label style={label}>Plan
                   <select style={input} value={pay.plan} onChange={e => setPay(p => ({ ...p, plan: e.target.value }))}>
-                    <option value="premium">Premium — R{planAmount('premium').base}/mo</option>
-                    <option value="featured">Featured — R{planAmount('featured').base}/mo</option>
+                    <option value="premium">Premium — R{planAmount('premium', 0, new Date(), packages).base}/mo</option>
+                    <option value="featured">Featured — R{planAmount('featured', 0, new Date(), packages).base}/mo</option>
                   </select>
                 </label>
                 <label style={label}>Extra categories
@@ -239,7 +239,7 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
                 <label style={label}>Billing email<input style={input} value={pay.email} onChange={e => setPay(p => ({ ...p, email: e.target.value }))} /></label>
               </div>
               {(() => {
-                const q = planAmount(pay.plan, pay.extraCategories)
+                const q = planAmount(pay.plan, pay.extraCategories, new Date(), packages)
                 return (
                   <p style={{ color: C.text, fontSize: 13, margin: '0 0 10px' }}>
                     Total <strong style={{ color: 'white' }}>R{q.amount}/month</strong>
@@ -257,7 +257,7 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
               <Btn kind="gold" disabled={working === 'pay' || !pay.email} onClick={() => run('pay', async () => {
                 const r = await dirAction('payment_link', { listingId: listing.id, leadId: lead?.id, ...pay })
                 setPayUrl(r.paymentUrl)
-                toast.success(`${r.emailed ? 'Payment link generated and emailed' : 'Payment link generated'} — R${r.amount}/month${r.founding ? ' (founding)' : ''}`)
+                toast.success(`${r.emailed ? 'Payment link generated and emailed' : 'Payment link generated'} — R${r.amount}/month${r.founding ? ' (founding)' : ''}${r.memberRate ? ' · route member rate' : ''}`)
                 await onSaved(true)
               })}>{working === 'pay' ? 'Generating…' : 'Generate payment link'}</Btn>
               {payUrl && (
