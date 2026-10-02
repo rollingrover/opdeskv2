@@ -191,7 +191,12 @@
     "stillDecidingSub": "Start on the Free plan — no credit card, no time limit.",
     "logisticsTab": "Logistics & Support Services",
     "metaTitle": "Pricing — OpDesk",
-    "metaDescription": "Simple, flat-rate pricing for safari operators, lodges, hotels, shuttles, charters and logistics businesses across Africa. No booking commission, ever."
+    "metaDescription": "Simple, flat-rate pricing for safari operators, lodges, hotels, shuttles, charters and logistics businesses across Africa. No booking commission, ever.",
+    "foundingBanner": "Membri fondatori: iscriviti entro il {deadline} — primi {months} mesi a prezzo di lancio, poi {pct}% di sconto per {years} anni. Mai commissioni.",
+    "introPrice": "per i primi {months} mesi",
+    "thenFounding": "poi {price}/mese, bloccato per {years} anni",
+    "standardAfter": "prezzo standard {price}/mese",
+    "foundingMonthlyOnly": "L'offerta fondatori vale per i piani mensili."
   },
   "About": {
     "eyebrow": "Our story",

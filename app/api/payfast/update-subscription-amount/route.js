@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { updateSubscriptionAmount } from '@/lib/payfast'
+import { monthlyTotalFor } from '@/lib/opdeskPricing'
 
 export async function POST(request) {
   try {
@@ -15,7 +16,7 @@ export async function POST(request) {
     if (!companyId) return NextResponse.json({ error: 'companyId is required' }, { status: 400 })
 
     const { data: company, error: companyErr } = await supabase
-      .from('companies').select('id, package_id, payfast_token, location_discount_pct, comped').eq('id', companyId).maybeSingle()
+      .from('companies').select('id, package_id, payfast_token, location_discount_pct, comped, founding_member, founding_intro_until, founding_lock_until, founding_rate').eq('id', companyId).maybeSingle()
     if (companyErr || !company) return NextResponse.json({ error: 'Company not found' }, { status: 404 })
 
     // Comped accounts are never billed, regardless of package — if this
@@ -35,20 +36,9 @@ export async function POST(request) {
       return NextResponse.json({ synced: false, reason: 'No active PayFast subscription on this company' })
     }
 
-    const [{ data: pkg }, { data: addons }] = await Promise.all([
-      company.package_id
-        ? supabase.from('marketing_packages').select('monthly_price').eq('id', company.package_id).maybeSingle()
-        : Promise.resolve({ data: null }),
-      supabase.from('company_addons').select('price_per_unit, quantity').eq('company_id', companyId).eq('active', true),
-    ])
-
-    // Extra locations linked under an Enterprise org get a fixed 20%
-    // discount on that location's own package price (see link_new_location)
-    // — add-ons are still charged in full.
-    const discountPct = Number(company.location_discount_pct) || 0
-    const packagePrice = (Number(pkg?.monthly_price) || 0) * (1 - discountPct / 100)
-    const addonsTotal = (addons || []).reduce((sum, a) => sum + (Number(a.price_per_unit) || 0) * (a.quantity || 1), 0)
-    const newTotal = packagePrice + addonsTotal
+    // Package price follows founding-member stage (intro / founding / standard);
+    // extra locations get their 20% location discount; add-ons in full.
+    const newTotal = await monthlyTotalFor(supabase, company)
 
     const result = await updateSubscriptionAmount(company.payfast_token, newTotal)
     if (!result.success) {

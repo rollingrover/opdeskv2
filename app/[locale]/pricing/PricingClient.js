@@ -3,6 +3,7 @@ import { BrandIcon } from '@/components/ui/BrandIcon'
 import { useEffect, useState } from 'react'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
+import { FOUNDING, FOUNDING_DISCOUNT_PCT, FOUNDING_INTRO_MONTHS, foundingRateFor, isFoundingOpen } from '@/lib/opdeskPricing'
 import { createClient } from '@/lib/supabase/client'
 import { MarketingNav } from '@/components/marketing/MarketingNav'
 import { MarketingFooter } from '@/components/marketing/MarketingFooter'
@@ -59,6 +60,7 @@ function buildHighlights(pkg) {
 
 export default function PricingClient() {
   const t = useTranslations('Pricing')
+  const founding = isFoundingOpen()
   const [packages, setPackages] = useState([])
   const [addons, setAddons] = useState([])
   const [annual, setAnnual] = useState(false)
@@ -105,6 +107,12 @@ export default function PricingClient() {
         <p style={{ fontSize: '1.125rem', color: 'rgba(255,255,255,0.75)', maxWidth: '560px', margin: '0 auto 1.75rem', lineHeight: 1.6 }}>
           {t('subheading')}
         </p>
+        {founding && (
+          <p style={{ maxWidth: '44rem', margin: '0 auto 1.25rem', textAlign: 'center', background: 'var(--cream, #fdf8ee)', border: '1px solid var(--gold)', borderRadius: '999px', padding: '0.5rem 1rem', fontSize: '0.875rem', color: 'var(--navy)' }}>
+            {t('foundingBanner', { deadline: FOUNDING.deadlineLabel, months: FOUNDING_INTRO_MONTHS, pct: FOUNDING_DISCOUNT_PCT, years: FOUNDING.lockYears })}
+            {annual ? ` ${t('foundingMonthlyOnly')}` : ''}
+          </p>
+        )}
         <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,0.1)', borderRadius: '999px', padding: '0.25rem' }}>
           {[[t('monthly'), false], [t('annual'), true]].map(([label, val]) => (
             <button key={label} onClick={() => setAnnual(val)}
@@ -149,6 +157,13 @@ export default function PricingClient() {
                       {p.monthly_price === 0 ? t('free') : `${p.currency || currency} ${Number(annual ? Math.round(p.annual_price / 12) : p.monthly_price).toLocaleString()}`}
                     </span>
                     {p.monthly_price > 0 && <span style={{ fontSize: '0.8125rem', color: 'var(--gray-500)' }}>{t('perMonth')}{annual ? t('billedAnnually') : ''}</span>}
+                    {founding && !annual && p.intro_price > 0 && p.slug !== 'enterprise' && (
+                      <div style={{ marginTop: '0.375rem', fontSize: '0.8125rem', color: 'var(--navy)', lineHeight: 1.45 }}>
+                        <strong style={{ color: 'var(--gold-dark, #b8862f)' }}>{p.currency || currency} {Number(p.intro_price).toLocaleString()}{t('perMonth')}</strong> {t('introPrice', { months: FOUNDING_INTRO_MONTHS })},{' '}
+                        {t('thenFounding', { price: `${p.currency || currency} ${foundingRateFor(p).toLocaleString()}`, years: FOUNDING.lockYears })}
+                        <span style={{ color: 'var(--gray-400)' }}> · {t('standardAfter', { price: `${p.currency || currency} ${Number(p.monthly_price).toLocaleString()}` })}</span>
+                      </div>
+                    )}
                     {detectedCurrencyInfo && p.monthly_price > 0 && (
                       <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '0.125rem' }}>
                         ≈ ${Math.round((annual ? Math.round(p.annual_price / 12) : p.monthly_price) * ZAR_TO_USD_RATE).toLocaleString()} USD

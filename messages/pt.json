@@ -191,7 +191,12 @@
     "stillDecidingSub": "Comece com o plano Grátis — sem cartão de crédito, sem limite de tempo.",
     "logisticsTab": "Logística & Serviços de Apoio",
     "metaTitle": "Preços — OpDesk",
-    "metaDescription": "Preços simples e fixos para operadores de safari, lodges, hotéis, shuttles, charters e negócios de logística em toda a África. Nunca comissão sobre reservas."
+    "metaDescription": "Preços simples e fixos para operadores de safari, lodges, hotéis, shuttles, charters e negócios de logística em toda a África. Nunca comissão sobre reservas.",
+    "foundingBanner": "Membros fundadores: adira até {deadline} — primeiros {months} meses a preço de lançamento, depois {pct}% de desconto durante {years} anos. Sem comissões, nunca.",
+    "introPrice": "nos primeiros {months} meses",
+    "thenFounding": "depois {price}/mês, fixo durante {years} anos",
+    "standardAfter": "preço normal {price}/mês",
+    "foundingMonthlyOnly": "A oferta para fundadores aplica-se aos planos mensais."
   },
   "About": {
     "eyebrow": "A nossa história",

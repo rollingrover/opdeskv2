@@ -191,7 +191,12 @@
     "stillDecidingSub": "Begin op die Gratis-plan — geen kredietkaart, geen tydsbeperking nie.",
     "logisticsTab": "Logistiek & Ondersteuningsdienste",
     "metaTitle": "Pryse — OpDesk",
-    "metaDescription": "Eenvoudige, plat-tarief pryse vir wildsafari-operateurs, lodges, hotelle, pendeldienste, huurbote en logistiekbesighede regoor Afrika. Nooit besprekingskommissie nie."
+    "metaDescription": "Eenvoudige, plat-tarief pryse vir wildsafari-operateurs, lodges, hotelle, pendeldienste, huurbote en logistiekbesighede regoor Afrika. Nooit besprekingskommissie nie.",
+    "foundingBanner": "Stigterslede: sluit aan voor {deadline} — eerste {months} maande teen inleidingspryse, dan {pct}% afslag vir {years} jaar. Nooit kommissie nie.",
+    "introPrice": "vir die eerste {months} maande",
+    "thenFounding": "dan {price}/md, vas vir {years} jaar",
+    "standardAfter": "standaard {price}/md",
+    "foundingMonthlyOnly": "Die stigtersaanbod geld vir maandelikse pakkette."
   },
   "About": {
     "eyebrow": "Ons storie",

@@ -191,7 +191,12 @@
     "stillDecidingSub": "Commencez avec le forfait Gratuit — sans carte bancaire, sans limite de temps.",
     "logisticsTab": "Logistique & Services de Soutien",
     "metaTitle": "Tarifs — OpDesk",
-    "metaDescription": "Tarification simple et forfaitaire pour les opérateurs safari, lodges, hôtels, navettes, charters et entreprises de logistique à travers l'Afrique. Jamais de commission sur les réservations."
+    "metaDescription": "Tarification simple et forfaitaire pour les opérateurs safari, lodges, hôtels, navettes, charters et entreprises de logistique à travers l'Afrique. Jamais de commission sur les réservations.",
+    "foundingBanner": "Membres fondateurs : inscrivez-vous avant le {deadline} — {months} premiers mois au tarif de lancement, puis {pct} % de remise pendant {years} ans. Jamais de commission.",
+    "introPrice": "pendant les {months} premiers mois",
+    "thenFounding": "puis {price}/mois, bloqué {years} ans",
+    "standardAfter": "tarif standard {price}/mois",
+    "foundingMonthlyOnly": "L'offre fondateurs s'applique aux formules mensuelles."
   },
   "About": {
     "eyebrow": "Notre histoire",

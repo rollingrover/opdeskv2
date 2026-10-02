@@ -191,7 +191,12 @@
     "stillDecidingSub": "Starten Sie mit dem kostenlosen Tarif — keine Kreditkarte, keine Zeitbegrenzung.",
     "logisticsTab": "Logistik & Support-Dienste",
     "metaTitle": "Preise — OpDesk",
-    "metaDescription": "Einfache Festpreise für Safari-Betreiber, Lodges, Hotels, Shuttles, Charter und Logistikunternehmen in ganz Afrika. Niemals Buchungsprovision."
+    "metaDescription": "Einfache Festpreise für Safari-Betreiber, Lodges, Hotels, Shuttles, Charter und Logistikunternehmen in ganz Afrika. Niemals Buchungsprovision.",
+    "foundingBanner": "Gründungsmitglieder: bis {deadline} beitreten — die ersten {months} Monate zum Einführungspreis, danach {pct} % Rabatt für {years} Jahre. Niemals Provision.",
+    "introPrice": "für die ersten {months} Monate",
+    "thenFounding": "danach {price}/Monat, {years} Jahre garantiert",
+    "standardAfter": "regulär {price}/Monat",
+    "foundingMonthlyOnly": "Das Gründungsangebot gilt für monatliche Tarife."
   },
   "About": {
     "eyebrow": "Unsere Geschichte",
