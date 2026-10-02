@@ -13,7 +13,7 @@ import {
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
   Shield, MapPin, Crosshair, LogOut, ChevronRight, Bed,
   ClipboardList, UserCheck, DollarSign, Clock, Plane,
-  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail
+  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail, Inbox
 } from 'lucide-react'
 
 const ALL_NAV = [
@@ -23,6 +23,7 @@ const ALL_NAV = [
       { href:'/dashboard',   icon: LayoutDashboard, key:'dashboard',        module:'always' },
       { href:'/bookings',    icon: BookOpen,         key:'bookings',         module:'bookings' },
       { href:'/calendar',    icon: CalendarDays,     key:'calendar',         module:'bookings' },
+      { href:'/enquiries',   icon: Inbox,            key:'directoryEnquiries', module:'always' },
       { href:'/settings/booking-types', icon: Tag,   key:'bookingTypes',     module:'always' },
       { href:'/guests',      icon: Users,           key:'guestsDirectory',  module:'guests_directory', gate:'guest_register' },
     ]
@@ -238,7 +239,7 @@ export function Sidebar({ mobileOpen, onClose }) {
               {[
                 { href:'/admin/revenue',   icon: TrendingUp, label:'Revenue' },
                 { href:'/admin/companies', icon: Shield, label:'Companies' },
-                { href:'/admin/operators', icon: Star, label:'Operator Profiles' },
+                { href:'/admin/directory', icon: Globe, label:'Directory' },
                 { href:'/admin/pricing',   icon: DollarSign, label:'Add-on Pricing' },
                 { href:'/admin/packages',  icon: FileText, label:'Marketing Packages' },
                 { href:'/admin/community-contributions', icon: Star, label:'Community Contributions' },

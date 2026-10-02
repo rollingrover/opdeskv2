@@ -6,7 +6,7 @@ export function LegalPageHeader() {
     <nav style={{ background: 'var(--navy)', padding: '0 2rem', height: '4rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
       <Link href="/" style={{ textDecoration: 'none' }}><OpDeskLogo size={36} white /></Link>
       <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-        <Link href="/operators" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>Find Operators</Link>
+        <Link href={process.env.NEXT_PUBLIC_ZATOURS_URL || 'https://www.zatours.co.za'} style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>Find Operators</Link>
         <Link href="/pricing" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>Pricing</Link>
         <Link href="/auth/login" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>Sign In</Link>
       </div>

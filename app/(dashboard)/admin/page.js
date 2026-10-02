@@ -2,12 +2,12 @@
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { TrendingUp, Shield, Star, DollarSign, FileText, HelpCircle, Settings } from 'lucide-react'
+import { TrendingUp, Shield, Star, DollarSign, FileText, HelpCircle, Settings, Globe } from 'lucide-react'
 
 const SECTIONS = [
   { href: '/admin/revenue',    icon: TrendingUp,  label: 'Revenue',            desc: 'MRR, ARR, tier breakdown, monthly cohorts' },
   { href: '/admin/companies',  icon: Shield,      label: 'Companies',          desc: 'Manage every account — tiers, add-ons, users' },
-  { href: '/admin/operators',  icon: Star,        label: 'Operator Profiles',  desc: 'Public-facing operator listings (coming soon)' },
+  { href: '/admin/directory',  icon: Globe,       label: 'Directory',          desc: 'ZAtours + Route22 listings, claims, leads & listing payments' },
   { href: '/admin/pricing',    icon: DollarSign,  label: 'Pricing Editor',     desc: 'Edit tier & add-on pricing platform-wide' },
   { href: '/admin/packages',   icon: FileText,    label: 'Marketing Packages', desc: 'Bundle add-ons into packages (coming soon)' },
   { href: '/admin/affiliates', icon: Star,        label: 'Affiliates',         desc: 'Affiliate signups & commissions (coming soon)' },

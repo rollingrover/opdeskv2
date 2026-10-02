@@ -40,7 +40,7 @@ export function MarketingFooter() {
             {label}
           </Link>
         ))}
-        <PlainLink href="/operators" style={{ color:'rgba(255,255,255,0.4)', textDecoration:'none' }}
+        <PlainLink href={process.env.NEXT_PUBLIC_ZATOURS_URL || 'https://www.zatours.co.za'} style={{ color:'rgba(255,255,255,0.4)', textDecoration:'none' }}
           onMouseOver={e => e.currentTarget.style.color='rgba(255,255,255,0.7)'}
           onMouseOut={e => e.currentTarget.style.color='rgba(255,255,255,0.4)'}>
           Find Operators

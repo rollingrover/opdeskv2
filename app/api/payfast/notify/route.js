@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { verifyItnSignature, confirmWithPayfast } from '@/lib/payfast'
 import { createServiceClient } from '@/lib/supabase/service'
+import { revalidateDirectory } from '@/lib/directory'
 
 const TRIAL_DAYS = 30
 
@@ -60,6 +61,27 @@ export async function POST(request) {
         return logAndReturn(new NextResponse('db error', { status: 500 }), { intent: 'rollingrover_payment', outcome: 'error', error: error.message })
       }
       return logAndReturn(new NextResponse('OK', { status: 200 }), { intent: 'rollingrover_payment', outcome: 'success' })
+    }
+
+    // --- Directory listing plan (ZAtours / Route22 Premium or Featured) ---
+    // First payment: m_payment_id DIR-{listingId}-{plan}-{ts}. Recurring
+    // re-bills are matched by PayFast token, like SaaS subscriptions.
+    {
+      let dirRow = null
+      if (mPaymentId.startsWith('DIR-')) {
+        const { data } = await supabase.from('dir_billing').select('*').eq('payfast_m_payment_id', mPaymentId).maybeSingle()
+        dirRow = data
+      }
+      if (!dirRow && postData.token) {
+        const { data } = await supabase.from('dir_billing').select('*').eq('payfast_token', postData.token).maybeSingle()
+        dirRow = data
+      }
+      if (dirRow || mPaymentId.startsWith('DIR-')) {
+        const result = await handleDirectoryPayment(supabase, dirRow, postData, mPaymentId)
+        return logAndReturn(new NextResponse(result.status === 500 ? 'db error' : 'OK', { status: result.status }), {
+          intent: 'directory_plan', outcome: result.outcome, error: result.error,
+        })
+      }
     }
 
     // --- OpDesk SaaS subscription payment ---
@@ -134,4 +156,50 @@ export async function POST(request) {
     console.error('[payfast/notify] error:', error)
     return logAndReturn(new NextResponse('error', { status: 500 }), { intent: 'unhandled', outcome: 'error', error: error.message })
   }
+}
+
+// Directory plan payments. Kept separate from the SaaS subscription flow:
+// they touch dir_billing / dir_listings only, never companies.
+async function handleDirectoryPayment(supabase, row, postData, mPaymentId) {
+  if (!row) {
+    console.error('[payfast/notify] DIR payment with no matching dir_billing row', mPaymentId)
+    return { status: 200, outcome: 'unmatched', error: 'no dir_billing row' } // acknowledge; nothing to update
+  }
+  const status = postData.payment_status
+  const now = new Date()
+  const { data: listing } = await supabase.from('dir_listings').select('id, slug, tier, claimed').eq('id', row.entity_id).maybeSingle()
+
+  if (status === 'COMPLETE') {
+    const paidUntil = new Date(now.getTime() + 35 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) // monthly cycle + buffer
+    const plan = row.plan || (mPaymentId.split('-')[6] === 'featured' ? 'featured' : 'premium')
+    const { error } = await supabase.from('dir_billing').update({
+      billing_status: 'paid', plan, payfast_token: postData.token || row.payfast_token,
+      last_paid_at: now.toISOString(), paid_until: paidUntil, payment_failed_at: null,
+      updated_at: now.toISOString(),
+    }).eq('id', row.id)
+    if (error) return { status: 500, outcome: 'error', error: error.message }
+    if (listing) {
+      // Paying listings are always published at their plan's tier.
+      await supabase.from('dir_listings').update({ tier: plan, published: true }).eq('id', listing.id)
+      await supabase.from('dir_business_enquiries').update({ status: 'won' })
+        .eq('listing_id', listing.id).in('status', ['new', 'contacted'])
+      await revalidateDirectory([listing.slug])
+    }
+    return { status: 200, outcome: 'success' }
+  }
+
+  if (status === 'CANCELLED') {
+    // Subscription cancelled: back to a free listing (keeps its page if claimed).
+    await supabase.from('dir_billing').update({ billing_status: 'lapsed', updated_at: now.toISOString() }).eq('id', row.id)
+    if (listing && (listing.tier === 'premium' || listing.tier === 'featured')) {
+      await supabase.from('dir_listings').update({ tier: listing.claimed ? 'basic' : 'community' }).eq('id', listing.id)
+      await revalidateDirectory([listing.slug])
+    }
+    return { status: 200, outcome: 'cancelled' }
+  }
+
+  // Failed charge: flag it, don't downgrade yet (same grace as SaaS accounts).
+  // The daily directory-billing cron lapses it once paid_until has passed.
+  await supabase.from('dir_billing').update({ payment_failed_at: now.toISOString(), updated_at: now.toISOString() }).eq('id', row.id)
+  return { status: 200, outcome: 'payment_failed' }
 }
