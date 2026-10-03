@@ -3,11 +3,19 @@ import { useState } from 'react'
 import { C, CATEGORY_LABELS, BILLING_COLORS, FOUNDING, Btn, Pill, input, label, dirAction, fmtDate, planAmount, allowedCategories, MAX_EXTRA_CATEGORIES } from './ui'
 
 const EMPTY = {
-  name: '', category: 'stay', categories: [], town: '', province: 'KwaZulu-Natal', summary: '', description: '', phone: '',
+  name: '', category: 'stay', categories: [], country: 'ZA', town: '', province: 'KwaZulu-Natal', summary: '', description: '', phone: '',
   whatsapp: '', email: '', website_url: '', photo_url: '', lat: '', lng: '', tier: 'community',
   sites: ['zatours'], published: false, claimed: false, company_id: '', partner_source: '',
 }
-const PROVINCES = ['Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo', 'Mpumalanga', 'North West', 'Northern Cape', 'Western Cape']
+// Regions per country: SA provinces, Botswana districts; free text elsewhere.
+const REGIONS = {
+  ZA: ['Eastern Cape', 'Free State', 'Gauteng', 'KwaZulu-Natal', 'Limpopo', 'Mpumalanga', 'North West', 'Northern Cape', 'Western Cape'],
+  BW: ['Central', 'Chobe', 'Ghanzi', 'Kgalagadi', 'Kgatleng', 'Kweneng', 'North-East', 'North-West (Ngamiland)', 'South-East', 'Southern'],
+}
+const COUNTRY_OPTIONS = [
+  ['ZA', 'South Africa'], ['BW', 'Botswana'], ['NA', 'Namibia'], ['ZW', 'Zimbabwe'], ['ZM', 'Zambia'], ['MZ', 'Mozambique'],
+  ['MW', 'Malawi'], ['SZ', 'Eswatini'], ['LS', 'Lesotho'], ['KE', 'Kenya'], ['TZ', 'Tanzania'], ['UG', 'Uganda'], ['RW', 'Rwanda'],
+]
 const ZATOURS = process.env.NEXT_PUBLIC_ZATOURS_URL || 'https://www.zatours.co.za'
 const ROUTE22 = process.env.NEXT_PUBLIC_ROUTE22_URL || 'https://www.route22zululand.co.za'
 
@@ -110,10 +118,20 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
               </select>
             </label>
             <label style={label}>Town<input style={input} value={form.town} onChange={set('town')} /></label>
-            <label style={label}>Province
-              <select style={input} value={form.province} onChange={set('province')}>
-                {PROVINCES.map(p => <option key={p}>{p}</option>)}
+            <label style={label}>Country
+              <select style={input} value={form.country || 'ZA'}
+                onChange={e => { const c = e.target.value; setForm(f => ({ ...f, country: c, province: REGIONS[c]?.[0] ?? '' })) }}>
+                {COUNTRY_OPTIONS.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
               </select>
+            </label>
+            <label style={label}>{form.country === 'BW' ? 'District' : form.country === 'ZA' || !form.country ? 'Province' : 'Region'}
+              {REGIONS[form.country || 'ZA'] ? (
+                <select style={input} value={form.province} onChange={set('province')}>
+                  {REGIONS[form.country || 'ZA'].map(p => <option key={p}>{p}</option>)}
+                </select>
+              ) : (
+                <input style={input} value={form.province} onChange={set('province')} placeholder="e.g. Arusha" />
+              )}
             </label>
           </div>
           <label style={{ ...label, marginBottom: 10 }}>Summary (cards)<input style={input} value={form.summary} onChange={set('summary')} /></label>

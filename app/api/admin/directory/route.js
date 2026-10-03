@@ -18,7 +18,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://opdesk.app'
 const LISTING_FIELDS = [
   'name', 'category', 'summary', 'description', 'town', 'province', 'lat', 'lng', 'phone', 'whatsapp',
   'email', 'website_url', 'photo_url', 'price_from', 'tier', 'sites', 'published', 'claimed',
-  'company_id', 'partner_source', 'categories',
+  'company_id', 'partner_source', 'categories', 'country',
 ]
 
 function pickListing(input) {
@@ -32,6 +32,10 @@ function pickListing(input) {
   }
   if ('tier' in out && !LISTING_TIERS.includes(out.tier)) throw new Error('Invalid tier')
   if ('category' in out && !LISTING_CATEGORIES.includes(out.category)) throw new Error('Invalid category')
+  if ('country' in out) {
+    const ok = ['ZA', 'BW', 'NA', 'ZW', 'ZM', 'MZ', 'MW', 'SZ', 'LS', 'KE', 'TZ', 'UG', 'RW']
+    if (!ok.includes(out.country)) throw new Error('Unsupported country')
+  }
   if ('categories' in out) {
     // Primary category stays first; the DB trigger enforces that too.
     const list = Array.from(new Set((out.categories || []).filter(c => LISTING_CATEGORIES.includes(c))))
