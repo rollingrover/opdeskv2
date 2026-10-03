@@ -13,7 +13,7 @@ import {
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
   Shield, MapPin, Crosshair, LogOut, ChevronRight, Bed,
   ClipboardList, UserCheck, DollarSign, Clock, Plane,
-  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail, Inbox, ExternalLink
+  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail, Inbox, ExternalLink, Compass
 } from 'lucide-react'
 
 const ALL_NAV = [
@@ -24,6 +24,7 @@ const ALL_NAV = [
       { href:'/bookings',    icon: BookOpen,         key:'bookings',         module:'bookings' },
       { href:'/calendar',    icon: CalendarDays,     key:'calendar',         module:'bookings' },
       { href:'/enquiries',   icon: Inbox,            key:'directoryEnquiries', module:'always' },
+      { href:'/trip-requests', icon: Compass,        key:'tripRequests', module:'always' },
       { href:'/settings/booking-types', icon: Tag,   key:'bookingTypes',     module:'always' },
       { href:'/guests',      icon: Users,           key:'guestsDirectory',  module:'guests_directory', gate:'guest_register' },
     ]
@@ -110,6 +111,7 @@ const ADMIN_NAV = [
   { label: 'Directory', items: [
     { href: '/admin/directory', icon: Globe, label: 'Listings & billing', exact: true },
     { href: '/admin/directory?tab=leads', icon: Briefcase, label: 'Business leads' },
+    { href: '/admin/directory?tab=trips', icon: Compass, label: 'Trip requests' },
     { href: '/admin/directory?tab=claims', icon: UserCheck, label: 'Claims' },
     { href: '/admin/directory?tab=routes', icon: MapPin, label: 'Routes & associations' },
     { href: '/admin/directory?tab=packages', icon: Tag, label: 'Packages & prices' },
