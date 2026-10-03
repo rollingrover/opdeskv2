@@ -126,7 +126,7 @@ export default function ChannelSyncPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     {roomFeeds.map(feed => (
                       <div key={feed.id} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', fontSize: '0.8125rem' }}>
-                        <span style={{ fontWeight: 700, color: 'var(--navy)', textTransform: 'capitalize', minWidth: 90 }}>{feed.source_name.replace(/_/g, ' ')}</span>
+                        <span style={{ fontWeight: 700, color: 'var(--navy)', textTransform: 'capitalize', minWidth: 90 }}>{feed.source_name === 'nightsbridge' ? 'NightsBridge' : feed.source_name === 'booking_com' ? 'Booking.com' : feed.source_name.replace(/_/g, ' ')}</span>
                         <span style={{ color: 'var(--gray-400)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{feed.feed_url}</span>
                         {feed.last_sync_status === 'ok' && <span title={feed.last_synced_at ? new Date(feed.last_synced_at).toLocaleString('en-ZA') : ''} style={{ color: 'var(--teal)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}><Check size={13} /></span>}
                         {feed.last_sync_status === 'error' && <span title={feed.last_sync_error || t('syncFailed')} style={{ color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.25rem' }}><AlertTriangle size={13} /></span>}
@@ -151,9 +151,10 @@ export default function ChannelSyncPage() {
           <Select label={t('source')} value={form.source_name} onChange={e => setForm({ ...form, source_name: e.target.value })}>
             <option value="airbnb">Airbnb</option>
             <option value="booking_com">Booking.com</option>
+            <option value="nightsbridge">NightsBridge</option>
             <option value="other">{t('other')}</option>
           </Select>
-          <Input label={t('calendarExportUrl')} required placeholder="https://www.airbnb.com/calendar/ical/....ics"
+          <Input label={t('calendarExportUrl')} required placeholder={form.source_name === 'nightsbridge' ? 'https://… (NightsBridge iCal export link, .ics)' : form.source_name === 'booking_com' ? 'https://admin.booking.com/hotel/hoteladmin/ical.html?t=…' : 'https://www.airbnb.com/calendar/ical/....ics'}
             value={form.feed_url} onChange={e => setForm({ ...form, feed_url: e.target.value })} />
           <p style={{ fontSize: '0.75rem', color: 'var(--gray-400)', marginTop: '-0.5rem' }}>
             {t('findThisHint')}
