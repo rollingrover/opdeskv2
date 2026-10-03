@@ -2,11 +2,16 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { sendEmail } from '@/lib/email'
 import { buildPaymentUrl } from '@/lib/payfast'
+import { runOsmImport } from '@/lib/osmImport'
+import { createServiceClient } from '@/lib/supabase/service'
 import {
   BILLING_STATUSES, DIRECTORY_PLAN_LABELS, LEAD_STATUSES, LISTING_CATEGORIES, LISTING_TIERS, MAX_EXTRA_CATEGORIES, PLAN_LABELS,
   ZATOURS_URL, generateToken, isFoundingOpen, listingUrl, ownerEmailHtml, paymentLinkEmailHtml, planAmount, priceOf,
   revalidateDirectory, siteUrlFor, slugify,
 } from '@/lib/directory'
+
+// Some actions (OpenStreetMap refresh) can take a couple of minutes.
+export const maxDuration = 300
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://opdesk.app'
 
@@ -18,7 +23,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://opdesk.app'
 const LISTING_FIELDS = [
   'name', 'category', 'summary', 'description', 'town', 'province', 'lat', 'lng', 'phone', 'whatsapp',
   'email', 'website_url', 'photo_url', 'price_from', 'tier', 'sites', 'published', 'claimed',
-  'company_id', 'partner_source', 'categories', 'country',
+  'company_id', 'partner_source', 'categories', 'country', 'subtype',
 ]
 
 function pickListing(input) {
@@ -32,6 +37,9 @@ function pickListing(input) {
   }
   if ('tier' in out && !LISTING_TIERS.includes(out.tier)) throw new Error('Invalid tier')
   if ('category' in out && !LISTING_CATEGORIES.includes(out.category)) throw new Error('Invalid category')
+  if ('subtype' in out && out.subtype !== null) {
+    if (!['bnb', 'guesthouse', 'lodge', 'hotel', 'campsite', 'self_catering', 'backpackers'].includes(out.subtype)) throw new Error('Invalid stay type')
+  }
   if ('country' in out) {
     const ok = ['ZA', 'BW', 'NA', 'ZW', 'ZM', 'MZ', 'MW', 'SZ', 'LS', 'KE', 'TZ', 'UG', 'RW']
     if (!ok.includes(out.country)) throw new Error('Unsupported country')
@@ -423,6 +431,13 @@ export async function POST(request) {
           emailed = !sent?.error && !sent?.skipped
         }
         return NextResponse.json({ ok: true, paymentUrl, amount, founding, quantity, emailed })
+      }
+
+      case 'osm_refresh': {
+        // Superadmin: refresh one region (or the 2 stalest) from OpenStreetMap now.
+        const report = await runOsmImport(createServiceClient(), body.regionId ? { regionId: body.regionId } : { max: 2 })
+        await revalidateDirectory([])
+        return NextResponse.json({ ok: true, report })
       }
 
       case 'revalidate': {

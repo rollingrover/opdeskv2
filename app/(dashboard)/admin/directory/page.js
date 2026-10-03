@@ -15,6 +15,7 @@ import LeadsTab from '@/components/admin/directory/LeadsTab'
 import RoutesTab from '@/components/admin/directory/RoutesTab'
 import PackagesTab from '@/components/admin/directory/PackagesTab'
 import TripRequestsTab from '@/components/admin/directory/TripRequestsTab'
+import MapServicesTab from '@/components/admin/directory/MapServicesTab'
 
 // Superadmin: ZAtours + Route22 directory (shared dir_* tables). Reads use
 // the signed-in superadmin's session (RLS); writes go through
@@ -25,17 +26,17 @@ function DirectoryAdmin() {
   // Tab lives in the URL (?tab=leads) so sidebar links can deep-link to it.
   const router = useRouter()
   const searchParams = useSearchParams()
-  const TABS = ['listings', 'leads', 'trips', 'claims', 'routes', 'packages', 'enquiries']
+  const TABS = ['listings', 'leads', 'trips', 'claims', 'routes', 'packages', 'services', 'enquiries']
   const tab = TABS.includes(searchParams.get('tab')) ? searchParams.get('tab') : 'listings'
   const setTab = k => router.replace(k === 'listings' ? '/admin/directory' : `/admin/directory?tab=${k}`, { scroll: false })
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState({ listings: [], billing: [], claims: [], leads: [], companies: [], enquiries: [], verified: [], routes: [], routeMembers: [], packages: [], trips: [], tripClaims: [] })
+  const [data, setData] = useState({ listings: [], billing: [], claims: [], leads: [], companies: [], enquiries: [], verified: [], routes: [], routeMembers: [], packages: [], trips: [], tripClaims: [], osmRegions: [] })
   const [drawer, setDrawer] = useState(null) // { listing, prefill, lead }
 
   // Fetch only (no state writes) so the mount effect can apply results in a
   // promise callback rather than synchronously inside the effect.
   const fetchAll = useCallback(async () => {
-    const [listings, billing, claims, leads, companies, enquiries, verified, routes, routeMembers, packages, trips, tripClaims] = await Promise.all([
+    const [listings, billing, claims, leads, companies, enquiries, verified, routes, routeMembers, packages, trips, tripClaims, osmRegions] = await Promise.all([
       supabase.from('dir_listings').select('*').order('name'),
       supabase.from('dir_billing').select('*').in('entity_type', ['listing', 'route']),
       supabase.from('dir_claims').select('*').order('created_at', { ascending: false }),
@@ -48,15 +49,16 @@ function DirectoryAdmin() {
       supabase.from('dir_packages').select('*').order('sort_order'),
       supabase.from('dir_trip_requests').select('*').order('created_at', { ascending: false }).limit(300),
       supabase.from('dir_trip_request_claims').select('request_id, company_id, status'),
+      supabase.from('dir_osm_regions').select('*').order('name'),
     ])
-    const firstErr = [listings, billing, claims, leads, companies, enquiries, verified, routes, routeMembers, packages, trips, tripClaims].find(r => r.error)
+    const firstErr = [listings, billing, claims, leads, companies, enquiries, verified, routes, routeMembers, packages, trips, tripClaims, osmRegions].find(r => r.error)
     return {
       error: firstErr?.error?.message,
       data: {
         listings: listings.data || [], billing: billing.data || [], claims: claims.data || [], leads: leads.data || [],
         companies: companies.data || [], enquiries: enquiries.data || [], verified: verified.data || [],
         routes: routes.data || [], routeMembers: routeMembers.data || [], packages: packages.data || [],
-        trips: trips.data || [], tripClaims: tripClaims.data || [],
+        trips: trips.data || [], tripClaims: tripClaims.data || [], osmRegions: osmRegions.data || [],
       },
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -97,6 +99,7 @@ function DirectoryAdmin() {
     ['claims', `Claims${openClaims ? ` · ${openClaims} open` : ''}`],
     ['routes', `Routes (${data.routes.length})`],
     ['packages', 'Packages & prices'],
+    ['services', 'Map services'],
     ['enquiries', `Guest enquiries${newEnq ? ` · ${newEnq} new` : ''}`],
   ]
 
@@ -141,6 +144,7 @@ function DirectoryAdmin() {
               packages={data.packages} reload={load} toast={toast} />
           )}
           {tab === 'packages' && <PackagesTab packages={data.packages} reload={load} toast={toast} />}
+          {tab === 'services' && <MapServicesTab regions={data.osmRegions} reload={load} toast={toast} />}
           {tab === 'trips' && <TripRequestsTab requests={data.trips} claims={data.tripClaims} companies={data.companies} reload={load} toast={toast} />}
           {tab === 'enquiries' && (
             <Card style={{ overflowX: 'auto' }}>

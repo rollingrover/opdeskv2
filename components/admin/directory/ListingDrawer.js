@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { C, CATEGORY_LABELS, BILLING_COLORS, FOUNDING, Btn, Pill, input, label, dirAction, fmtDate, planAmount, allowedCategories, MAX_EXTRA_CATEGORIES } from './ui'
 
 const EMPTY = {
-  name: '', category: 'stay', categories: [], country: 'ZA', town: '', province: 'KwaZulu-Natal', summary: '', description: '', phone: '',
+  name: '', category: 'stay', categories: [], subtype: '', country: 'ZA', town: '', province: 'KwaZulu-Natal', summary: '', description: '', phone: '',
   whatsapp: '', email: '', website_url: '', photo_url: '', lat: '', lng: '', tier: 'community',
   sites: ['zatours'], published: false, claimed: false, company_id: '', partner_source: '',
 }
@@ -65,7 +65,7 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
     setSaving(true)
     try {
       const categories = [form.category, ...form.categories.filter(c => c !== form.category)]
-      const fields = { ...form, categories, company_id: form.company_id || null }
+      const fields = { ...form, categories, company_id: form.company_id || null, subtype: form.subtype || null }
       if (creating) {
         const r = await dirAction('create_listing', { fields, leadId: lead?.id })
         toast.success(`Listing created (${r.slug})`)
@@ -118,6 +118,15 @@ export default function ListingDrawer({ listing, prefill, lead, billing, compani
               </select>
             </label>
             <label style={label}>Town<input style={input} value={form.town} onChange={set('town')} /></label>
+            {(form.category === 'stay' || form.categories.includes('stay')) && (
+              <label style={label}>Stay type (map key)
+                <select style={input} value={form.subtype || ''} onChange={set('subtype')}>
+                  <option value="">— not set —</option>
+                  {[['bnb', 'B&B'], ['guesthouse', 'Guesthouse'], ['lodge', 'Lodge'], ['hotel', 'Hotel'], ['campsite', 'Campsite'], ['self_catering', 'Self-catering'], ['backpackers', 'Backpackers']]
+                    .map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </label>
+            )}
             <label style={label}>Country
               <select style={input} value={form.country || 'ZA'}
                 onChange={e => { const c = e.target.value; setForm(f => ({ ...f, country: c, province: REGIONS[c]?.[0] ?? '' })) }}>
