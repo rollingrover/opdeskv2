@@ -13,7 +13,7 @@ import {
   Truck, Ship, FileText, BarChart3, Settings, HelpCircle,
   Shield, MapPin, Crosshair, LogOut, ChevronRight, Bed,
   ClipboardList, UserCheck, DollarSign, Clock, Plane,
-  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail, Inbox, ExternalLink, Compass
+  TrendingUp, Star, Package, Briefcase, RefreshCw, Globe, ClipboardCheck, Tag, Mail, Inbox, ExternalLink, Compass, ShieldCheck, Bell, Repeat
 } from 'lucide-react'
 
 const ALL_NAV = [
@@ -25,6 +25,7 @@ const ALL_NAV = [
       { href:'/calendar',    icon: CalendarDays,     key:'calendar',         module:'bookings' },
       { href:'/enquiries',   icon: Inbox,            key:'directoryEnquiries', module:'always' },
       { href:'/trip-requests', icon: Compass,        key:'tripRequests', module:'always' },
+      { href:'/compliance',   icon: ShieldCheck,    key:'compliance', module:'always' },
       { href:'/settings/booking-types', icon: Tag,   key:'bookingTypes',     module:'always' },
       { href:'/guests',      icon: Users,           key:'guestsDirectory',  module:'guests_directory', gate:'guest_register' },
     ]
@@ -78,6 +79,7 @@ const ALL_NAV = [
       { href:'/firearm-register', icon: Crosshair,   key:'firearmRegister', module:'firearm' },
       { href:'/invoices',         icon: FileText,    key:'invoices',         module:'invoices' },
       { href:'/invoices/statements', icon: FileText, key:'clientStatements', module:'invoices' },
+      { href:'/invoices/recurring', icon: Repeat, key:'recurringInvoices', module:'invoices' },
       { href:'/quotations',       icon: FileText,    key:'quotations',       module:'quotations', gate:'quotations' },
       { href:'/settings/rate-sheet', icon: FileText, key:'rateSheet',       module:'rate_sheet', gate:'rate_sheet' },
       { href:'/settings/guest-journey', icon: Mail,  key:'guestJourney' },
@@ -95,6 +97,7 @@ const ALL_NAV = [
       { href:'/settings/booking-widget', icon: Globe, key:'bookingWidget', module:'always', special: 'professionalPlus' },
       { href:'/settings/addons', icon: Package,     key:'addons',   module:'always' },
       { href:'/settings/public-profile', icon: Globe, key:'publicProfile', module:'always' },
+      { href:'/settings/notifications', icon: Bell, key:'notifications', module:'always' },
       { href:'/support',         icon: HelpCircle,  key:'support',   module:'always' },
     ]
   },

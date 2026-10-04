@@ -18,6 +18,7 @@ export default function InvoiceStatementsPage() {
   const supabase = createClient()
   const toast = useToast()
   const [invoices, setInvoices] = useState([])
+  const [sendingStatement, setSendingStatement] = useState(false)
   const [loading, setLoading] = useState(true)
   const [selectedClient, setSelectedClient] = useState('')
 
@@ -68,10 +69,25 @@ export default function InvoiceStatementsPage() {
         </div>
       ) : (
         <>
-          <div style={{ marginBottom: '1.25rem', maxWidth: 320 }}>
-            <Select label={t('client')} value={selectedClient} onChange={e => setSelectedClient(e.target.value)}>
-              {clientList.map(([key, c]) => <option key={key} value={key}>{c.name}</option>)}
-            </Select>
+          <div style={{ marginBottom: '1.25rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+            <div style={{ maxWidth: 320, flex: 1 }}>
+              <Select label={t('client')} value={selectedClient} onChange={e => setSelectedClient(e.target.value)}>
+                {clientList.map(([key, c]) => <option key={key} value={key}>{c.name}</option>)}
+              </Select>
+            </div>
+            <button className="btn btn-primary" disabled={!active?.email || sendingStatement} title={!active?.email ? t('noEmailOnFile') : ''}
+              onClick={async () => {
+                setSendingStatement(true)
+                try {
+                  const res = await fetch('/api/invoices/statement-send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clientEmail: active.email }) })
+                  const data = await res.json()
+                  if (!res.ok) throw new Error(data.error || 'Failed')
+                  toast.success(t('statementSent', { email: active.email }))
+                } catch (e) { toast.error(e.message) }
+                setSendingStatement(false)
+              }}>
+              {sendingStatement ? t('sendingStatement') : t('emailStatement')}
+            </button>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.25rem' }}>

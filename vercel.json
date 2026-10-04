@@ -24,6 +24,14 @@
     {
       "path": "/api/cron/osm-amenities",
       "schedule": "15 1 * * *"
+    },
+    {
+      "path": "/api/cron/notifications",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/recurring-invoices",
+      "schedule": "0 3 * * *"
     }
   ]
 }

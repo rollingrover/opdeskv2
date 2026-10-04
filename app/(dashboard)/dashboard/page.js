@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
+import ComplianceAlert from '@/components/compliance/ComplianceAlert'
 import { createClient } from '@/lib/supabase/client'
 import { PageLoader } from '@/components/ui/Spinner'
 import { StatusBadge } from '@/components/ui/Badge'
@@ -184,6 +185,8 @@ export default function DashboardPage() {
           <StatCard icon={Hotel} label={t('statsRooms')} value={`${stats.occupiedRooms}/${stats.totalRooms}`} sub={t('tonight')} color="var(--gold)" />
         )}
       </div>
+
+      <ComplianceAlert company={company} />
 
       <div style={{ display:'grid', gridTemplateColumns:'1fr 380px', gap:'1.25rem', alignItems:'start' }}>
         {/* Recent Bookings */}
